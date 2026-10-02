@@ -1,6 +1,6 @@
-# ⚡ Queensland ESO Certificate of Compliance (CoC / CoT) Generator `v1.0.0`
+# ⚡ Queensland ESO Certificate of Compliance (CoC / CoT) Generator `v1.0.1`
 
-[![Version](https://img.shields.io/badge/version-1.0.0-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.0.1-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 

@@ -926,6 +926,13 @@
     header.addEventListener('pointermove', onPointerMove);
     header.addEventListener('pointerup', onPointerUp);
     header.addEventListener('pointercancel', onPointerUp);
+
+    // Defensive click handler: ensure clicks on header/title/handle NEVER toggle accordion
+    header.addEventListener('click', (e) => {
+      if (!e.target.closest('.btn-preset-toggle')) {
+        e.stopPropagation();
+      }
+    });
   }
 
   window.movePreset = function(fromIndex, toIndex) {
@@ -979,7 +986,7 @@
       item.setAttribute('data-index', idx);
 
       item.innerHTML = `
-        <div class="preset-accordion-header" title="${isExpanded ? 'Tap to collapse' : 'Tap to expand, hold & drag to reorder'}">
+        <div class="preset-accordion-header" title="${isExpanded ? 'Use toggle button to collapse' : 'Use toggle button to expand, hold & drag to reorder'}">
           ${isExpanded ? `
             <div class="preset-expanded-header-left">
               <span class="preset-accordion-num">${idx + 1}.</span>
