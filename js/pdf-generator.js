@@ -86,9 +86,25 @@
   }
 
   // Sanitize strings to avoid pdf-lib WinAnsi standard font encoding crashes
+  // Pre-normalizes electrical engineering units, iOS smart typography, and symbols
   function safeWinAnsi(str) {
     if (!str) return '';
-    return String(str).replace(/[^\x00-\xFF]/g, ' ');
+    return String(str)
+      // 1. Electrical engineering units & symbols (prevents 0.15 Ohm turning into blank 0.15)
+      .replace(/[\u03A9\u2126]/g, ' Ohm')
+      .replace(/\u00B5/g, 'u')
+      // 2. iOS & macOS smart typography & quotes
+      .replace(/[\u2018\u2019\u201A]/g, "'")
+      .replace(/[\u201C\u201D\u201E]/g, '"')
+      // 3. Dashes & list bullets
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/[\u2022\u2023\u25E6]/g, '- ')
+      // 4. Mathematical & comparison operators
+      .replace(/\u2265/g, '>=')
+      .replace(/\u2264/g, '<=')
+      .replace(/\u00D7/g, 'x')
+      // 5. Final WinAnsi fallback
+      .replace(/[^\x00-\xFF]/g, ' ');
   }
 
   const CotPdfGenerator = {
@@ -664,6 +680,10 @@
           width: 595.28,
           height: 841.89
         });
+
+        // Explicitly release huge 300 DPI canvas bitmap to prevent WebKit memory pressure
+        canvas.width = 0;
+        canvas.height = 0;
       }
 
       // ----------------------------------------------------
@@ -671,7 +691,6 @@
       // ----------------------------------------------------
       const finalPdfBytes = await bakedDoc.save();
       const finalBlob = new Blob([finalPdfBytes], { type: 'application/pdf' });
-      const finalUrl = URL.createObjectURL(finalBlob);
 
       const dateStr = `${tYear}${tMonth}${tDay}`;
       const cleanStreet = (street || 'Job')
@@ -684,7 +703,6 @@
 
       return {
         blob: finalBlob,
-        url: finalUrl,
         filename: filename,
         totalPages: totalRenderedPages
       };

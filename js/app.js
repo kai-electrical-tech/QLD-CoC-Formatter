@@ -468,8 +468,9 @@
         reader.onload = function(event) {
           const img = new Image();
           img.onload = function() {
-            const maxW = 3600;
-            const maxH = 600;
+            // PDF printable header is ~500pt; at 300 DPI, 1200px provides ultra-crisp resolution with lightweight footprint
+            const maxW = 1200;
+            const maxH = 300;
             let targetW = img.width;
             let targetH = img.height;
 
@@ -486,9 +487,21 @@
             ctx.drawImage(img, 0, 0, targetW, targetH);
 
             const dataUrl = canvas.toDataURL('image/png');
-            localStorage.setItem('qld_coc_custom_logo', dataUrl);
-            showLogoPreview(dataUrl);
-            showSimpleToast('Custom logo saved');
+            try {
+              localStorage.setItem('qld_coc_custom_logo', dataUrl);
+              showLogoPreview(dataUrl);
+              showSimpleToast('Custom logo saved');
+            } catch (err) {
+              console.error('Failed to save custom logo to localStorage:', err);
+              showUnifiedToast({
+                title: 'Storage Full',
+                desc: 'Could not save custom logo due to browser storage quota limits. Please use a smaller image file.',
+                buttons: [{ text: 'OK', isPrimary: true, onClick: hideUnifiedToast }]
+              });
+            } finally {
+              canvas.width = 0;
+              canvas.height = 0;
+            }
           };
           img.src = event.target.result;
         };
@@ -1380,7 +1393,7 @@
     }
 
     const pageStatus = lines > 17
-      ? `Annexure A will be generated (${estPages} pages total | ${lines} lines)`
+      ? `Multi-page Certificate: Annexure A will be generated (${estPages} pages total | ${lines} lines)`
       : `Fits Page 1 (${lines} line${lines === 1 ? '' : 's'})`;
 
     hintEl.textContent = `${pageStatus} | ${chars}/50000 chars`;
@@ -1391,7 +1404,7 @@
     }
   }
 
-  // 7. Certificate Type Toggle & Dynamic Statutory Declaration
+  // 7. Certificate Type Toggle & Dynamic Statutory Certification
   window.updateCertType = function(val) {
     const cardInstall = document.getElementById('label-type-install');
     const cardEquip = document.getElementById('label-type-equip');
@@ -1401,13 +1414,13 @@
       if (cardInstall) cardInstall.classList.remove('selected');
       if (cardEquip) cardEquip.classList.add('selected');
       if (legalBox) {
-        legalBox.innerHTML = '<strong>Statutory Declaration (Electrical Safety Regulation 2026 s208):</strong> I hereby certify that the electrical equipment described above has been inspected and tested in accordance with the requirements of the <em>Electrical Safety Act 2002</em> and the <em>Electrical Safety Regulation 2026</em>, and is electrically safe.';
+        legalBox.innerHTML = '<strong>Certification (Electrical Safety Regulation 2026 s208):</strong><br>I certify that the electrical equipment, to the extent it is affected by the electrical work, is electrically safe.';
       }
     } else {
       if (cardInstall) cardInstall.classList.add('selected');
       if (cardEquip) cardEquip.classList.remove('selected');
       if (legalBox) {
-        legalBox.innerHTML = '<strong>Statutory Declaration (Electrical Safety Regulation 2026 s229):</strong> I hereby certify that the electrical installation / work described above has been inspected and tested in accordance with the requirements of the <em>Electrical Safety Act 2002</em> and the <em>Electrical Safety Regulation 2026</em>, and meets the mandated compliance standards of AS/NZS 3000 (Wiring Rules).';
+        legalBox.innerHTML = '<strong>Certification (Electrical Safety Regulation 2026 s229):</strong><br>I certify that the electrical installation, to the extent it is affected by the electrical work, has been tested to ensure that it is electrically safe and is in accordance with the requirements of the wiring rules and any other standard applying under the Electrical Safety Regulation 2026 to the electrical installation.';
       }
     }
     saveDraft();
@@ -1531,6 +1544,7 @@
     signaturePadCanvas.addEventListener('touchstart', startDrawing, { passive: false });
     signaturePadCanvas.addEventListener('touchmove', draw, { passive: false });
     window.addEventListener('touchend', stopDrawing);
+    window.addEventListener('touchcancel', stopDrawing);
 
     window.addEventListener('resize', () => {
       if (!hasSigned) resizeSignatureCanvas();
@@ -1985,8 +1999,42 @@
     checkNoticeDateAndProceed(data);
   }
 
-  // Check Date notice given is not earlier than Date of test
+  // Check Date notice given and future test date compliance
   function checkNoticeDateAndProceed(data) {
+    const today = getLocalDateString();
+    if (data.testDate && data.testDate > today) {
+      showUnifiedToast({
+        title: 'Future Test Date Warning',
+        desc: `Date of test (${data.testDate}) is in the future. Under Queensland ESO regulations, electrical testing must be physically completed prior to certification.`,
+        buttons: [
+          {
+            text: 'Review Date',
+            isPrimary: false,
+            onClick: () => {
+              hideUnifiedToast();
+              const testDateEl = document.getElementById('testDate');
+              if (testDateEl) {
+                testDateEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                testDateEl.focus();
+              }
+            }
+          },
+          {
+            text: 'Proceed Anyway',
+            isPrimary: true,
+            onClick: () => {
+              hideUnifiedToast();
+              proceedAfterTestDateCheck(data);
+            }
+          }
+        ]
+      });
+      return;
+    }
+    proceedAfterTestDateCheck(data);
+  }
+
+  function proceedAfterTestDateCheck(data) {
     if (data.noticeDate && data.testDate && data.noticeDate < data.testDate) {
       showUnifiedToast({
         title: 'Notice Date Earlier than Test Date',

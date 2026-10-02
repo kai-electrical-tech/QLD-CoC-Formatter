@@ -81,6 +81,14 @@
 
     _cache: new Map(),
 
+    _setCache(key, val) {
+      if (this._cache.size >= 100) {
+        const oldestKey = this._cache.keys().next().value;
+        this._cache.delete(oldestKey);
+      }
+      this._cache.set(key, val);
+    },
+
     // Check if query meets minimum length threshold:
     // If starts with street number (e.g. "6 vid"): requires at least 3 letters of street name
     // Otherwise requires at least 3 characters
@@ -101,6 +109,10 @@
     // Online search for street addresses using Photon (Komoot / OpenStreetMap) with Queensland priority
     async searchAddresses(query, limit = 6) {
       if (!this.isQueryReady(query)) return [];
+      // Fast short-circuit when device is offline to prevent failed network requests
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        return [];
+      }
       const q = query.trim();
       const cacheKey = q.toLowerCase();
       if (this._cache.has(cacheKey)) {
@@ -169,7 +181,7 @@
           }
           if (results.length > 0) {
             const finalRes = results.slice(0, limit);
-            this._cache.set(cacheKey, finalRes);
+            this._setCache(cacheKey, finalRes);
             return finalRes;
           }
         }
@@ -218,7 +230,11 @@
               });
             }
           }
-          if (results.length > 0) return results.slice(0, limit);
+          if (results.length > 0) {
+            const finalRes = results.slice(0, limit);
+            this._setCache(cacheKey, finalRes);
+            return finalRes;
+          }
         }
       } catch (nomErr) {
         console.warn('Nominatim fallback error:', nomErr);
