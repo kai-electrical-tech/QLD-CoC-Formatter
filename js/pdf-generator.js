@@ -1,5 +1,5 @@
-// Queensland ESO CoC / CoT A4 300 DPI Baked PDF Generator (Official V7.09-2026)
-// Features Vector Overlay + Neutral Device ID + Dynamic Annexure A + 300 DPI Anti-Tamper Image Baking
+// Queensland ESO CoC / CoT A4 200 DPI Baked PDF Generator (Official V7.09-2026)
+// Features Vector Overlay + Neutral Device ID + Dynamic Annexure A + 200 DPI Anti-Tamper Image Baking + In-Place Searchable Text Overlay
 (function(window) {
   'use strict';
 
@@ -122,7 +122,7 @@
 
     /**
      * Generate QLD Certificate of Testing & Compliance PDF (Official V7.09-2026 standard)
-     * Baked at 300 DPI for complete anti-tamper security
+     * Baked at 200 DPI for complete anti-tamper security and fast mobile sharing (~230KB/page)
      * @param {Object} data 
      * @returns {Promise<{blob: Blob, url: string, filename: string, totalPages: number}>}
      */
@@ -647,14 +647,14 @@
       const rawVectorBytes = await pdfDoc.save();
 
       // ----------------------------------------------------
-      // 15. 300 DPI ANTI-TAMPER RASTERIZATION (IMAGE BAKING)
+      // 15. 200 DPI ANTI-TAMPER RASTERIZATION & IN-PLACE SEARCHABLE TEXT
       // ----------------------------------------------------
       const loadingTask = window.pdfjsLib.getDocument({ data: rawVectorBytes });
       const renderedPdf = await loadingTask.promise;
       const totalRenderedPages = renderedPdf.numPages;
 
-      // 300 DPI scale: 300 / 72 = 4.16667
-      const scale = 4.16667;
+      // 200 DPI scale: 200 / 72 = 2.77778 (optimal balance of sharpness and ~230KB/page size)
+      const scale = 2.77778;
       const bakedDoc = await PDFDocument.create();
       const bakedFont = await bakedDoc.embedFont(StandardFonts.Helvetica);
 
@@ -684,27 +684,8 @@
       bakedDoc.setProducer(toolAttribution);
       bakedDoc.setSubject(certTypeName);
 
-      // Prepare Searchable Text Layer for full-text indexing (Spotlight / Windows Search / Acrobat Ctrl+F)
+      // Prepare metadata summary for system-wide indexing fallback (Spotlight / Windows Search)
       const customerFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ');
-      const installAddress = [street, suburb, postcode].filter(Boolean).join(' ');
-      const testDateFormatted = `${tDay}/${tMonth}/${tYear}`;
-      const noticeDateFormatted = `${nDay}/${nMonth}/${nYear}`;
-
-      const searchableLines = [
-        certTypeName,
-        customerFullName ? `Customer: ${customerFullName}` : '',
-        data.fullAddress ? `Customer Address: ${data.fullAddress}` : '',
-        installAddress ? `Installation Address: ${installAddress}` : '',
-        refStr ? `Job Ref: ${refStr}` : '',
-        descText ? `Work Description: ${descText}` : '',
-        `Date of Testing: ${testDateFormatted}`,
-        `Date of Notice: ${noticeDateFormatted}`,
-        contractorName ? `Contractor: ${contractorName}` : '',
-        contractorLic ? `Contractor Licence: ${contractorLic}` : '',
-        contractorPhone ? `Contractor Phone: ${contractorPhone}` : '',
-        testerDisplayStr ? `Tester: ${testerDisplayStr}` : '',
-        `Device ID: ${deviceToken}`
-      ].filter(Boolean);
 
       for (let pNum = 1; pNum <= totalRenderedPages; pNum++) {
         const page = await renderedPdf.getPage(pNum);
@@ -716,7 +697,7 @@
         const ctx = canvas.getContext('2d');
 
         await page.render({ canvasContext: ctx, viewport }).promise;
-        const bakedImgData = canvas.toDataURL('image/jpeg', 0.82);
+        const bakedImgData = canvas.toDataURL('image/jpeg', 0.70);
 
         const imgBytes = dataUrlToUint8Array(bakedImgData);
         const embeddedImg = await bakedDoc.embedJpg(imgBytes);
@@ -730,53 +711,55 @@
           height: 841.89
         });
 
-        // Invisible Searchable Text Overlay (opacity: 0)
-        if (pNum === 1) {
-          let sY = 820;
-          for (const item of searchableLines) {
-            const wrapped = wrapText(item, bakedFont, 7, 520);
-            for (const line of wrapped) {
-              if (sY > 20) {
-                finalPage.drawText(safeWinAnsi(line), {
-                  x: 36,
-                  y: sY,
-                  size: 7,
-                  font: bakedFont,
-                  color: rgb(0, 0, 0),
-                  opacity: 0
-                });
-                sY -= 8;
-              }
-            }
-          }
-        } else if (pNum > 1 && annexurePagesData[pNum - 2]) {
-          let sY = 820;
-          const aData = annexurePagesData[pNum - 2];
-          finalPage.drawText(safeWinAnsi(`${certTypeName} - Annexure A (Page ${pNum} of ${totalRenderedPages})`), {
-            x: 36,
-            y: sY,
-            size: 7,
+        // In-Place Searchable & Selectable Text Overlay (opacity: 0)
+        // Extracts all visual text items and coordinates directly from the vector page,
+        // placing invisible text at the exact visual positions so users can highlight, copy,
+        // and search (Ctrl+F) directly over the visible rendered text.
+        const textContent = await page.getTextContent();
+        for (const item of textContent.items) {
+          if (!item.str || !item.str.trim()) continue;
+          const sanitized = safeWinAnsi(item.str);
+          if (!sanitized.trim()) continue;
+
+          // item.transform: [scaleX, skewY, skewX, scaleY, tx, ty]
+          const tx = item.transform[4];
+          const ty = item.transform[5];
+          const fontSize = Math.hypot(item.transform[0], item.transform[1]) || 8;
+
+          finalPage.drawText(sanitized, {
+            x: tx,
+            y: ty,
+            size: fontSize,
             font: bakedFont,
             color: rgb(0, 0, 0),
             opacity: 0
           });
-          sY -= 10;
-          for (const aLine of aData.lines) {
-            if (sY > 20) {
-              finalPage.drawText(safeWinAnsi(aLine), {
-                x: 36,
-                y: sY,
-                size: 7,
-                font: bakedFont,
-                color: rgb(0, 0, 0),
-                opacity: 0
-              });
-              sY -= 8;
-            }
+        }
+
+        // Secondary metadata line on Page 1 footer margin for full-text search engines
+        if (pNum === 1) {
+          const indexSummary = safeWinAnsi([
+            certTypeName,
+            customerFullName ? `Customer: ${customerFullName}` : '',
+            data.fullAddress ? `Address: ${data.fullAddress}` : '',
+            refStr ? `Ref: ${refStr}` : '',
+            contractorLic ? `Lic: ${contractorLic}` : '',
+            `Device ID: ${deviceToken}`
+          ].filter(Boolean).join(' | '));
+
+          if (indexSummary) {
+            finalPage.drawText(indexSummary, {
+              x: 36,
+              y: 2,
+              size: 2,
+              font: bakedFont,
+              color: rgb(0, 0, 0),
+              opacity: 0
+            });
           }
         }
 
-        // Explicitly release huge 300 DPI canvas bitmap to prevent WebKit memory pressure
+        // Explicitly release canvas bitmap to prevent WebKit / mobile Safari memory pressure
         canvas.width = 0;
         canvas.height = 0;
       }
