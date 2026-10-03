@@ -1,11 +1,11 @@
-# ⚡ Queensland ESO Certificate of Compliance (CoC / CoT) Generator `v1.0.1`
+# ⚡ KET CoC Generator `v1.0.3`
 
-[![Version](https://img.shields.io/badge/version-1.0.1-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.0.3-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 
-> Generates official Queensland *Electrical Safety Regulation 2026* Certificates of Testing & Compliance (s229 Installation / s208 Equipment) directly in the browser.  
-> Pure static client-side PWA web application deployed at **`tools.kaielectrical.com.au`**.
+> Official Queensland *Electrical Safety Regulation 2026* Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator.  
+> Pure static client-side PWA web application deployed at **[tools.kaielectrical.com.au](https://tools.kaielectrical.com.au)**, built by [Kai Electrical Tech Pty Ltd](https://kaielectrical.com.au).
 
 ---
 
@@ -53,25 +53,10 @@
 
 ---
 
-## 💻 Local Testing & Preview
+## 💻 Local Preview
 
-### macOS / Linux:
+Serve the static files locally with any web server:
 ```bash
-cd tools
-python3 -m http.server 8080
-```
-
-### Windows:
-```powershell
-cd tools
 python -m http.server 8080
 ```
-Open your browser and visit: `http://localhost:8080`
-
----
-
-## 🚀 Deployment
-
-This tool is deployed to **`tools.kaielectrical.com.au`** via Cloudflare Pages or GitHub Pages:
-- GitHub Repository: [https://github.com/kai-electrical-tech/QLD-CoC-Formatter.git](https://github.com/kai-electrical-tech/QLD-CoC-Formatter.git)
-- Domain CNAME: `tools.kaielectrical.com.au`
+Then open `http://localhost:8080` in your web browser.

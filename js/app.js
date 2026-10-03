@@ -1242,7 +1242,7 @@
 
       const backupData = {
         version: '2.0',
-        appName: 'QLD CoC Formatter',
+        appName: 'KET CoC Generator',
         exportedAt: new Date().toISOString(),
         profile: profile,
         customLogo: logo,

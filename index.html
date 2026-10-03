@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Certificate of Compliance | Powered by Kai Electrical Tech</title>
+  <title>KET CoC Generator | Kai Electrical Tech</title>
   
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -17,9 +17,57 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="CoC Generator">
-  <meta name="description" content="Generate official Queensland Electrical Safety Regulation 2026 Certificates of Testing & Compliance (s229 Installation / s208 Equipment) with 300 DPI anti-tamper rasterization.">
+  <meta name="description" content="Generate official Queensland Electrical Safety Regulation 2026 Certificates of Testing & Compliance (s229 Installation / s208 Equipment) with 300 DPI anti-tamper rasterization. Built by Kai Electrical Tech.">
 
-  <link rel="stylesheet" href="css/style.css?v=1.0.2">
+  <!-- JSON-LD Structured Data for Search Engines & AI Crawlers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "KET CoC Generator",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "url": "https://tools.kaielectrical.com.au",
+        "author": {
+          "@type": "Organization",
+          "name": "Kai Electrical Tech Pty Ltd",
+          "url": "https://kaielectrical.com.au"
+        },
+        "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT / CoTC) generator with 300 DPI anti-tamper rasterization.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "AUD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a Queensland Electrical Certificate of Testing and Compliance (CoC / CoTC)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Under the Queensland Electrical Safety Regulation 2026 (s229 and s208), licensed electrical contractors must test electrical work and issue a Certificate of Testing and Compliance (for installations) or Certificate of Testing and Safety (for equipment) to the person who requested the work."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is KET CoC Generator free and compliant with Queensland ESO standards?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, KET CoC Generator is 100% free with no watermarks or subscriptions. It formats certificates precisely to official Queensland Electrical Safety Office (ESO Form V7.09-2026) standards with 300 DPI tamper-proof baking."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css?v=1.0.3">
 </head>
 <body>
 
@@ -257,6 +305,10 @@
             </button>
           </div>
         </form>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
       </div>
 
       <!-- VIEW 2: HISTORY -->
@@ -267,6 +319,10 @@
           </div>
           <div id="historyRecordsList"></div>
           <p class="form-hint" style="margin-top: 14px; margin-bottom: 0; line-height: 1.5;">Recent certificates created on this device (maximum 30 stored locally). Note: History records only save Form contents (client, installation, and dates); signatures and Contractor Profile details are excluded. Tap "Load" to restore Form details without overwriting your profile.</p>
+        </div>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
         </div>
       </div>
 
@@ -403,7 +459,7 @@
 
         <!-- Permanent Explanatory Card at Bottom of Profile -->
         <div class="settings-info-card">
-          <div class="settings-info-title">QLD CoC Generator v1.0.2</div>
+          <div class="settings-info-title">KET CoC Generator v1.0.3</div>
           <ol class="settings-info-list">
             <li><strong>Compliance Disclaimer</strong>: This tool is an on-site PDF generation formatter and does not verify regulatory compliance. All entered information, testing results, and statutory compliance remain solely the responsibility of the qualified person.</li>
             <li><strong>100% Free &amp; Watermark-Free</strong>: Free to use with no account registration or subscription required. Generated certificates contain no watermarks.</li>
@@ -419,6 +475,9 @@
           </ol>
         </div>
 
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
       </div>
 
     </div>
@@ -446,7 +505,7 @@
   <div id="welcomeModal" class="welcome-modal-overlay" style="display:none;">
     <div class="welcome-modal-card">
       <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
-        Welcome to QLD CoC Generator
+        Welcome to KET CoC Generator
       </div>
       <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
         On-site electrical testing &amp; compliance certificate generator for Queensland licensed electrical contractors.
@@ -497,8 +556,8 @@
   <!-- Script Libraries -->
   <script src="js/lib/pdf-lib.min.js"></script>
   <script src="js/lib/pdf.min.js"></script>
-  <script src="js/suburbs.js?v=1.0.2"></script>
-  <script src="js/pdf-generator.js?v=1.0.2"></script>
-  <script src="js/app.js?v=1.0.2"></script>
+  <script src="js/suburbs.js?v=1.0.3"></script>
+  <script src="js/pdf-generator.js?v=1.0.3"></script>
+  <script src="js/app.js?v=1.0.3"></script>
 </body>
 </html>

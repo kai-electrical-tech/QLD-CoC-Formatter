@@ -656,6 +656,55 @@
       // 300 DPI scale: 300 / 72 = 4.16667
       const scale = 4.16667;
       const bakedDoc = await PDFDocument.create();
+      const bakedFont = await bakedDoc.embedFont(StandardFonts.Helvetica);
+
+      // Determine certificate type & dynamic filename
+      const certTypeName = data.certType === 'equipment'
+        ? 'Certificate of Testing and Safety'
+        : 'Certificate of Testing and Compliance';
+
+      const dateStr = `${tYear}${tMonth}${tDay}`;
+      const cleanStreet = (street || 'Job')
+        .trim()
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '');
+
+      const filename = `CoC_${dateStr}_${cleanStreet}.pdf`;
+
+      // Set ISO 32000-1 Document Metadata
+      const authorParts = [contractorName, contractorLic ? `(Lic: ${contractorLic})` : ''].filter(Boolean);
+      if (authorParts.length > 0) {
+        bakedDoc.setAuthor(authorParts.join(' '));
+      }
+      bakedDoc.setTitle(filename);
+
+      const toolAttribution = 'KET CoC Generator (https://tools.kaielectrical.com.au)';
+      bakedDoc.setCreator(toolAttribution);
+      bakedDoc.setProducer(toolAttribution);
+      bakedDoc.setSubject(certTypeName);
+
+      // Prepare Searchable Text Layer for full-text indexing (Spotlight / Windows Search / Acrobat Ctrl+F)
+      const customerFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ');
+      const installAddress = [street, suburb, postcode].filter(Boolean).join(' ');
+      const testDateFormatted = `${tDay}/${tMonth}/${tYear}`;
+      const noticeDateFormatted = `${nDay}/${nMonth}/${nYear}`;
+
+      const searchableLines = [
+        certTypeName,
+        customerFullName ? `Customer: ${customerFullName}` : '',
+        data.fullAddress ? `Customer Address: ${data.fullAddress}` : '',
+        installAddress ? `Installation Address: ${installAddress}` : '',
+        refStr ? `Job Ref: ${refStr}` : '',
+        descText ? `Work Description: ${descText}` : '',
+        `Date of Testing: ${testDateFormatted}`,
+        `Date of Notice: ${noticeDateFormatted}`,
+        contractorName ? `Contractor: ${contractorName}` : '',
+        contractorLic ? `Contractor Licence: ${contractorLic}` : '',
+        contractorPhone ? `Contractor Phone: ${contractorPhone}` : '',
+        testerDisplayStr ? `Tester: ${testerDisplayStr}` : '',
+        `Device ID: ${deviceToken}`
+      ].filter(Boolean);
 
       for (let pNum = 1; pNum <= totalRenderedPages; pNum++) {
         const page = await renderedPdf.getPage(pNum);
@@ -681,6 +730,52 @@
           height: 841.89
         });
 
+        // Invisible Searchable Text Overlay (opacity: 0)
+        if (pNum === 1) {
+          let sY = 820;
+          for (const item of searchableLines) {
+            const wrapped = wrapText(item, bakedFont, 7, 520);
+            for (const line of wrapped) {
+              if (sY > 20) {
+                finalPage.drawText(safeWinAnsi(line), {
+                  x: 36,
+                  y: sY,
+                  size: 7,
+                  font: bakedFont,
+                  color: rgb(0, 0, 0),
+                  opacity: 0
+                });
+                sY -= 8;
+              }
+            }
+          }
+        } else if (pNum > 1 && annexurePagesData[pNum - 2]) {
+          let sY = 820;
+          const aData = annexurePagesData[pNum - 2];
+          finalPage.drawText(safeWinAnsi(`${certTypeName} - Annexure A (Page ${pNum} of ${totalRenderedPages})`), {
+            x: 36,
+            y: sY,
+            size: 7,
+            font: bakedFont,
+            color: rgb(0, 0, 0),
+            opacity: 0
+          });
+          sY -= 10;
+          for (const aLine of aData.lines) {
+            if (sY > 20) {
+              finalPage.drawText(safeWinAnsi(aLine), {
+                x: 36,
+                y: sY,
+                size: 7,
+                font: bakedFont,
+                color: rgb(0, 0, 0),
+                opacity: 0
+              });
+              sY -= 8;
+            }
+          }
+        }
+
         // Explicitly release huge 300 DPI canvas bitmap to prevent WebKit memory pressure
         canvas.width = 0;
         canvas.height = 0;
@@ -691,15 +786,6 @@
       // ----------------------------------------------------
       const finalPdfBytes = await bakedDoc.save();
       const finalBlob = new Blob([finalPdfBytes], { type: 'application/pdf' });
-
-      const dateStr = `${tYear}${tMonth}${tDay}`;
-      const cleanStreet = (street || 'Job')
-        .trim()
-        .replace(/[^a-zA-Z0-9]/g, '_')
-        .replace(/_+/g, '_')
-        .replace(/^_|_$/g, '');
-
-      const filename = `CoC_${dateStr}_${cleanStreet}.pdf`;
 
       return {
         blob: finalBlob,
