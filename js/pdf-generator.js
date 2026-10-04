@@ -258,24 +258,24 @@
       }
 
       // ----------------------------------------------------
-      // 5. Customer Details
+      // 5. Customer Details (Flush left with underlying labels)
       // ----------------------------------------------------
       const customerTitle = (data.customerTitle || '').trim();
       const customerGivenName = (data.customerGivenName || '').trim();
       const customerSurname = (data.customerSurname || '').trim();
 
       if (customerTitle) {
-        firstPage.drawText(customerTitle, { x: 118, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerTitle, { x: 121.80, y: 563, size: 9.5, font: helvetica, color: blackColor });
       }
       if (customerGivenName) {
-        firstPage.drawText(customerGivenName, { x: 169, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerGivenName, { x: 172.68, y: 563, size: 9.5, font: helvetica, color: blackColor });
       }
       if (customerSurname) {
-        firstPage.drawText(customerSurname, { x: 328, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerSurname, { x: 330.49, y: 563, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
-      // 6. Address Details
+      // 6. Address Details (Flush left with underlying labels)
       // ----------------------------------------------------
       let street = (data.customerStreet || '').trim();
       let suburb = (data.customerSuburb || '').trim();
@@ -289,55 +289,59 @@
       }
 
       if (street) {
-        firstPage.drawText(street, { x: 118, y: 531, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(street, { x: 121.80, y: 530.5, size: 9.5, font: helvetica, color: blackColor });
       }
       if (suburb) {
-        firstPage.drawText(suburb, { x: 118, y: 503, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(suburb, { x: 121.80, y: 503, size: 9.5, font: helvetica, color: blackColor });
       }
       if (postcode) {
-        firstPage.drawText(postcode, { x: 425, y: 503, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(postcode, { x: 409.44, y: 503, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
-      // 7. Dates
+      // 7. Dates (Baselines aligned with labels; Month centered between slashes)
       // ----------------------------------------------------
       const testDate = data.testDate ? new Date(data.testDate + 'T00:00:00') : new Date();
       const tDay = String(testDate.getDate()).padStart(2, '0');
       const tMonth = String(testDate.getMonth() + 1).padStart(2, '0');
       const tYear = String(testDate.getFullYear());
 
-      firstPage.drawText(tDay, { x: 136, y: 251, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(tMonth, { x: 168, y: 251, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(tYear, { x: 200, y: 251, size: 9.5, font: helvetica, color: blackColor });
+      firstPage.drawText(tDay, { x: 138.0, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
+      const tMW = helvetica.widthOfTextAtSize(tMonth, 9.5);
+      const tMX = 159.08 + (190.93 - 159.08 - tMW) / 2;
+      firstPage.drawText(tMonth, { x: tMX, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
+      firstPage.drawText(tYear, { x: 200.0, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
 
       const noticeDate = data.noticeDate ? new Date(data.noticeDate + 'T00:00:00') : testDate;
       const nDay = String(noticeDate.getDate()).padStart(2, '0');
       const nMonth = String(noticeDate.getMonth() + 1).padStart(2, '0');
       const nYear = String(noticeDate.getFullYear());
 
-      firstPage.drawText(nDay, { x: 168, y: 80, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(nMonth, { x: 200, y: 80, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(nYear, { x: 240, y: 80, size: 9.5, font: helvetica, color: blackColor });
+      firstPage.drawText(nDay, { x: 175.0, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
+      const nMW = helvetica.widthOfTextAtSize(nMonth, 9.5);
+      const nMX = 192.21 + (233.40 - 192.21 - nMW) / 2;
+      firstPage.drawText(nMonth, { x: nMX, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
+      firstPage.drawText(nYear, { x: 242.0, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
 
       // ----------------------------------------------------
-      // 8. Contractor Details
+      // 8. Contractor Details (Baselines aligned with labels)
       // ----------------------------------------------------
       const contractorLic = (data.contractorLic || '').trim();
       const contractorName = (data.contractorName || '').trim();
       const contractorPhone = (data.contractorPhone || '').trim();
 
       if (contractorLic) {
-        firstPage.drawText(contractorLic, { x: 462, y: 251, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(contractorLic, { x: 462, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
       }
       if (contractorName) {
-        firstPage.drawText(contractorName, { x: 222, y: 228, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(contractorName, { x: 222, y: 229.56, size: 9.5, font: helvetica, color: blackColor });
       }
       if (contractorPhone) {
-        firstPage.drawText(contractorPhone, { x: 256, y: 205, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(contractorPhone, { x: 256, y: 206.64, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
-      // 9. Tester Name & Licence (Unified across Page 1 & Page 2)
+      // 9. Tester Name & Licence (Right-aligned to 530.0 at baseline 80.88)
       // ----------------------------------------------------
       const tName = (data.testerName || '').trim();
       const tLic = (data.testerLicence || '').trim();
@@ -354,7 +358,8 @@
       }
 
       if (testerDisplayStr) {
-        firstPage.drawText(testerDisplayStr, { x: 385, y: 80, size: 9.5, font: helvetica, color: blackColor });
+        const tWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 9.5);
+        firstPage.drawText(testerDisplayStr, { x: 530.0 - tWidth, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
@@ -476,28 +481,28 @@
         // 12.2 Top Header Branding matching Page 1
         drawHeaderBranding(aPage, true);
 
-        // 12.3 Dividing horizontal rule matching Page 1 (y: 698.22, thickness 0.48)
+        // 12.3 Dividing horizontal rule matching Page 1 Title Block bounds (59.52 to 534.00, thickness 0.48)
         aPage.drawLine({
-          start: { x: 48.7, y: 698.22 },
-          end: { x: 550.0, y: 698.22 },
+          start: { x: 59.52, y: 698.22 },
+          end: { x: 534.00, y: 698.22 },
           thickness: 0.48,
           color: rgb(0.2, 0.2, 0.2)
         });
 
-        // 12.4 Annexure A Title Banner
+        // 12.4 Annexure A Title Banner (Aligned with CERTIFICATE OF: at x: 59.52)
         aPage.drawText('ANNEXURE A — ELECTRICAL INSTALLATION / EQUIPMENT TESTED', {
-          x: 48.7,
+          x: 59.52,
           y: 678,
           size: 10.5,
           font: helveticaBold,
           color: navyColor
         });
 
-        // 12.5 Job Reference Information Box (Customer & Address only)
+        // 12.5 Job Reference Information Box (Customer & Address only, width: 474.48)
         aPage.drawRectangle({
-          x: 48.7,
+          x: 59.52,
           y: 626,
-          width: 501.3,
+          width: 474.48,
           height: 42,
           color: rgb(0.97, 0.98, 0.99),
           borderColor: lightBorderColor,
@@ -507,14 +512,14 @@
         const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
         const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
 
-        aPage.drawText(`Customer: ${custFullName}`, { x: 58, y: 650, size: 8.5, font: helveticaBold, color: blackColor });
-        aPage.drawText(`Site Address: ${fullAddrStr}`, { x: 58, y: 636, size: 8.5, font: helvetica, color: blackColor });
+        aPage.drawText(`Customer: ${custFullName}`, { x: 68.0, y: 650, size: 8.5, font: helveticaBold, color: blackColor });
+        aPage.drawText(`Site Address: ${fullAddrStr}`, { x: 68.0, y: 636, size: 8.5, font: helvetica, color: blackColor });
 
-        // 12.6 Draw Annexure continuation lines for this page
+        // 12.6 Draw Annexure continuation lines for this page (x: 59.52)
         let aY = 608;
         for (const aLine of pageInfo.lines) {
           aPage.drawText(aLine, {
-            x: 58,
+            x: 59.52,
             y: aY,
             size: 9.0,
             font: helvetica,
@@ -526,18 +531,18 @@
         // 12.7 Intermediate continuation notice vs Final Sign-off Box
         if (!pageInfo.isFinal) {
           aPage.drawText(`--- Continued on Page ${pageNum + 1} ---`, {
-            x: 58,
+            x: 59.52,
             y: 56,
             size: 8.5,
             font: helveticaOblique,
             color: navyColor
           });
         } else {
-          // Bottom Sign-off Box matching Page 1
+          // Bottom Sign-off Box matching Page 1 (x: 59.52, width: 474.48)
           aPage.drawRectangle({
-            x: 48.7,
+            x: 59.52,
             y: 46,
-            width: 501.3,
+            width: 474.48,
             height: 78,
             color: rgb(0.98, 0.98, 0.99),
             borderColor: lightBorderColor,
@@ -545,18 +550,19 @@
           });
 
           // Left Side: Contractor Lic, Date of test, Date notice given
-          aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 58, y: 106, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 58, y: 92, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 58, y: 78, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Certified safe and compliant under Electrical Safety Regulation 2026 (${data.certType === 'equipment' ? 's208' : 's229'}).`, { x: 58, y: 60, size: 7.5, font: helveticaOblique, color: grayColor });
+          aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 68.0, y: 106, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 68.0, y: 92, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 68.0, y: 78, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Certified safe and compliant under Electrical Safety Regulation 2026 (${data.certType === 'equipment' ? 's208' : 's229'}).`, { x: 68.0, y: 60, size: 7.5, font: helveticaOblique, color: grayColor });
 
-          // Right Side: Tester and Signature (matching Page 1 formatting)
+          // Right Side: Tester and Signature (matching Page 1 formatting, right-aligned to 524.0)
           if (testerDisplayStr) {
-            aPage.drawText(testerDisplayStr, { x: 360, y: 106, size: 8.5, font: helvetica, color: blackColor });
+            const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
+            aPage.drawText(testerDisplayStr, { x: 524.0 - tAWidth, y: 106, size: 8.5, font: helvetica, color: blackColor });
           }
           if (sigImage) {
             aPage.drawImage(sigImage, {
-              x: 385,
+              x: 409,
               y: 58,
               width: 115,
               height: 32
@@ -610,7 +616,7 @@
 
       for (const aPage of createdAnnexurePages) {
         aPage.drawText(footerLeftText, {
-          x: 48.7,
+          x: 59.52,
           y: 13,
           size: 6.0,
           font: helvetica,
@@ -632,7 +638,7 @@
         });
         for (const aPage of createdAnnexurePages) {
           aPage.drawText(websiteText, {
-            x: 550.0 - websiteWidth,
+            x: 534.00 - websiteWidth,
             y: 13,
             size: 6.0,
             font: helvetica,

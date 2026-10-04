@@ -1,5 +1,5 @@
 // Service Worker for KET CoC Generator (tools.kaielectrical.com.au)
-const CACHE_NAME = 'qld-coc-cache-v1.0.4';
+const CACHE_NAME = 'qld-coc-cache-v1.0.5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
