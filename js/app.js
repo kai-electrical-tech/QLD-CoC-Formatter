@@ -6,7 +6,7 @@
   const MAX_PRESETS = 30;
   const MAX_DESC_CHARS = 50000;
   const MAX_DESC_LINES = 10000;
-  const CURRENT_APP_VERSION = '1.2.0';
+  const CURRENT_APP_VERSION = '1.2.1';
   const PRESET_SCHEMA_VERSION = 'v3_standards';
 
   // Standard Queensland Compliance Presets (Single-string titles, AS/NZS 3000 cited, public-safe)
@@ -1231,16 +1231,38 @@
   };
 
   window.appendStandardPresets = function() {
-    const existingIds = new Set(currentPresets.map(p => p.id));
-    const toAppend = STANDARD_PRESETS.filter(p => !existingIds.has(p.id));
-    currentPresets = [...currentPresets, ...JSON.parse(JSON.stringify(toAppend))].slice(0, MAX_PRESETS);
-    localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+    const existingTexts = new Set(currentPresets.map(p => p.text.trim()));
+    const existingTitles = new Set(currentPresets.map(p => p.title.trim().toLowerCase()));
+    const toAppend = [];
+
+    STANDARD_PRESETS.forEach(std => {
+      if (existingTexts.has(std.text.trim())) return;
+      let title = std.title;
+      if (existingTitles.has(title.toLowerCase())) {
+        const candidate = `${title} 2`;
+        title = candidate.length <= 15 ? candidate : `${title.substring(0, 13)} 2`;
+      }
+      toAppend.push({
+        id: `std_${std.id}_${Date.now()}_${Math.random().toString(16).substring(2, 6)}`,
+        title: title,
+        text: std.text
+      });
+      existingTitles.add(title.toLowerCase());
+    });
+
+    if (toAppend.length === 0) {
+      showSimpleToast('All standard presets already present in your list');
+    } else {
+      currentPresets = [...currentPresets, ...toAppend].slice(0, MAX_PRESETS);
+      localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+      showSimpleToast(`Appended ${toAppend.length} standard preset(s)`);
+    }
+
     localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
     localStorage.removeItem('qld_coc_preset_upgrade_pending');
     pendingPresetUpgrade = false;
     renderPresetChips();
     renderPresetsManager();
-    showSimpleToast('Standard presets appended');
   };
 
   window.replaceWithStandardPresets = function() {
