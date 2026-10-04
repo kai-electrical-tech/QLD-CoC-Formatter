@@ -198,7 +198,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="css/style.css?v=1.1.1">
+  <link rel="stylesheet" href="css/style.css?v=1.2.0">
 </head>
 <body>
 
@@ -348,17 +348,16 @@
           <div class="card">
             <div class="card-title">
               <span><span>⚡</span> Electrical Installation / Equipment <span style="white-space:nowrap;">Tested <span class="req">*</span></span></span>
-              <button type="button" class="btn-danger-sm" onclick="clearWorkDescription()">Clear</button>
+              <div class="card-title-actions">
+                <button type="button" class="btn-presets-toggle" id="btnPresetToggle" onclick="togglePresetsCollapse()" title="Toggle Presets" aria-label="Toggle Presets">
+                  <span id="presetToggleArrow" class="preset-toggle-arrow">▲</span>
+                  <span id="presetToggleText" class="preset-toggle-text" style="display:none;">Preset</span>
+                </button>
+                <button type="button" class="btn-danger-sm" onclick="clearWorkDescription()">Clear</button>
+              </div>
             </div>
 
-            <!-- Quick fill presets with collapsible toggle -->
-            <div class="preset-section-collapsible">
-              <button type="button" class="btn-presets-toggle" id="btnPresetToggle" onclick="togglePresetsCollapse()">
-                <span id="presetToggleText">Presets (5)</span>
-                <span id="presetToggleArrow" class="preset-toggle-arrow">▴</span>
-              </button>
-              <div id="presetChipsContainer" class="preset-bar-collapsible"></div>
-            </div>
+            <div id="presetChipsContainer" class="preset-bar-collapsible"></div>
 
             <div class="form-group">
               <textarea id="workDescription" class="form-textarea" maxlength="50000" placeholder="Detail the electrical installation or equipment tested (please include site address for electrical installation work if different from above), standards verified (AS/NZS 3000), test results, and any relevant notes..." required></textarea>
@@ -541,7 +540,12 @@
               </button>
             </div>
           </div>
+          <div id="presetUpgradeBannerContainer"></div>
           <div id="presetsManagerList"></div>
+          <div class="preset-disclaimer-box">
+            <span class="preset-disclaimer-icon">ℹ️</span>
+            <span>Templates are reference examples only. Technical testing accuracy, verification, and statutory compliance remain solely the responsibility of the qualified electrical contractor (ESR 2026 / AS/NZS 3000).</span>
+          </div>
         </div>
 
         <!-- Dedicated Backup & Restore Section -->
@@ -591,7 +595,7 @@
         <!-- Permanent Explanatory Card at Bottom of Profile -->
         <div class="settings-info-card">
           <div class="settings-info-title" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>KET CoC Generator v1.1.1</span>
+            <span>KET CoC Generator v1.2.0</span>
             <button type="button" class="btn-text-link" onclick="openUpdateModal()" style="font-size:12px; font-weight:500; color:var(--color-primary); background:none; border:none; cursor:pointer; padding:0;">What's New</button>
           </div>
           <ol class="settings-info-list">
@@ -687,35 +691,35 @@
     </div>
   </div>
 
-  <!-- Returning User Update Modal (Changelog v1.1.0) -->
+  <!-- Returning User Update Modal (Changelog v1.2.0) -->
   <div id="updateModal" class="welcome-modal-overlay" style="display:none;">
     <div class="welcome-modal-card">
       <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
-        What's New in v1.1.0
+        What's New in v1.2.0
       </div>
       <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
-        Key improvements and features since v1.0.1:
+        Key improvements and features in v1.2.0:
       </p>
       <ul class="welcome-feature-list">
         <li class="welcome-feature-item">
-          <span class="welcome-feature-icon">📄</span>
+          <span class="welcome-feature-icon">⚡</span>
           <div>
-            <strong>Template Optimization</strong><br>
-            Refined certificate formatting and enhanced multi-page layout.
+            <strong>Queensland Compliance Presets</strong><br>
+            Standard statutory testing templates for Smoke Alarms, Battery (BESS), Solar PV, EV Charger, and Switchboards with explicit AS/NZS 3000 citation.
           </div>
         </li>
         <li class="welcome-feature-item">
-          <span class="welcome-feature-icon">🔍</span>
+          <span class="welcome-feature-icon">🔘</span>
           <div>
-            <strong>Searchable Text Layer</strong><br>
-            Integrated an in-place text layer over baked certificates, allowing natural text selection, copying, and Ctrl+F searching.
+            <strong>Quick-Access Preset Toggle</strong><br>
+            Smart fixed-width toggle beside Clear with zero layout shift, plus drag-and-drop preset ordering and custom template management.
           </div>
         </li>
         <li class="welcome-feature-item">
-          <span class="welcome-feature-icon">🛠️</span>
+          <span class="welcome-feature-icon">🛡️</span>
           <div>
-            <strong>Bug Fixes &amp; Stability</strong><br>
-            Fixed Queensland ESO certification text alignment, refined text wrapping safeguards, and improved performance.
+            <strong>Engine &amp; Quality Refinements</strong><br>
+            Enhanced multi-page PDF continuation layout, in-place searchable text alignment precision, and robust offline stability.
           </div>
         </li>
       </ul>
@@ -728,8 +732,8 @@
   <!-- Script Libraries -->
   <script src="js/lib/pdf-lib.min.js"></script>
   <script src="js/lib/pdf.min.js"></script>
-  <script src="js/suburbs.js?v=1.1.1"></script>
-  <script src="js/pdf-generator.js?v=1.1.1"></script>
-  <script src="js/app.js?v=1.1.1"></script>
+  <script src="js/suburbs.js?v=1.2.0"></script>
+  <script src="js/pdf-generator.js?v=1.2.0"></script>
+  <script src="js/app.js?v=1.2.0"></script>
 </body>
 </html>

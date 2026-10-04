@@ -6,41 +6,44 @@
   const MAX_PRESETS = 30;
   const MAX_DESC_CHARS = 50000;
   const MAX_DESC_LINES = 10000;
-  const CURRENT_APP_VERSION = '1.1.0';
+  const CURRENT_APP_VERSION = '1.2.0';
+  const PRESET_SCHEMA_VERSION = 'v3_standards';
 
-  // Default General Work Presets (Single-string titles, purely technical, public-safe)
-  const DEFAULT_PRESETS = [
-    {
-      id: 'battery',
-      title: 'Battery',
-      text: 'Supply and install energy storage battery system.'
-    },
+  // Standard Queensland Compliance Presets (Single-string titles, AS/NZS 3000 cited, public-safe)
+  const STANDARD_PRESETS = [
     {
       id: 'smoke_alarm',
       title: 'Smoke Alarms',
-      text: 'Supply & install smoke alarms, tested & verified.'
+      text: 'Supply, install, and test interconnected photoelectric smoke alarms in accordance with AS 3786:2014, AS/NZS 3000:2018, Fire and Emergency Services Act 1990 (s104RBA), and Building Regulation 2021:\n- Alarms installed: [Quantity & Types, e.g. 4x Alarms (Hardwired 240V / 10-yr Lithium)]\n- Locations: [Locations, e.g. Bedrooms x3, Hallway x1, Living x1]\n- All alarms are photoelectric, interconnected (RF wireless / hardwired), and in prescribed locations\n- Operational test, interconnection trigger, and tactile hush button verified\n- Earth continuity, polarity, and insulation resistance tested and compliant'
     },
     {
-      id: 'switchboard',
-      title: 'Switchboard',
-      text: 'Switchboard upgrade and circuit protection installed and tested.'
-    },
-    {
-      id: 'ev_charger',
-      title: 'EV Charger',
-      text: 'Supply & install dedicated EV Charger circuit.'
+      id: 'battery',
+      title: 'Battery',
+      text: 'Install battery energy storage system (BESS) in accordance with AS/NZS 5139:2019, AS/NZS 4777.1, and AS/NZS 3000:2018:\n- Inverter: [Make / Model, e.g. Hybrid Inverter 5kW / 10kW]\n- Battery: [Make / Model, e.g. Lithium-ion Battery 10kWh / 15kWh]\n- Dedicated sub-board / PVDB with EPS main switch & manual changeover switch\n- Essential backup sub-circuits relocated downstream of changeover switch\n- Earth continuity (<0.5 Ohm), insulation resistance (>1.0 MOhm), polarity, EFLI, and RCD operation verified\n- Commissioned and functionally tested'
     },
     {
       id: 'solar',
       title: 'Solar PV',
-      text: 'Supply & install rooftop Solar PV system.'
+      text: 'Supply and install grid-connected rooftop photovoltaic (PV) solar system in accordance with AS/NZS 5033:2021, AS/NZS 4777.1, and AS/NZS 3000:2018:\n- Inverter: [Make / Model / Capacity, e.g. Inverter 5kW / 8.2kW]\n- PV Array: [Quantity] x [Wattage]W panels (Total DC Capacity: [kW]kW)\n- AC/DC isolation switches and circuit protection installed and labelled\n- Anti-islanding protection and grid disconnection verified\n- Array insulation resistance, earth continuity, and polarity tested and compliant\n- Commissioned and connected to distribution network'
+    },
+    {
+      id: 'ev_charger',
+      title: 'EV Charger',
+      text: 'Supply and install dedicated electric vehicle (EV) charging station circuit in accordance with AS/NZS 3000:2018 (Section 7.9) and Queensland Electricity Connection Manual (QECM):\n- Charger Unit: [Make / Model, e.g. 7.4kW 1-Phase / 22kW 3-Phase EVSE]\n- Dedicated sub-circuit wired from main switchboard with compliant cable sizing\n- Dedicated Type A/B RCBO (30mA residual current protection with DC fault detection)\n- Earth continuity, insulation resistance (>1.0 MOhm), EFLI, and RCD trip time tested\n- Test charge verified and commissioned'
+    },
+    {
+      id: 'switchboard',
+      title: 'Switchboard',
+      text: 'Switchboard upgrade and alteration carried out in accordance with AS/NZS 3000:2018 and Queensland Electricity Connection Manual (QECM):\n- Existing fuse board replaced with compliant enclosure and new main switch\n- Final sub-circuits protected by individual Type A RCBOs (30mA)\n- Main earthing conductor, MEN connection, and earth electrode tested (<0.5 Ohm)\n- Surge Protection Device (SPD) installed\n- Consumer mains / sub-mains tested: insulation resistance (>1.0 MOhm) and polarity verified\n- Final sub-circuits (FSC) tested: earth continuity, insulation resistance (>1.0 MOhm), polarity, EFLI, and RCD trip times verified\n- Labelled and circuit schedules updated'
     }
   ];
+  const DEFAULT_PRESETS = STANDARD_PRESETS;
 
   // State
   let currentPresets = [];
   let expandedPresetIds = new Set();
   let isPresetsExpanded = true;
+  let pendingPresetUpgrade = false;
   let currentActiveTab = 'form';
   const tabScrollPositions = { form: 0, history: 0, profile: 0 };
   let signaturePadCanvas = null;
@@ -552,58 +555,104 @@
   // 5. Work Description Presets & Custom Presets Editor
   function initPresets() {
     try {
-      const PRESETS_VER = 'v2_concise';
       const savedVer = localStorage.getItem('qld_coc_presets_ver');
       const saved = localStorage.getItem('qld_coc_presets');
+      const isPending = localStorage.getItem('qld_coc_preset_upgrade_pending') === 'true';
 
-      if (saved && savedVer === PRESETS_VER) {
+      if (saved && savedVer === PRESET_SCHEMA_VERSION && !isPending) {
         currentPresets = JSON.parse(saved);
         currentPresets = currentPresets.map(p => ({
           id: p.id || ('preset_' + Math.random().toString(16).substring(2, 8)),
           title: cleanEmojiFromTitle(p.title) || 'Preset',
           text: p.text || ''
         })).slice(0, MAX_PRESETS);
-      } else {
-        // Upgrade or first load: preserve any user-created custom presets, use new concise defaults
-        if (saved) {
-          try {
-            const oldPresets = JSON.parse(saved);
-            const customOnes = oldPresets.filter(p => p.id && p.id.startsWith('custom_'));
-            currentPresets = [...JSON.parse(JSON.stringify(DEFAULT_PRESETS)), ...customOnes].slice(0, MAX_PRESETS);
-          } catch (_) {
-            currentPresets = JSON.parse(JSON.stringify(DEFAULT_PRESETS));
-          }
-        } else {
-          currentPresets = JSON.parse(JSON.stringify(DEFAULT_PRESETS));
-        }
+      } else if (!saved) {
+        // Upgrade or first load: brand new user
+        currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
         localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
-        localStorage.setItem('qld_coc_presets_ver', PRESETS_VER);
+        localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+      } else {
+        // Returning user with existing presets
+        let parsed = [];
+        try {
+          parsed = JSON.parse(saved);
+        } catch (_) {
+          parsed = [];
+        }
+
+        if (isPending) {
+          pendingPresetUpgrade = true;
+          currentPresets = parsed.slice(0, MAX_PRESETS);
+        } else if (parsed.length > 25) {
+          // Power users with > 25 presets: silently retain all presets untouched
+          currentPresets = parsed.slice(0, MAX_PRESETS);
+          localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+        } else {
+          // Check if user has unmodified legacy default presets
+          const legacyDefaultTexts = new Set([
+            'Supply and install energy storage battery system.',
+            'Supply & install smoke alarms, tested & verified.',
+            'Switchboard upgrade and circuit protection installed and tested.',
+            'Supply & install dedicated EV Charger circuit.',
+            'Supply & install rooftop Solar PV system.'
+          ]);
+          const legacyDefaultIds = new Set(['battery', 'smoke_alarm', 'switchboard', 'ev_charger', 'solar']);
+
+          const isUnmodifiedLegacy = parsed.length === 5 &&
+            parsed.every(p => legacyDefaultIds.has(p.id) && legacyDefaultTexts.has((p.text || '').trim()));
+
+          if (isUnmodifiedLegacy) {
+            // Auto-upgrade silently to standard presets
+            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+            localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+            localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+            showSimpleToast('Presets updated to Queensland standards');
+          } else {
+            // User has customized presets (<= 25 items): flag for upgrade review
+            pendingPresetUpgrade = true;
+            localStorage.setItem('qld_coc_preset_upgrade_pending', 'true');
+            currentPresets = parsed.slice(0, MAX_PRESETS);
+          }
+        }
       }
     } catch (e) {
-      currentPresets = JSON.parse(JSON.stringify(DEFAULT_PRESETS));
+      currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
     }
     renderPresetChips();
     renderPresetsManager();
+    updatePresetsToggleUI();
+  }
 
-    // Check user preference for presets collapse state (default: expanded)
+  function updatePresetsToggleUI() {
     const userCollapsed = localStorage.getItem('qld_coc_presets_collapsed') === 'true';
     isPresetsExpanded = !userCollapsed;
     const chipsContainer = document.getElementById('presetChipsContainer');
     const toggleArrow = document.getElementById('presetToggleArrow');
+    const toggleText = document.getElementById('presetToggleText');
+    const toggleBtn = document.getElementById('btnPresetToggle');
+
     if (chipsContainer) {
       chipsContainer.style.display = isPresetsExpanded ? 'flex' : 'none';
     }
-    if (toggleArrow) {
-      toggleArrow.textContent = isPresetsExpanded ? '▴' : '▾';
+    if (toggleArrow && toggleText) {
+      if (isPresetsExpanded) {
+        toggleArrow.style.display = 'inline-block';
+        toggleArrow.textContent = '▲';
+        toggleText.style.display = 'none';
+      } else {
+        toggleArrow.style.display = 'none';
+        toggleText.style.display = 'inline-block';
+        toggleText.textContent = 'Preset';
+      }
+    }
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-expanded', isPresetsExpanded ? 'true' : 'false');
+      toggleBtn.setAttribute('title', isPresetsExpanded ? 'Collapse Presets' : 'Expand Presets');
     }
   }
 
   function renderPresetChips() {
     const container = document.getElementById('presetChipsContainer');
-    const toggleText = document.getElementById('presetToggleText');
-    if (toggleText) {
-      toggleText.textContent = `Presets (${currentPresets.length})`;
-    }
     if (!container) return;
     container.innerHTML = '';
 
@@ -617,16 +666,15 @@
       });
       container.appendChild(chip);
     });
+    updatePresetsToggleUI();
   }
 
   window.togglePresetsCollapse = function() {
     const container = document.getElementById('presetChipsContainer');
-    const arrow = document.getElementById('presetToggleArrow');
     if (!container) return;
     isPresetsExpanded = !isPresetsExpanded;
-    container.style.display = isPresetsExpanded ? 'flex' : 'none';
-    if (arrow) arrow.textContent = isPresetsExpanded ? '▴' : '▾';
     localStorage.setItem('qld_coc_presets_collapsed', isPresetsExpanded ? 'false' : 'true');
+    updatePresetsToggleUI();
   };
 
   window.clearWorkPerformedFor = function() {
@@ -788,7 +836,6 @@
         <div class="preset-accordion-header">
           <div class="preset-accordion-header-left">
             <span class="preset-drag-handle">⋮⋮</span>
-            <span class="preset-accordion-num" id="dragPlaceholderNum">${idx + 1}.</span>
             <span class="preset-accordion-title">${escapeHtml(p.title || 'Untitled')}</span>
           </div>
           <div class="preset-accordion-header-right">
@@ -994,6 +1041,30 @@
     const container = document.getElementById('presetsManagerList');
     const badge = document.getElementById('presetsCountBadge') || document.getElementById('presetCountBadge');
     const btnAdd = document.getElementById('btnAddPreset');
+    const bannerContainer = document.getElementById('presetUpgradeBannerContainer');
+
+    if (bannerContainer) {
+      if (pendingPresetUpgrade) {
+        bannerContainer.innerHTML = `
+          <div class="preset-upgrade-banner">
+            <div class="preset-upgrade-banner-header">
+              <span class="preset-upgrade-badge">New in v1.2.0</span>
+              <span class="preset-upgrade-title">Queensland Standard Presets Available</span>
+            </div>
+            <p class="preset-upgrade-desc">
+              We've introduced 5 comprehensive, AS/NZS 3000-compliant templates (Smoke Alarms, Battery, Solar PV, EV Charger, Switchboard). Choose how to update your presets:
+            </p>
+            <div class="preset-upgrade-actions">
+              <button type="button" class="btn-brand-sm" onclick="window.appendStandardPresets()">Append to Mine</button>
+              <button type="button" class="btn-danger-sm" onclick="window.replaceWithStandardPresets()">Replace All</button>
+              <button type="button" class="btn-ghost-sm" onclick="window.dismissPresetUpgrade()">Keep Mine</button>
+            </div>
+          </div>
+        `;
+      } else {
+        bannerContainer.innerHTML = '';
+      }
+    }
 
     if (badge) {
       badge.textContent = `${currentPresets.length}/${MAX_PRESETS}`;
@@ -1018,7 +1089,6 @@
         <div class="preset-accordion-header" title="${isExpanded ? 'Use toggle button to collapse' : 'Use toggle button to expand, hold & drag to reorder'}">
           ${isExpanded ? `
             <div class="preset-expanded-header-left">
-              <span class="preset-accordion-num">${idx + 1}.</span>
               <input type="text" class="form-input preset-expanded-title-input" maxlength="15" value="${escapeHtml(p.title)}" placeholder="Title (max 15)" onclick="event.stopPropagation()">
             </div>
             <div class="preset-expanded-header-right">
@@ -1032,7 +1102,6 @@
           ` : `
             <div class="preset-accordion-header-left">
               <span class="preset-drag-handle" title="Hold &amp; drag to reorder">⋮⋮</span>
-              <span class="preset-accordion-num">${idx + 1}.</span>
               <span class="preset-accordion-title">${escapeHtml(p.title || 'Untitled')}</span>
             </div>
             <div class="preset-accordion-header-right">
@@ -1161,10 +1230,58 @@
     });
   };
 
+  window.appendStandardPresets = function() {
+    const existingIds = new Set(currentPresets.map(p => p.id));
+    const toAppend = STANDARD_PRESETS.filter(p => !existingIds.has(p.id));
+    currentPresets = [...currentPresets, ...JSON.parse(JSON.stringify(toAppend))].slice(0, MAX_PRESETS);
+    localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+    localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+    localStorage.removeItem('qld_coc_preset_upgrade_pending');
+    pendingPresetUpgrade = false;
+    renderPresetChips();
+    renderPresetsManager();
+    showSimpleToast('Standard presets appended');
+  };
+
+  window.replaceWithStandardPresets = function() {
+    showUnifiedToast({
+      title: 'Replace All Presets?',
+      desc: 'Replace all work description presets with the 5 new Queensland standard presets? Custom modifications will be replaced.',
+      buttons: [
+        { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
+        {
+          text: 'Replace All',
+          isPrimary: true,
+          isDanger: true,
+          onClick: () => {
+            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+            expandedPresetIds.clear();
+            localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+            localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+            localStorage.removeItem('qld_coc_preset_upgrade_pending');
+            pendingPresetUpgrade = false;
+            renderPresetChips();
+            renderPresetsManager();
+            hideUnifiedToast();
+            showSimpleToast('Presets replaced with Queensland standards');
+          }
+        }
+      ]
+    });
+  };
+
+  window.dismissPresetUpgrade = function() {
+    localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+    localStorage.removeItem('qld_coc_preset_upgrade_pending');
+    pendingPresetUpgrade = false;
+    renderPresetsManager();
+    showSimpleToast('Existing presets retained');
+  };
+
   window.resetDefaultPresets = function() {
     showUnifiedToast({
       title: 'Reset Presets?',
-      desc: 'Reset all work description presets to standard defaults? Any custom modifications will be replaced.',
+      desc: 'Reset all work description presets to Queensland standard defaults? Any custom modifications will be replaced.',
       buttons: [
         { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
         {
@@ -1172,13 +1289,16 @@
           isPrimary: true,
           isDanger: true,
           onClick: () => {
-            currentPresets = JSON.parse(JSON.stringify(DEFAULT_PRESETS));
+            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
             expandedPresetIds.clear();
             localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
+            localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
+            localStorage.removeItem('qld_coc_preset_upgrade_pending');
+            pendingPresetUpgrade = false;
             renderPresetChips();
             renderPresetsManager();
             hideUnifiedToast();
-            showSimpleToast('Presets reset to defaults');
+            showSimpleToast('Presets reset to Queensland standards');
           }
         }
       ]
@@ -2438,6 +2558,10 @@
     localStorage.setItem('qld_coc_last_seen_version', CURRENT_APP_VERSION);
     const modal = document.getElementById('updateModal');
     if (modal) modal.style.display = 'none';
+    if (pendingPresetUpgrade) {
+      window.switchTab('profile');
+      showSimpleToast('Review new Queensland standard presets below');
+    }
   };
 
   window.openUpdateModal = function() {

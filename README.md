@@ -1,6 +1,6 @@
-# QLD CoC Generator `v1.1.1`
+# QLD CoC Generator `v1.2.0`
 
-[![Version](https://img.shields.io/badge/version-1.1.1-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.2.0-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 
@@ -50,6 +50,11 @@
    - Web Share API (`navigator.share`) for instant AirDrop, Mail, WhatsApp, or Save to Files.
    - Full Service Worker (`sw.js`) caching for 100% offline job site usability without mobile reception.
    - Formatted for standard Australian A4 printing (1:1 scale).
+
+9. **⚡ Queensland Compliance Presets & Quick-Access Toggle**
+   - Field-tested, statutory testing and compliance description presets for **Smoke Alarms** (AS 3786:2014 & legislation), **Battery Storage** (AS/NZS 5139:2019), **Solar PV** (AS/NZS 5033:2021), **EV Chargers** (AS/NZS 3000 Section 7.9), and **Switchboard Upgrades**, with explicit AS/NZS 3000 citations across every preset.
+   - Smart fixed-width toggle (`[ Preset ]` / `[ ▲ ]`) beside the Clear button ensuring zero layout shift (0 CLS) during fast on-site data entry.
+   - Comprehensive profile presets management with drag-and-drop reordering, custom additions, and single-click reset.
 
 ---
 

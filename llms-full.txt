@@ -113,18 +113,18 @@ Stage 4: ISO 32000-1 Metadata & Delivery
 
 ## 5. Standard Trade Work Presets & Typical Scenarios
 
-The generator includes built-in one-tap presets tailored for high-volume electrical contractor workflows:
+The generator includes built-in one-tap presets tailored for high-volume electrical contractor workflows in Queensland, each citing AS/NZS 3000:2018 and applicable statutory standards:
 
-1. **Switchboard Upgrade (s229 Installation)**:
-   > *"Installed new surface-mount switchboard enclosure. Fitted 63A main switch and individual RCBO protection to all sub-circuits. Tested to AS/NZS 3000:2018. Earth continuity < 0.5 ohm, insulation resistance > 50 Mohm, RCD trip times verified within statutory limits."*
-2. **Solar PV System Installation (s229 Installation)**:
-   > *"Installed rooftop solar PV array and grid-connected inverter. AC cabling installed in heavy-duty conduit, DC isolators installed adjacent to inverter and array. Tested to AS/NZS 5033 and AS/NZS 4777.2. Polarity, open-circuit voltage, and earth continuity verified."*
-3. **EV Charger Installation (s229 Installation)**:
-   > *"Installed dedicated 32A single-phase EV charging circuit from main switchboard. Fitted Type A/B RCBO protection, heavy-duty 6mm2 copper cabling in conduit. Tested to AS/NZS 3000:2018 Appendix P. Earth fault loop impedance and RCD verification passed."*
-4. **Smoke Alarm Compliance Check (s229 Installation / s208 Equipment)**:
-   > *"Installed interconnected photoelectric smoke alarms to bedrooms and hallways in compliance with Queensland Fire and Emergency Services (QFES) mandate and AS 3786:2014. Radio-frequency interconnection and mains 240V power verified."*
-5. **Safety Switch / RCD Verification (s229 Installation)**:
-   > *"Tested all residual current devices (RCDs) for mechanical operation and trip times under 30mA test current at 0 and 180 degrees. All trip times < 30ms in compliance with AS/NZS 3000:2018 Clause 2.6."*
+1. **Smoke Alarms (s229 Installation)**:
+   > *"Supply, install, and test interconnected photoelectric smoke alarms in accordance with AS 3786:2014, AS/NZS 3000:2018, Fire and Emergency Services Act 1990 (s104RBA), and Building Regulation 2021: Alarms installed, prescribed locations verified, operational test and tactile hush verified, earth continuity, polarity, and insulation resistance tested and compliant."*
+2. **Battery Energy Storage System (s229 Installation)**:
+   > *"Install battery energy storage system (BESS) in accordance with AS/NZS 5139:2019, AS/NZS 4777.1, and AS/NZS 3000:2018: Dedicated sub-board / PVDB with EPS main switch & manual changeover switch, essential backup sub-circuits relocated downstream, earth continuity (<0.5 Ohm), insulation resistance (>1.0 MOhm), polarity, EFLI, and RCD operation verified."*
+3. **Solar PV System (s229 Installation)**:
+   > *"Supply and install grid-connected rooftop photovoltaic (PV) solar system in accordance with AS/NZS 5033:2021, AS/NZS 4777.1, and AS/NZS 3000:2018: AC/DC isolation switches and circuit protection installed and labelled, anti-islanding protection and grid disconnection verified, array insulation resistance, earth continuity, and polarity tested and compliant."*
+4. **EV Charger Installation (s229 Installation)**:
+   > *"Supply and install dedicated electric vehicle (EV) charging station circuit in accordance with AS/NZS 3000:2018 (Section 7.9) and Queensland Electricity Connection Manual (QECM): Dedicated sub-circuit wired from main switchboard with compliant cable sizing, dedicated Type A/B RCBO (30mA with DC fault detection), earth continuity, insulation resistance (>1.0 MOhm), EFLI, and RCD trip time tested."*
+5. **Switchboard Upgrade & Alteration (s229 Installation)**:
+   > *"Switchboard upgrade and alteration carried out in accordance with AS/NZS 3000:2018 and Queensland Electricity Connection Manual (QECM): Existing fuse board replaced with compliant enclosure and new main switch, final sub-circuits protected by individual Type A RCBOs (30mA), main earthing and MEN connection tested (<0.5 Ohm), SPD installed, consumer mains/sub-mains tested (IR & polarity), and final sub-circuits tested (earth continuity, IR, polarity, EFLI, RCD trip times)."*
 
 ---
 
