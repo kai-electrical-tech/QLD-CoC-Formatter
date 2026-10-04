@@ -1,7 +1,7 @@
 {
-  "name": "Queensland ESO CoC Generator",
+  "name": "KET CoC Generator",
   "short_name": "CoC Generator",
-  "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT) Generator",
+  "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

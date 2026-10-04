@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Certificate of Compliance | Powered by Kai Electrical Tech</title>
+  <title>KET CoC Generator | Kai Electrical Tech</title>
   
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -17,9 +17,57 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="CoC Generator">
-  <meta name="description" content="Generate official Queensland Electrical Safety Regulation 2026 Certificates of Testing & Compliance (s229 Installation / s208 Equipment) with 300 DPI anti-tamper rasterization.">
+  <meta name="description" content="Generate official Queensland Electrical Safety Regulation 2026 Certificates of Testing & Compliance (s229 Installation / s208 Equipment) with anti-tamper security. Built by Kai Electrical Tech.">
 
-  <link rel="stylesheet" href="css/style.css?v=1.0.2">
+  <!-- JSON-LD Structured Data for Search Engines & AI Crawlers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "KET CoC Generator",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "url": "https://tools.kaielectrical.com.au",
+        "author": {
+          "@type": "Organization",
+          "name": "Kai Electrical Tech Pty Ltd",
+          "url": "https://kaielectrical.com.au"
+        },
+        "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT / CoTC) generator with anti-tamper security.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "AUD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a Queensland Electrical Certificate of Testing and Compliance (CoC / CoTC)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Under the Queensland Electrical Safety Regulation 2026 (s229 and s208), licensed electrical contractors must test electrical work and issue a Certificate of Testing and Compliance (for installations) or Certificate of Testing and Safety (for equipment) to the person who requested the work."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is KET CoC Generator free and compliant with Queensland ESO standards?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, KET CoC Generator is 100% free with no watermarks or subscriptions. It formats certificates precisely to official Queensland Electrical Safety Office (ESO Form V7.09-2026) standards with tamper-proof baking."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css?v=1.1.0">
 </head>
 <body>
 
@@ -176,15 +224,15 @@
             <div class="preset-section-collapsible">
               <button type="button" class="btn-presets-toggle" id="btnPresetToggle" onclick="togglePresetsCollapse()">
                 <span id="presetToggleText">Presets (5)</span>
-                <span id="presetToggleArrow" class="preset-toggle-arrow">▾</span>
+                <span id="presetToggleArrow" class="preset-toggle-arrow">▴</span>
               </button>
-              <div id="presetChipsContainer" class="preset-bar-collapsible" style="display: none;"></div>
+              <div id="presetChipsContainer" class="preset-bar-collapsible"></div>
             </div>
 
             <div class="form-group">
               <textarea id="workDescription" class="form-textarea" maxlength="50000" placeholder="Detail the electrical installation or equipment tested (please include site address for electrical installation work if different from above), standards verified (AS/NZS 3000), test results, and any relevant notes..." required></textarea>
               <!-- Dynamic Page Hint & Char Counter -->
-              <div id="descPageHint" class="desc-page-hint">Fits 1 page (0 lines) | 0/50000 chars</div>
+              <div id="descPageHint" class="desc-page-hint">Fits Page 1 (0 lines) | 0/50,000 chars</div>
             </div>
           </div>
 
@@ -257,6 +305,10 @@
             </button>
           </div>
         </form>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
       </div>
 
       <!-- VIEW 2: HISTORY -->
@@ -267,6 +319,10 @@
           </div>
           <div id="historyRecordsList"></div>
           <p class="form-hint" style="margin-top: 14px; margin-bottom: 0; line-height: 1.5;">Recent certificates created on this device (maximum 30 stored locally). Note: History records only save Form contents (client, installation, and dates); signatures and Contractor Profile details are excluded. Tap "Load" to restore Form details without overwriting your profile.</p>
+        </div>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
         </div>
       </div>
 
@@ -317,7 +373,7 @@
           <div class="logo-upload-container" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1f5f9;">
             <div>
               <label class="form-label">Custom Contractor Logo / Letterhead</label>
-              <div class="form-hint">Scaled automatically to 300 DPI print dimensions and saved locally in your browser.</div>
+              <div class="form-hint">Scaled automatically for crisp print quality and saved locally in your browser.</div>
             </div>
 
             <div id="logoPreviewContainer" class="logo-preview-box">
@@ -403,14 +459,17 @@
 
         <!-- Permanent Explanatory Card at Bottom of Profile -->
         <div class="settings-info-card">
-          <div class="settings-info-title">QLD CoC Generator v1.0.2</div>
+          <div class="settings-info-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>KET CoC Generator v1.1.0</span>
+            <button type="button" class="btn-text-link" onclick="openUpdateModal()" style="font-size:12px; font-weight:500; color:var(--color-primary); background:none; border:none; cursor:pointer; padding:0;">What's New</button>
+          </div>
           <ol class="settings-info-list">
             <li><strong>Compliance Disclaimer</strong>: This tool is an on-site PDF generation formatter and does not verify regulatory compliance. All entered information, testing results, and statutory compliance remain solely the responsibility of the qualified person.</li>
             <li><strong>100% Free &amp; Watermark-Free</strong>: Free to use with no account registration or subscription required. Generated certificates contain no watermarks.</li>
             <li><strong>Device-Level Privacy</strong>: Zero cloud servers, zero tracking scripts, and zero third-party cookies. All contractor profiles, draft forms, and client data remain strictly inside your browser's local storage.</li>
             <li><strong>Statutory 5-Year Record-Keeping</strong>: The server stores zero data; all records reside exclusively in your local browser. Users are responsible for exporting and archiving generated certificates locally to satisfy Queensland Electrical Safety Regulation 2026 mandatory 5-year retention requirements (s229/s208).</li>
             <li><strong>Smart QLD Address Autocomplete</strong>: Instant street-level suggestions via Photon / OpenStreetMap API with a built-in Queensland suburbs database fallback, automatically parsing street, suburb, and postcode into official ESO fields.</li>
-            <li><strong>Tamper-Proof Baking &amp; Device Verification</strong>: Certificates are baked into high-resolution 300 DPI flat images (non-editable) to prevent post-issuance alteration. Each document is stamped with a unique Device ID at the bottom-left to verify the originating device.</li>
+            <li><strong>Tamper-Proof Baking &amp; In-Place Text Copying</strong>: Certificates are baked into crisp, non-editable flat documents to prevent post-issuance alteration, with an invisible in-place text overlay allowing exact visual selection, copying, and search highlighting. Each document is stamped with a unique Device ID at the bottom-left to verify the originating device.</li>
             <li><strong>Official Standard &amp; Annexure A</strong>: Formatted to official Queensland ESO Form V7.09-2026 specifications. Automatically appends an Annexure A continuation sheet if your work description exceeds Page 1 limits.</li>
             <li><strong>Profile Safeguard</strong>: Regularly export a configuration backup (<kbd>.json</kbd>) to safeguard your contractor details and custom presets if browser cache is cleared.</li>
             <li><strong>Mobile &amp; Offline Use</strong>: On mobile devices, tap "Add to Home Screen" to install as a web app for fast, reliable offline access on remote sites. Works seamlessly with native sharing (AirDrop, Mail, Save to Files) and A4 printing.</li>
@@ -419,6 +478,9 @@
           </ol>
         </div>
 
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
       </div>
 
     </div>
@@ -446,7 +508,7 @@
   <div id="welcomeModal" class="welcome-modal-overlay" style="display:none;">
     <div class="welcome-modal-card">
       <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
-        Welcome to QLD CoC Generator
+        Welcome to KET CoC Generator
       </div>
       <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
         On-site electrical testing &amp; compliance certificate generator for Queensland licensed electrical contractors.
@@ -469,8 +531,8 @@
         <li class="welcome-feature-item">
           <span class="welcome-feature-icon">🔒</span>
           <div>
-            <strong>300 DPI Anti-Tamper Baking</strong><br>
-            Bakes certificates into flat, non-editable images with a stamped Device ID to verify certificate provenance.
+            <strong>Anti-Tamper Baking &amp; Text Layer</strong><br>
+            Bakes certificates into crisp, non-editable images with an in-place searchable text layer and stamped Device ID.
           </div>
         </li>
         <li class="welcome-feature-item">
@@ -494,11 +556,49 @@
     </div>
   </div>
 
+  <!-- Returning User Update Modal (Changelog v1.1.0) -->
+  <div id="updateModal" class="welcome-modal-overlay" style="display:none;">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
+        What's New in v1.1.0
+      </div>
+      <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
+        Key improvements and features since v1.0.1:
+      </p>
+      <ul class="welcome-feature-list">
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">📄</span>
+          <div>
+            <strong>Template Optimization</strong><br>
+            Refined certificate formatting and enhanced multi-page layout.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🔍</span>
+          <div>
+            <strong>Searchable Text Layer</strong><br>
+            Integrated an in-place text layer over baked certificates, allowing natural text selection, copying, and Ctrl+F searching.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🛠️</span>
+          <div>
+            <strong>Bug Fixes &amp; Stability</strong><br>
+            Fixed Queensland ESO certification text alignment, refined text wrapping safeguards, and improved performance.
+          </div>
+        </li>
+      </ul>
+      <button type="button" id="btnDismissUpdate" class="btn-download-primary" style="margin-top:16px;" onclick="closeUpdateModal()">
+        Got It, Continue
+      </button>
+    </div>
+  </div>
+
   <!-- Script Libraries -->
   <script src="js/lib/pdf-lib.min.js"></script>
   <script src="js/lib/pdf.min.js"></script>
-  <script src="js/suburbs.js?v=1.0.2"></script>
-  <script src="js/pdf-generator.js?v=1.0.2"></script>
-  <script src="js/app.js?v=1.0.2"></script>
+  <script src="js/suburbs.js?v=1.1.0"></script>
+  <script src="js/pdf-generator.js?v=1.1.0"></script>
+  <script src="js/app.js?v=1.1.0"></script>
 </body>
 </html>

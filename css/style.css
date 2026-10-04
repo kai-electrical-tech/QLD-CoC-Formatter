@@ -626,15 +626,11 @@ input[type="date"]::-webkit-date-and-time-value {
   font-weight: 500;
   display: inline-block;
   line-height: 1.4;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-.desc-page-hint.annexure {
-  color: #b45309;
-  background-color: #fef3c7;
-  border: 1px solid #fde68a;
-  padding: 4px 10px;
-  border-radius: 6px;
+.desc-page-hint.exceeded {
+  color: #dc2626;
   font-weight: 600;
 }
 
@@ -2095,5 +2091,25 @@ body.is-signing-mode .signature-box.is-active {
   .hide-xs {
     display: none;
   }
+}
+
+/* Borderless Minimalist Footer Attribution */
+.footer-attribution {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  padding: 24px 0 16px 0;
+  margin: 0 auto;
+}
+
+.footer-attribution a {
+  color: #64748b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.footer-attribution a:hover {
+  color: #0f172a;
 }
 

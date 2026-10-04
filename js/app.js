@@ -4,6 +4,9 @@
   'use strict';
 
   const MAX_PRESETS = 30;
+  const MAX_DESC_CHARS = 50000;
+  const MAX_DESC_LINES = 10000;
+  const CURRENT_APP_VERSION = '1.1.0';
 
   // Default General Work Presets (Single-string titles, purely technical, public-safe)
   const DEFAULT_PRESETS = [
@@ -37,7 +40,7 @@
   // State
   let currentPresets = [];
   let expandedPresetIds = new Set();
-  let isPresetsExpanded = false;
+  let isPresetsExpanded = true;
   let currentActiveTab = 'form';
   const tabScrollPositions = { form: 0, history: 0, profile: 0 };
   let signaturePadCanvas = null;
@@ -115,7 +118,7 @@
     initNumericInputs();
     initDraft();
     initHistory();
-    initWelcomeModal();
+    initWelcomeOrUpdateModal();
     initPwa();
 
     if (window.CotPdfGenerator) {
@@ -581,6 +584,18 @@
     }
     renderPresetChips();
     renderPresetsManager();
+
+    // Check user preference for presets collapse state (default: expanded)
+    const userCollapsed = localStorage.getItem('qld_coc_presets_collapsed') === 'true';
+    isPresetsExpanded = !userCollapsed;
+    const chipsContainer = document.getElementById('presetChipsContainer');
+    const toggleArrow = document.getElementById('presetToggleArrow');
+    if (chipsContainer) {
+      chipsContainer.style.display = isPresetsExpanded ? 'flex' : 'none';
+    }
+    if (toggleArrow) {
+      toggleArrow.textContent = isPresetsExpanded ? '▴' : '▾';
+    }
   }
 
   function renderPresetChips() {
@@ -611,6 +626,7 @@
     isPresetsExpanded = !isPresetsExpanded;
     container.style.display = isPresetsExpanded ? 'flex' : 'none';
     if (arrow) arrow.textContent = isPresetsExpanded ? '▴' : '▾';
+    localStorage.setItem('qld_coc_presets_collapsed', isPresetsExpanded ? 'false' : 'true');
   };
 
   window.clearWorkPerformedFor = function() {
@@ -1242,7 +1258,7 @@
 
       const backupData = {
         version: '2.0',
-        appName: 'QLD CoC Formatter',
+        appName: 'KET CoC Generator',
         exportedAt: new Date().toISOString(),
         profile: profile,
         customLogo: logo,
@@ -1368,38 +1384,54 @@
     el.style.height = Math.max(el.scrollHeight, 340) + 'px';
   }
 
-  // Dynamic Page Hint & Char Counter below Description (10,000 char capacity)
+  // Helper to accurately estimate rendered lines combining explicit newlines and soft wrapping
+  function estimateDescLines(text) {
+    if (!text) return 0;
+    const paragraphs = text.split(/\r?\n/);
+    let totalLines = 0;
+    const CHARS_PER_LINE = 80;
+    for (const para of paragraphs) {
+      if (para.length === 0) {
+        totalLines += 1;
+      } else {
+        totalLines += Math.max(1, Math.ceil(para.length / CHARS_PER_LINE));
+      }
+    }
+    return totalLines;
+  }
+
+  // Dynamic Page Hint & Char Counter below Description (with thousands separators)
   function updateDescriptionCounter() {
     const descField = document.getElementById('workDescription');
     const hintEl = document.getElementById('descPageHint');
     if (!descField || !hintEl) return;
 
     const text = descField.value || '';
-    const lines = text ? text.split('\n').length : 0;
+    const lines = estimateDescLines(text);
     const chars = text.length;
 
-    // Dynamic total pages estimation based on multi-page Annexure engine:
-    // Page 1 takes up to 17 lines. If > 17 lines, Page 1 takes 12 lines.
-    // Intermediate Annexure pages hold 42 lines, final Annexure page holds up to 37 lines.
+    // Dynamic total pages estimation based on multi-page certificate engine:
+    // Page 1 takes up to 18 lines. If > 18 lines, Page 1 takes 13 lines.
+    // Every continuation page from Page 2 onwards takes up to 41 lines (+ bottom info bar).
     let estPages = 1;
-    if (lines > 17) {
-      const annexLines = Math.max(0, lines - 12);
-      if (annexLines <= 37) {
+    if (lines > 18) {
+      const annexLines = Math.max(0, lines - 13);
+      if (annexLines <= 42) {
         estPages = 2;
       } else {
-        const intermediate = Math.ceil((annexLines - 37) / 42);
+        const intermediate = Math.ceil((annexLines - 42) / 41);
         estPages = 2 + intermediate;
       }
     }
 
-    const pageStatus = lines > 17
-      ? `Multi-page Certificate: Annexure A will be generated (${estPages} pages total | ${lines} lines)`
-      : `Fits Page 1 (${lines} line${lines === 1 ? '' : 's'})`;
-
-    hintEl.textContent = `${pageStatus} | ${chars}/50000 chars`;
-    if (lines > 17) {
-      hintEl.className = 'desc-page-hint annexure';
+    if (lines > MAX_DESC_LINES) {
+      hintEl.textContent = `Exceeds max limit (${lines.toLocaleString()}/${MAX_DESC_LINES.toLocaleString()} lines) | ${chars.toLocaleString()}/${MAX_DESC_CHARS.toLocaleString()} chars`;
+      hintEl.className = 'desc-page-hint exceeded';
+    } else if (lines > 18) {
+      hintEl.textContent = `Multi-page required (${estPages.toLocaleString()} pages | ${lines.toLocaleString()} lines) | ${chars.toLocaleString()}/${MAX_DESC_CHARS.toLocaleString()} chars`;
+      hintEl.className = 'desc-page-hint';
     } else {
+      hintEl.textContent = `Fits Page 1 (${lines.toLocaleString()} line${lines === 1 ? '' : 's'}) | ${chars.toLocaleString()}/${MAX_DESC_CHARS.toLocaleString()} chars`;
       hintEl.className = 'desc-page-hint';
     }
   }
@@ -1942,7 +1974,31 @@
 
     const data = getFormData();
 
-    // 2. English Statutory Compliance Check
+    // 2. Description Limit Boundary Check (10,000 lines)
+    const descLines = estimateDescLines(data.workDescription);
+    if (descLines > MAX_DESC_LINES) {
+      showUnifiedToast({
+        title: 'Description Limit Exceeded',
+        desc: `Your test details span ${descLines.toLocaleString()} lines, exceeding the maximum allowed limit of ${MAX_DESC_LINES.toLocaleString()} lines. Please condense the description or attach an external testing schedule.`,
+        buttons: [
+          {
+            text: 'Review Description',
+            isPrimary: true,
+            onClick: () => {
+              hideUnifiedToast();
+              const descEl = document.getElementById('workDescription');
+              if (descEl) {
+                descEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                descEl.focus();
+              }
+            }
+          }
+        ]
+      });
+      return;
+    }
+
+    // 3. English Statutory Compliance Check
     if (checkNonEnglishInputs(data)) {
       showUnifiedToast({
         title: 'English Required for ESO Compliance',
@@ -2089,7 +2145,7 @@
     try {
       if (btnGenerate) {
         btnGenerate.disabled = true;
-        btnGenerate.textContent = 'Generating 300 DPI PDF...';
+        btnGenerate.textContent = 'Generating PDF...';
       }
 
       const result = await window.CotPdfGenerator.generatePdf(data);
@@ -2352,19 +2408,41 @@
     });
   };
 
-  // 14. First-Time Welcome Modal
-  function initWelcomeModal() {
-    const dismissed = localStorage.getItem('qld_coc_welcome_dismissed');
-    const modal = document.getElementById('welcomeModal');
-    if (!dismissed && modal) {
-      modal.style.display = 'flex';
+  // 14. First-Time Welcome Modal & Returning User Update Notice
+  function initWelcomeOrUpdateModal() {
+    const hasDismissedWelcome = localStorage.getItem('qld_coc_welcome_dismissed') === 'true';
+    const hasExistingData = Boolean(localStorage.getItem('qld_coc_contractor_profile')) ||
+                            Boolean(localStorage.getItem('qld_coc_history'));
+    const isReturningUser = hasDismissedWelcome || hasExistingData;
+    const lastSeenVersion = localStorage.getItem('qld_coc_last_seen_version');
+
+    if (!isReturningUser) {
+      // First-time user: display Welcome Modal
+      const welcomeModal = document.getElementById('welcomeModal');
+      if (welcomeModal) welcomeModal.style.display = 'flex';
+    } else if (lastSeenVersion !== CURRENT_APP_VERSION) {
+      // Returning user who hasn't seen this version: display Update Modal
+      const updateModal = document.getElementById('updateModal');
+      if (updateModal) updateModal.style.display = 'flex';
     }
   }
 
   window.closeWelcomeModal = function() {
     localStorage.setItem('qld_coc_welcome_dismissed', 'true');
+    localStorage.setItem('qld_coc_last_seen_version', CURRENT_APP_VERSION);
     const modal = document.getElementById('welcomeModal');
     if (modal) modal.style.display = 'none';
+  };
+
+  window.closeUpdateModal = function() {
+    localStorage.setItem('qld_coc_last_seen_version', CURRENT_APP_VERSION);
+    const modal = document.getElementById('updateModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.openUpdateModal = function() {
+    const modal = document.getElementById('updateModal');
+    if (modal) modal.style.display = 'flex';
   };
 
   // 15. Utilities

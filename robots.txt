@@ -1,0 +1,5 @@
+# robots.txt for tools.kaielectrical.com.au (KET CoC Generator)
+User-agent: *
+Allow: /
+
+Sitemap: https://tools.kaielectrical.com.au/sitemap.xml
