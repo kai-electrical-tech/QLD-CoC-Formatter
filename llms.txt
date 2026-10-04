@@ -10,7 +10,7 @@
 ## Primary Features
 - 100% Free & Watermark-Free: Zero subscriptions, zero paywalls, completely clean official certificates.
 - Device-Level Privacy: Zero cloud databases, zero server transmission. All contractor credentials and client data remain strictly inside client localStorage.
-- 300 DPI Anti-Tamper Rasterization: Flattens certificates into high-resolution non-editable image PDFs stamped with a unique physical Device ID.
+- Anti-Tamper Rasterization: Flattens certificates into high-resolution non-editable image PDFs stamped with a unique physical Device ID.
 - Embedded Searchable OCR Text Layer: Invisible full-text indexing layer allows Windows Search, macOS Spotlight, Google Drive, and Adobe Acrobat to search and copy client, job, and certificate details.
 - Dynamic Multi-Page Annexure A: Automatically appends formatted continuation sheets whenever electrical work descriptions exceed Page 1 capacity.
 - Offline-Ready PWA: Full Service Worker caching and native Web Share API support for seamless use on remote job sites without mobile reception.

@@ -1,6 +1,6 @@
-# ⚡ KET CoC Generator `v1.0.8`
+# ⚡ KET CoC Generator `v1.1.0`
 
-[![Version](https://img.shields.io/badge/version-1.0.8-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.1.0-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 
@@ -34,8 +34,8 @@
    - Instant street-level suggestions via Photon / OpenStreetMap API with a built-in offline Queensland suburbs database fallback.
    - Automatically parses street, suburb, and postcode into official ESO fields.
 
-6. **🔒 200 DPI Anti-Tamper Baking & In-Place Searchable Text Layer**
-   - High-clarity 200 DPI rasterization via PDF.js worker into flat image PDFs with zero editable form fields, preventing post-issuance tampering.
+6. **🔒 Anti-Tamper Baking & In-Place Searchable Text Layer**
+   - High-clarity rasterization via PDF.js worker into flat image PDFs with zero editable form fields, preventing post-issuance tampering.
    - Features an invisible in-place searchable text layer matching the exact visual positions of every word, allowing natural on-page text selection, copying, and `Ctrl+F` search highlighting.
    - Highly optimized file size (~230 KB per page) for rapid sharing over mobile networks (AirDrop, Email, SMS).
    - Every certificate is stamped with a unique physical Device ID (`DEV-XXXX-XXXX`) at the bottom-left to prove the originating device.
@@ -51,7 +51,7 @@
 9. **📱 Mobile-Optimized One-Tap Share & Offline PWA**
    - Web Share API (`navigator.share`) for instant AirDrop, Mail, WhatsApp, or Save to Files.
    - Full Service Worker (`sw.js`) caching for 100% offline job site usability without mobile reception.
-   - Formatted for standard Australian A4 printing (1:1 scale, 300 DPI).
+   - Formatted for standard Australian A4 printing (1:1 scale).
 
 ---
 

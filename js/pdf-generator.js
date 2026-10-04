@@ -469,8 +469,9 @@
         // With top banner removed, description starts at y: 676.
         // Intermediate pages hold up to 41 lines (+ 'Continued on Page X' at y: 148).
         // Final page holds up to 42 lines (+ statutory details divider at y: 138).
-        while (remaining.length > 0) {
-          if (remaining.length <= 42) {
+        const MAX_ANNEXURE_PAGES = 250;
+        while (remaining.length > 0 && annexurePagesData.length < MAX_ANNEXURE_PAGES) {
+          if (remaining.length <= 42 || annexurePagesData.length === MAX_ANNEXURE_PAGES - 1) {
             annexurePagesData.push({ lines: remaining, isFinal: true });
             remaining = [];
           } else if (remaining.length <= 41 + 10) {
