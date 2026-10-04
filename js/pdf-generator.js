@@ -252,10 +252,43 @@
       // 4. Certificate Type Checkbox (s229 vs s208)
       // ----------------------------------------------------
       if (data.certType === 'equipment') {
-        drawCheckmark(firstPage, 227.5, 638, 10, navyColor);
+        drawCheckmark(firstPage, 227.5, 638, 10, blackColor);
       } else {
-        drawCheckmark(firstPage, 227.5, 674, 10, navyColor);
+        drawCheckmark(firstPage, 227.5, 674, 10, blackColor);
       }
+
+      // Top-right centered bracket subtitles: Electrical Installations & Electrical Equipment
+      // Center coordinate 505.00 provides optical balance inside the curved parentheses
+      const centerBracketX = 505.00;
+      firstPage.drawText('Electrical', {
+        x: centerBracketX - helveticaBold.widthOfTextAtSize('Electrical', 8.04) / 2,
+        y: 678.84,
+        size: 8.04,
+        font: helveticaBold,
+        color: blackColor
+      });
+      firstPage.drawText('Installations', {
+        x: centerBracketX - helveticaBold.widthOfTextAtSize('Installations', 8.04) / 2,
+        y: 669.60,
+        size: 8.04,
+        font: helveticaBold,
+        color: blackColor
+      });
+
+      firstPage.drawText('Electrical', {
+        x: centerBracketX - helveticaBold.widthOfTextAtSize('Electrical', 8.04) / 2,
+        y: 642.84,
+        size: 8.04,
+        font: helveticaBold,
+        color: blackColor
+      });
+      firstPage.drawText('Equipment', {
+        x: centerBracketX - helveticaBold.widthOfTextAtSize('Equipment', 8.04) / 2,
+        y: 633.96,
+        size: 8.04,
+        font: helveticaBold,
+        color: blackColor
+      });
 
       // ----------------------------------------------------
       // 5. Customer Details (Flush left with underlying labels)
@@ -299,29 +332,21 @@
       }
 
       // ----------------------------------------------------
-      // 7. Dates (Baselines aligned with labels; Month centered between slashes)
+      // 7. Dates (Baselines aligned with labels; unified DD / MM / YYYY format)
       // ----------------------------------------------------
       const testDate = data.testDate ? new Date(data.testDate + 'T00:00:00') : new Date();
       const tDay = String(testDate.getDate()).padStart(2, '0');
       const tMonth = String(testDate.getMonth() + 1).padStart(2, '0');
       const tYear = String(testDate.getFullYear());
-
-      firstPage.drawText(tDay, { x: 138.0, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
-      const tMW = helvetica.widthOfTextAtSize(tMonth, 9.5);
-      const tMX = 159.08 + (190.93 - 159.08 - tMW) / 2;
-      firstPage.drawText(tMonth, { x: tMX, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(tYear, { x: 200.0, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
+      const testDateStr = `${tDay} / ${tMonth} / ${tYear}`;
+      firstPage.drawText(testDateStr, { x: 138.0, y: 252.24, size: 9.5, font: helvetica, color: blackColor });
 
       const noticeDate = data.noticeDate ? new Date(data.noticeDate + 'T00:00:00') : testDate;
       const nDay = String(noticeDate.getDate()).padStart(2, '0');
       const nMonth = String(noticeDate.getMonth() + 1).padStart(2, '0');
       const nYear = String(noticeDate.getFullYear());
-
-      firstPage.drawText(nDay, { x: 175.0, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
-      const nMW = helvetica.widthOfTextAtSize(nMonth, 9.5);
-      const nMX = 192.21 + (233.40 - 192.21 - nMW) / 2;
-      firstPage.drawText(nMonth, { x: nMX, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
-      firstPage.drawText(nYear, { x: 242.0, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
+      const noticeDateStr = `${nDay} / ${nMonth} / ${nYear}`;
+      firstPage.drawText(noticeDateStr, { x: 171.0, y: 80.88, size: 9.5, font: helvetica, color: blackColor });
 
       // ----------------------------------------------------
       // 8. Contractor Details (Baselines aligned with labels)
@@ -424,35 +449,38 @@
       }
 
       if (needsAnnexureA) {
-        firstPage.drawText('--- Continued on Annexure A ---', {
-          x: 68,
+        const contText = '--- Continued on Page 2 ---';
+        const contW = helveticaOblique.widthOfTextAtSize(contText, 8.5);
+        firstPage.drawText(contText, {
+          x: 59.52 + (474.48 - contW) / 2,
           y: currentY - 4,
           size: 8.5,
           font: helveticaOblique,
-          color: navyColor
+          color: blackColor
         });
       }
 
       // ----------------------------------------------------
-      // 12. Dynamic Multi-Page Annexure A Engine
+      // 12. Dynamic Multi-Page Annexure Engine
       // ----------------------------------------------------
       const annexurePagesData = [];
       if (needsAnnexureA) {
         let remaining = annexureLines.slice();
-        // Intermediate pages hold up to 42 lines (span y=608 down to y=83)
-        // Final page holds up to 37 lines + statutory sign-off box (at y: 46..124)
+        // With top banner removed, description starts at y: 676.
+        // Final page holds up to 42 lines + statutory details divider (at y: 138).
+        // Intermediate pages hold up to 48 lines (down to y: 76).
         while (remaining.length > 0) {
-          if (remaining.length <= 37) {
+          if (remaining.length <= 42) {
             annexurePagesData.push({ lines: remaining, isFinal: true });
             remaining = [];
-          } else if (remaining.length <= 42 + 10) {
+          } else if (remaining.length <= 48 + 10) {
             // Balance final two pages so the last page doesn't receive just 1-5 lines
             const take = Math.ceil(remaining.length / 2);
             annexurePagesData.push({ lines: remaining.slice(0, take), isFinal: false });
             remaining = remaining.slice(take);
           } else {
-            annexurePagesData.push({ lines: remaining.slice(0, 42), isFinal: false });
-            remaining = remaining.slice(42);
+            annexurePagesData.push({ lines: remaining.slice(0, 48), isFinal: false });
+            remaining = remaining.slice(48);
           }
         }
       }
@@ -489,34 +517,8 @@
           color: rgb(0.2, 0.2, 0.2)
         });
 
-        // 12.4 Annexure A Title Banner (Aligned with CERTIFICATE OF: at x: 59.52)
-        aPage.drawText('ANNEXURE A — ELECTRICAL INSTALLATION / EQUIPMENT TESTED', {
-          x: 59.52,
-          y: 678,
-          size: 10.5,
-          font: helveticaBold,
-          color: navyColor
-        });
-
-        // 12.5 Job Reference Information Box (Customer & Address only, width: 474.48)
-        aPage.drawRectangle({
-          x: 59.52,
-          y: 626,
-          width: 474.48,
-          height: 42,
-          color: rgb(0.97, 0.98, 0.99),
-          borderColor: lightBorderColor,
-          borderWidth: 0.5
-        });
-
-        const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
-        const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
-
-        aPage.drawText(`Customer: ${custFullName}`, { x: 68.0, y: 650, size: 8.5, font: helveticaBold, color: blackColor });
-        aPage.drawText(`Site Address: ${fullAddrStr}`, { x: 68.0, y: 636, size: 8.5, font: helvetica, color: blackColor });
-
-        // 12.6 Draw Annexure continuation lines for this page (x: 59.52)
-        let aY = 608;
+        // 12.4 Description lines for this page start immediately below top dividing line (x: 59.52, y: 676)
+        let aY = 676;
         for (const aLine of pageInfo.lines) {
           aPage.drawText(aLine, {
             x: 59.52,
@@ -528,49 +530,53 @@
           aY -= 12.5;
         }
 
-        // 12.7 Intermediate continuation notice vs Final Sign-off Box
+        // 12.5 Intermediate continuation notice vs Final Sign-off & Details Section
         if (!pageInfo.isFinal) {
-          aPage.drawText(`--- Continued on Page ${pageNum + 1} ---`, {
-            x: 59.52,
+          const contNext = `--- Continued on Page ${pageNum + 1} ---`;
+          const contW = helveticaOblique.widthOfTextAtSize(contNext, 8.5);
+          aPage.drawText(contNext, {
+            x: 59.52 + (474.48 - contW) / 2,
             y: 56,
             size: 8.5,
             font: helveticaOblique,
-            color: navyColor
+            color: blackColor
           });
         } else {
-          // Bottom Sign-off Box matching Page 1 (x: 59.52, width: 474.48)
-          aPage.drawRectangle({
-            x: 59.52,
-            y: 46,
-            width: 474.48,
-            height: 78,
-            color: rgb(0.98, 0.98, 0.99),
-            borderColor: lightBorderColor,
-            borderWidth: 0.5
+          // Bottom Details & Sign-off Section: Top divider line only (no box, no background tint)
+          const dividerY = 138;
+          aPage.drawLine({
+            start: { x: 59.52, y: dividerY },
+            end: { x: 534.00, y: dividerY },
+            thickness: 0.48,
+            color: rgb(0.2, 0.2, 0.2)
           });
 
-          // Left Side: Contractor Lic, Date of test, Date notice given
-          aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 68.0, y: 106, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 68.0, y: 92, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 68.0, y: 78, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Certified safe and compliant under Electrical Safety Regulation 2026 (${data.certType === 'equipment' ? 's208' : 's229'}).`, { x: 68.0, y: 60, size: 7.5, font: helveticaOblique, color: grayColor });
+          const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
+          const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
 
-          // Right Side: Tester and Signature (matching Page 1 formatting, right-aligned to 524.0)
+          // Left Side: Customer, Address, Lic, Dates (flush left at x: 59.52)
+          aPage.drawText(`Customer: ${custFullName}`, { x: 59.52, y: dividerY - 14, size: 8.5, font: helveticaBold, color: blackColor });
+          aPage.drawText(`Address: ${fullAddrStr}`, { x: 59.52, y: dividerY - 27, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 59.52, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 59.52, y: dividerY - 53, size: 8.5, font: helvetica, color: blackColor });
+          aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 59.52, y: dividerY - 66, size: 8.5, font: helvetica, color: blackColor });
+
+          // Right Side: Tester and Signature (flush right to 534.00)
           if (testerDisplayStr) {
             const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
-            aPage.drawText(testerDisplayStr, { x: 524.0 - tAWidth, y: 106, size: 8.5, font: helvetica, color: blackColor });
+            aPage.drawText(testerDisplayStr, { x: 534.00 - tAWidth, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
           }
           if (sigImage) {
             aPage.drawImage(sigImage, {
-              x: 409,
-              y: 58,
+              x: 534.00 - 115,
+              y: dividerY - 76,
               width: 115,
               height: 32
             });
           }
         }
 
-        // 12.8 Footer stamps on this Annexure page
+        // 12.6 Footer stamps on this Annexure page
         // Page X/N in center
         aPage.drawText(`Page ${pageNum}/${totalPages}`, {
           x: 275,
@@ -579,15 +585,7 @@
           font: helvetica,
           color: grayColor
         });
-
-        // Template version in right corner
-        aPage.drawText('V7.09-2026', {
-          x: 505,
-          y: 36.1,
-          size: 8.5,
-          font: helvetica,
-          color: grayColor
-        });
+        // Note: V7.09-2026 is intentionally omitted from Page 2 onwards for a clean layout
       }
 
       // ----------------------------------------------------
@@ -602,12 +600,12 @@
         color: grayColor
       });
 
-      // Neutral Device ID & Job Reference (left footer on all pages)
+      // Neutral Device ID & Job Reference (left footer on all pages: x = 59.52)
       const refStr = (data.jobReference || '').trim();
       const deviceToken = data.deviceToken || localStorage.getItem('qld_device_token') || 'DEV-OFFLINE';
       const footerLeftText = refStr ? `Ref: ${refStr}   Device ID: ${deviceToken}` : `Device ID: ${deviceToken}`;
       firstPage.drawText(footerLeftText, {
-        x: 48.7,
+        x: 59.52,
         y: 13,
         size: 6.0,
         font: helvetica,
@@ -624,13 +622,13 @@
         });
       }
 
-      // Bottom Right Website URL (Page 1 and all Annexure pages)
+      // Bottom Right Website URL (Page 1 and all Annexure pages: x = 534.00 - websiteWidth)
       if (data.contractorWebsite) {
         const cleanUrl = data.contractorWebsite.trim().replace(/^https?:\/\//i, '');
         const websiteText = `Website: ${cleanUrl}`;
         const websiteWidth = helvetica.widthOfTextAtSize(websiteText, 6.0);
         firstPage.drawText(websiteText, {
-          x: 550.0 - websiteWidth,
+          x: 534.00 - websiteWidth,
           y: 13,
           size: 6.0,
           font: helvetica,
@@ -646,6 +644,7 @@
           });
         }
       }
+
 
       // ----------------------------------------------------
       // 14. Save Vector PDF
