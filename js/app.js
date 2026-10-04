@@ -6,8 +6,8 @@
   const MAX_PRESETS = 30;
   const MAX_DESC_CHARS = 50000;
   const MAX_DESC_LINES = 10000;
-  const CURRENT_APP_VERSION = '1.2.1';
-  const PRESET_SCHEMA_VERSION = 'v3_standards';
+  const CURRENT_APP_VERSION = '1.2.2';
+  const PRESET_SCHEMA_VERSION = 'v4_2026_standards';
 
   // Standard Queensland Compliance Presets (Single-string titles, AS/NZS 3000 cited, public-safe)
   const STANDARD_PRESETS = [
@@ -552,71 +552,36 @@
     el.style.height = Math.max(el.scrollHeight, 80) + 'px';
   }
 
+  function createStandardPresets() {
+    return STANDARD_PRESETS.map((p, idx) => ({
+      id: `std_${p.id}_${Date.now()}_${idx}_${Math.random().toString(16).substring(2, 6)}`,
+      title: p.title,
+      text: p.text
+    }));
+  }
+
   // 5. Work Description Presets & Custom Presets Editor
   function initPresets() {
     try {
       const savedVer = localStorage.getItem('qld_coc_presets_ver');
       const saved = localStorage.getItem('qld_coc_presets');
-      const isPending = localStorage.getItem('qld_coc_preset_upgrade_pending') === 'true';
 
-      if (saved && savedVer === PRESET_SCHEMA_VERSION && !isPending) {
+      if (saved && savedVer === PRESET_SCHEMA_VERSION) {
         currentPresets = JSON.parse(saved);
-        currentPresets = currentPresets.map(p => ({
-          id: p.id || ('preset_' + Math.random().toString(16).substring(2, 8)),
+        currentPresets = currentPresets.map((p, idx) => ({
+          id: p.id || (`preset_${idx}_${Date.now()}_${Math.random().toString(16).substring(2, 6)}`),
           title: cleanEmojiFromTitle(p.title) || 'Preset',
           text: p.text || ''
         })).slice(0, MAX_PRESETS);
-      } else if (!saved) {
-        // Upgrade or first load: brand new user
-        currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+      } else {
+        // Direct overwrite: abandon all legacy user presets and populate fresh standards with unique IDs
+        currentPresets = createStandardPresets();
         localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
         localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-      } else {
-        // Returning user with existing presets
-        let parsed = [];
-        try {
-          parsed = JSON.parse(saved);
-        } catch (_) {
-          parsed = [];
-        }
-
-        if (isPending) {
-          pendingPresetUpgrade = true;
-          currentPresets = parsed.slice(0, MAX_PRESETS);
-        } else if (parsed.length > 25) {
-          // Power users with > 25 presets: silently retain all presets untouched
-          currentPresets = parsed.slice(0, MAX_PRESETS);
-          localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-        } else {
-          // Check if user has unmodified legacy default presets
-          const legacyDefaultTexts = new Set([
-            'Supply and install energy storage battery system.',
-            'Supply & install smoke alarms, tested & verified.',
-            'Switchboard upgrade and circuit protection installed and tested.',
-            'Supply & install dedicated EV Charger circuit.',
-            'Supply & install rooftop Solar PV system.'
-          ]);
-          const legacyDefaultIds = new Set(['battery', 'smoke_alarm', 'switchboard', 'ev_charger', 'solar']);
-
-          const isUnmodifiedLegacy = parsed.length === 5 &&
-            parsed.every(p => legacyDefaultIds.has(p.id) && legacyDefaultTexts.has((p.text || '').trim()));
-
-          if (isUnmodifiedLegacy) {
-            // Auto-upgrade silently to standard presets
-            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
-            localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
-            localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-            showSimpleToast('Presets updated to Queensland standards');
-          } else {
-            // User has customized presets (<= 25 items): flag for upgrade review
-            pendingPresetUpgrade = true;
-            localStorage.setItem('qld_coc_preset_upgrade_pending', 'true');
-            currentPresets = parsed.slice(0, MAX_PRESETS);
-          }
-        }
+        localStorage.removeItem('qld_coc_preset_upgrade_pending');
       }
     } catch (e) {
-      currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+      currentPresets = createStandardPresets();
     }
     renderPresetChips();
     renderPresetsManager();
@@ -1276,7 +1241,7 @@
           isPrimary: true,
           isDanger: true,
           onClick: () => {
-            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+            currentPresets = createStandardPresets();
             expandedPresetIds.clear();
             localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
             localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
@@ -1311,7 +1276,7 @@
           isPrimary: true,
           isDanger: true,
           onClick: () => {
-            currentPresets = JSON.parse(JSON.stringify(STANDARD_PRESETS));
+            currentPresets = createStandardPresets();
             expandedPresetIds.clear();
             localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
             localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
@@ -2580,10 +2545,6 @@
     localStorage.setItem('qld_coc_last_seen_version', CURRENT_APP_VERSION);
     const modal = document.getElementById('updateModal');
     if (modal) modal.style.display = 'none';
-    if (pendingPresetUpgrade) {
-      window.switchTab('profile');
-      showSimpleToast('Review new Queensland standard presets below');
-    }
   };
 
   window.openUpdateModal = function() {

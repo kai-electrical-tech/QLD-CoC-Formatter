@@ -1,6 +1,6 @@
-# QLD CoC Generator `v1.2.1`
+# QLD CoC Generator `v1.2.2`
 
-[![Version](https://img.shields.io/badge/version-1.2.1-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.2.2-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 
