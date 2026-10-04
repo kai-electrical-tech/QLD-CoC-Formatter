@@ -467,20 +467,20 @@
       if (needsAnnexureA) {
         let remaining = annexureLines.slice();
         // With top banner removed, description starts at y: 676.
-        // Final page holds up to 42 lines + statutory details divider (at y: 138).
-        // Intermediate pages hold up to 48 lines (down to y: 76).
+        // Intermediate pages hold up to 41 lines (+ 'Continued on Page X' at y: 148).
+        // Final page holds up to 42 lines (+ statutory details divider at y: 138).
         while (remaining.length > 0) {
           if (remaining.length <= 42) {
             annexurePagesData.push({ lines: remaining, isFinal: true });
             remaining = [];
-          } else if (remaining.length <= 48 + 10) {
+          } else if (remaining.length <= 41 + 10) {
             // Balance final two pages so the last page doesn't receive just 1-5 lines
             const take = Math.ceil(remaining.length / 2);
             annexurePagesData.push({ lines: remaining.slice(0, take), isFinal: false });
             remaining = remaining.slice(take);
           } else {
-            annexurePagesData.push({ lines: remaining.slice(0, 48), isFinal: false });
-            remaining = remaining.slice(48);
+            annexurePagesData.push({ lines: remaining.slice(0, 41), isFinal: false });
+            remaining = remaining.slice(41);
           }
         }
       }
@@ -530,53 +530,54 @@
           aY -= 12.5;
         }
 
-        // 12.5 Intermediate continuation notice vs Final Sign-off & Details Section
+        // 12.5 Intermediate continuation notice positioned right above bottom divider
         if (!pageInfo.isFinal) {
           const contNext = `--- Continued on Page ${pageNum + 1} ---`;
           const contW = helveticaOblique.widthOfTextAtSize(contNext, 8.5);
           aPage.drawText(contNext, {
             x: 59.52 + (474.48 - contW) / 2,
-            y: 56,
+            y: 148,
             size: 8.5,
             font: helveticaOblique,
             color: blackColor
           });
-        } else {
-          // Bottom Details & Sign-off Section: Top divider line only (no box, no background tint)
-          const dividerY = 138;
-          aPage.drawLine({
-            start: { x: 59.52, y: dividerY },
-            end: { x: 534.00, y: dividerY },
-            thickness: 0.48,
-            color: rgb(0.2, 0.2, 0.2)
-          });
-
-          const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
-          const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
-
-          // Left Side: Customer, Address, Lic, Dates (flush left at x: 59.52)
-          aPage.drawText(`Customer: ${custFullName}`, { x: 59.52, y: dividerY - 14, size: 8.5, font: helveticaBold, color: blackColor });
-          aPage.drawText(`Address: ${fullAddrStr}`, { x: 59.52, y: dividerY - 27, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 59.52, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 59.52, y: dividerY - 53, size: 8.5, font: helvetica, color: blackColor });
-          aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 59.52, y: dividerY - 66, size: 8.5, font: helvetica, color: blackColor });
-
-          // Right Side: Tester and Signature (flush right to 534.00)
-          if (testerDisplayStr) {
-            const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
-            aPage.drawText(testerDisplayStr, { x: 534.00 - tAWidth, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
-          }
-          if (sigImage) {
-            aPage.drawImage(sigImage, {
-              x: 534.00 - 115,
-              y: dividerY - 76,
-              width: 115,
-              height: 32
-            });
-          }
         }
 
-        // 12.6 Footer stamps on this Annexure page
+        // 12.6 Bottom Details & Sign-off Section: Drawn on EVERY page from Page 2 onwards!
+        const dividerY = 138;
+        aPage.drawLine({
+          start: { x: 59.52, y: dividerY },
+          end: { x: 534.00, y: dividerY },
+          thickness: 0.48,
+          color: rgb(0.2, 0.2, 0.2)
+        });
+
+        const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
+        const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
+
+        // Left Side: Customer, Address, Lic, Dates (flush left at x: 59.52)
+        aPage.drawText(`Customer: ${custFullName}`, { x: 59.52, y: dividerY - 14, size: 8.5, font: helveticaBold, color: blackColor });
+        aPage.drawText(`Address: ${fullAddrStr}`, { x: 59.52, y: dividerY - 27, size: 8.5, font: helvetica, color: blackColor });
+        aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 59.52, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
+        aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 59.52, y: dividerY - 53, size: 8.5, font: helvetica, color: blackColor });
+        aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 59.52, y: dividerY - 66, size: 8.5, font: helvetica, color: blackColor });
+
+        // Right Side: Tester and Signature (flush right to 534.00)
+        if (testerDisplayStr) {
+          const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
+          aPage.drawText(testerDisplayStr, { x: 534.00 - tAWidth, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
+        }
+        if (sigImage) {
+          aPage.drawImage(sigImage, {
+            x: 534.00 - 115,
+            y: dividerY - 76,
+            width: 115,
+            height: 32
+          });
+        }
+
+        // 12.7 Footer stamps on this Annexure page
+
         // Page X/N in center
         aPage.drawText(`Page ${pageNum}/${totalPages}`, {
           x: 275,

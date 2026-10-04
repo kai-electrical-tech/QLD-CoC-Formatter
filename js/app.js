@@ -1378,22 +1378,22 @@
     const lines = text ? text.split('\n').length : 0;
     const chars = text.length;
 
-    // Dynamic total pages estimation based on multi-page Annexure engine:
+    // Dynamic total pages estimation based on multi-page certificate engine:
     // Page 1 takes up to 17 lines. If > 17 lines, Page 1 takes 12 lines.
-    // Intermediate Annexure pages hold 42 lines, final Annexure page holds up to 37 lines.
+    // Every continuation page from Page 2 onwards takes up to 41 lines (+ bottom info bar).
     let estPages = 1;
     if (lines > 17) {
       const annexLines = Math.max(0, lines - 12);
-      if (annexLines <= 37) {
+      if (annexLines <= 42) {
         estPages = 2;
       } else {
-        const intermediate = Math.ceil((annexLines - 37) / 42);
+        const intermediate = Math.ceil((annexLines - 42) / 41);
         estPages = 2 + intermediate;
       }
     }
 
     const pageStatus = lines > 17
-      ? `Multi-page Certificate: Annexure A will be generated (${estPages} pages total | ${lines} lines)`
+      ? `Multi-page Certificate (${estPages} pages total | ${lines} lines)`
       : `Fits Page 1 (${lines} line${lines === 1 ? '' : 's'})`;
 
     hintEl.textContent = `${pageStatus} | ${chars}/50000 chars`;
