@@ -133,7 +133,7 @@ The generator includes built-in one-tap presets tailored for high-volume electri
 ### Q: Who can issue a Queensland Certificate of Testing and Compliance?
 **A**: Only licensed electrical contractors (or qualified persons authorized under a contractor licence) who have tested the electrical work to ensure it is electrically safe and compliant with AS/NZS 3000 can issue this certificate.
 
-### Q: Is this an official government app?
+### Q: Is this a government app?
 **A**: No. QLD CoC Generator is an independent, free productivity tool engineered by Kai Electrical Tech Pty Ltd. It precisely formats data into Queensland Electrical Safety Office Form V7.09-2026 specifications.
 
 ### Q: Does the app save customer data or job details to a cloud server?
