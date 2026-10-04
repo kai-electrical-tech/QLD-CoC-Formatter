@@ -1,6 +1,6 @@
-# ⚡ KET CoC Generator `v1.0.7`
+# ⚡ KET CoC Generator `v1.0.8`
 
-[![Version](https://img.shields.io/badge/version-1.0.7-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.0.8-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 

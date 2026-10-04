@@ -1379,11 +1379,11 @@
     const chars = text.length;
 
     // Dynamic total pages estimation based on multi-page certificate engine:
-    // Page 1 takes up to 17 lines. If > 17 lines, Page 1 takes 12 lines.
+    // Page 1 takes up to 18 lines. If > 18 lines, Page 1 takes 13 lines.
     // Every continuation page from Page 2 onwards takes up to 41 lines (+ bottom info bar).
     let estPages = 1;
-    if (lines > 17) {
-      const annexLines = Math.max(0, lines - 12);
+    if (lines > 18) {
+      const annexLines = Math.max(0, lines - 13);
       if (annexLines <= 42) {
         estPages = 2;
       } else {
@@ -1392,12 +1392,12 @@
       }
     }
 
-    const pageStatus = lines > 17
+    const pageStatus = lines > 18
       ? `Multi-page Certificate (${estPages} pages total | ${lines} lines)`
       : `Fits Page 1 (${lines} line${lines === 1 ? '' : 's'})`;
 
     hintEl.textContent = `${pageStatus} | ${chars}/50000 chars`;
-    if (lines > 17) {
+    if (lines > 18) {
       hintEl.className = 'desc-page-hint annexure';
     } else {
       hintEl.className = 'desc-page-hint';

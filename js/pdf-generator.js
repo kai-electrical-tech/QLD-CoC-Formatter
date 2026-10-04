@@ -298,13 +298,13 @@
       const customerSurname = (data.customerSurname || '').trim();
 
       if (customerTitle) {
-        firstPage.drawText(customerTitle, { x: 121.80, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerTitle, { x: 121.80, y: 574.20, size: 9.5, font: helvetica, color: blackColor });
       }
       if (customerGivenName) {
-        firstPage.drawText(customerGivenName, { x: 172.68, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerGivenName, { x: 172.68, y: 574.20, size: 9.5, font: helvetica, color: blackColor });
       }
       if (customerSurname) {
-        firstPage.drawText(customerSurname, { x: 330.49, y: 563, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(customerSurname, { x: 330.49, y: 574.20, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
@@ -322,13 +322,13 @@
       }
 
       if (street) {
-        firstPage.drawText(street, { x: 121.80, y: 530.5, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(street, { x: 121.80, y: 541.65, size: 9.5, font: helvetica, color: blackColor });
       }
       if (suburb) {
-        firstPage.drawText(suburb, { x: 121.80, y: 503, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(suburb, { x: 121.80, y: 514.15, size: 9.5, font: helvetica, color: blackColor });
       }
       if (postcode) {
-        firstPage.drawText(postcode, { x: 409.44, y: 503, size: 9.5, font: helvetica, color: blackColor });
+        firstPage.drawText(postcode, { x: 409.44, y: 514.15, size: 9.5, font: helvetica, color: blackColor });
       }
 
       // ----------------------------------------------------
@@ -420,9 +420,9 @@
       let page1Lines = [];
       let annexureLines = [];
 
-      if (wrappedLines.length <= 14) {
+      if (wrappedLines.length <= 15) {
         page1Lines = wrappedLines;
-      } else if (wrappedLines.length <= 17) {
+      } else if (wrappedLines.length <= 18) {
         descFontSize = 8.0;
         descLineHeight = 10.5;
         page1Lines = wrapText(descText, helvetica, descFontSize, descBoxWidth);
@@ -431,12 +431,12 @@
         descFontSize = 9.0;
         descLineHeight = 12.0;
         wrappedLines = wrapText(descText, helvetica, descFontSize, descBoxWidth);
-        page1Lines = wrappedLines.slice(0, 12);
-        annexureLines = wrappedLines.slice(12);
+        page1Lines = wrappedLines.slice(0, 13);
+        annexureLines = wrappedLines.slice(13);
       }
 
       // Render Page 1 description
-      let currentY = 452;
+      let currentY = 464.0;
       for (const line of page1Lines) {
         firstPage.drawText(line, {
           x: 68,
