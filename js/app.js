@@ -2154,7 +2154,7 @@
       saveRecordToHistory(data, result.filename);
 
       if (isMobile) {
-        // On iOS / mobile devices, native share sheet provides "Save to Files" / 存储到“文件” without blank popups
+        // On iOS / mobile devices, native share sheet provides "Save to Files" without blank popups
         await window.CotPdfGenerator.sharePdf(
           result.blob,
           result.filename,

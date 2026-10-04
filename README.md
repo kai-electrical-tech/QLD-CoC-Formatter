@@ -29,7 +29,7 @@
 
 4. **📍 Smart Australian Street Address Autocomplete**
    - Instant street-level suggestions via Photon / OpenStreetMap API with a built-in offline Queensland suburbs database fallback.
-   - Automatically parses street, suburb, and postcode into official ESO fields.
+   - Automatically parses street, suburb, and postcode into standard ESO fields.
 
 5. **🔒 Anti-Tamper Baking & In-Place Searchable Text Layer**
    - High-clarity rasterization via PDF.js worker into flat image PDFs with zero editable form fields, preventing post-issuance tampering.
