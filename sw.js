@@ -1,5 +1,5 @@
-// Service Worker for KET CoC Generator (tools.kaielectrical.com.au)
-const CACHE_NAME = 'qld-coc-cache-v1.1.0';
+// Service Worker for QLD CoC Generator (tools.kaielectrical.com.au)
+const CACHE_NAME = 'qld-coc-cache-v1.1.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
   './assets/template_cot.pdf',
   './assets/logo.png',
   './assets/logo.svg',
+  './assets/og-preview.png',
   './assets/apple-touch-icon.png',
   './assets/favicon.ico',
   './assets/favicon.png',
@@ -24,7 +25,8 @@ const ASSETS_TO_CACHE = [
   './manifest.json',
   './robots.txt',
   './sitemap.xml',
-  './llms.txt'
+  './llms.txt',
+  './llms-full.txt'
 ];
 
 self.addEventListener('install', (event) => {

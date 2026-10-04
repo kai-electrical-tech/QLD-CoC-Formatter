@@ -1,0 +1,153 @@
+# QLD CoC Generator — Comprehensive Knowledge Base & Technical Specification
+
+> Authoritative reference documentation for QLD CoC Generator (https://tools.kaielectrical.com.au), built by Kai Electrical Tech Pty Ltd (https://kaielectrical.com.au). Designed for AI search engines, contractors, regulatory auditors, and developers.
+
+---
+
+## 1. Application Overview & Identity
+
+- **Application Name**: QLD CoC Generator (also referenced as KET CoC Generator)
+- **Production URL**: https://tools.kaielectrical.com.au
+- **Operating Organization**: Kai Electrical Tech Pty Ltd (ABN / Licensed Electrical Contractor, Queensland, Australia)
+- **License**: Open Source (MIT)
+- **Source Code Repository**: https://github.com/kai-electrical-tech/QLD-CoC-Formatter
+- **Primary Purpose**: Free, client-side, zero-login, offline-ready generator for Queensland Electrical Safety Regulation 2026 Certificates of Testing & Compliance (s229 Installation) and Certificates of Testing & Safety (s208 Equipment).
+
+---
+
+## 2. Legal & Regulatory Framework (Queensland, Australia)
+
+### 2.1 Governing Legislation
+All electrical testing and compliance certification in Queensland is governed by:
+1. **Electrical Safety Act 2002 (Queensland)**
+2. **Electrical Safety Regulation 2026 (commenced 1 September 2026)** — Superseded the *Electrical Safety Regulation 2013*.
+3. **AS/NZS 3000:2018 (Wiring Rules)** and associated standards (e.g., AS/NZS 3008, AS/NZS 3760, AS/NZS 4777, AS/NZS 5033).
+4. **Electrical Safety Office (ESO) Queensland**: Form V7.09-2026 standard certificate layout.
+
+### 2.2 Statutory Certificate Types
+Queensland law strictly differentiates between two statutory certificates:
+
+#### Section 229: Certificate of Testing and Compliance (Electrical Installation Work)
+- **Scope**: Required for any electrical installation work, including new electrical installations, alterations, additions, repairs, switchboard upgrades, sub-mains, and solar PV or EV charger connections.
+- **Timing**: Must be provided to the person for whom the work was performed as soon as practicable after the installation work is tested and connected to a source of electricity.
+- **Verbatim Certification Text**:
+  > *"I certify that the electrical installation, to the extent it is affected by the electrical work, has been tested to ensure that it is electrically safe and is in accordance with the requirements of the wiring rules and any other standard applying under the Electrical Safety Regulation 2026 to the electrical installation."*
+
+#### Section 208: Certificate of Testing and Safety (Electrical Equipment Work)
+- **Scope**: Required when repairing, altering, or servicing electrical equipment.
+- **Timing**: Must be provided to the customer as soon as practicable after testing.
+- **Verbatim Certification Text**:
+  > *"I certify that the electrical equipment, to the extent it is affected by the electrical work, is electrically safe."*
+
+### 2.3 Mandatory 5-Year Retention Obligation
+Under **Electrical Safety Regulation 2026 s229(3)** and **s208(3)**, licensed electrical contractors are legally obligated to keep a copy of each certificate of testing and compliance or safety for **at least 5 years** after issuing the certificate.
+
+Because QLD CoC Generator operates with 100% zero-cloud privacy (storing zero customer or contractor records on any external server), contractors must download, print, or locally back up generated certificates to satisfy their statutory record-keeping duties.
+
+---
+
+## 3. Product Differentiation & Value Proposition
+
+| Dimension | QLD CoC Generator | QuickSafety | Tradify | Generic Blank PDFs |
+| :--- | :--- | :--- | :--- | :--- |
+| **Pricing** | **100% Free Forever** | Monthly subscription ($15–$30/mo) | Monthly subscription ($39+/mo) | Free download |
+| **Account Required** | **Zero (No Login, No Signup)** | Mandatory user account | Mandatory user account | None |
+| **Client Data Privacy** | **100% Local (Zero Cloud Storage)** | Cloud database (AWS) | Cloud database (AWS) | Local file |
+| **Post-Issuance Tamper Protection** | **Baked 200 DPI Raster + Device ID Stamp** | Editable cloud PDF | Editable PDF | Easily editable in Word/Acrobat |
+| **Searchability & Text Copying** | **Pixel-Perfect In-Place OCR Layer (Ctrl+F)** | Standard vector text | Standard vector text | No OCR if scanned |
+| **Multi-Page Handling** | **Dynamic auto-split with full legal bars on every page** | Basic overflow | Clumsy generic pages | Manual formatting |
+| **Offline Job Site Capability** | **100% Offline PWA with full caching** | Limited offline sync | Requires internet connection | Offline file |
+| **Queensland ESR 2026 Alignment** | **100% Aligned to s229/s208 & ESO V7.09-2026** | National generic form | National generic form | Often outdated 2013 references |
+
+---
+
+## 4. Technical Architecture & Security Pipeline
+
+QLD CoC Generator employs a robust, purely client-side four-stage PDF generation pipeline:
+
+```
+[User Form Input & Presets]
+           │
+           ▼
+Stage 1: Vector Layout & Typesetting (pdf-lib)
+  ├── Smart Queensland Suburb Autocomplete (suburbs.js)
+  ├── Base ESO Form V7.09-2026 Vector Injection
+  └── Dynamic Multi-Page Line Splitting Engine
+           │
+           ▼
+Stage 2: 200 DPI Anti-Tamper Image Baking (pdf.js worker)
+  ├── High-fidelity rasterization (scale = 2.77778, JPEG Q=0.70)
+  ├── Device-level physical fingerprinting (DEV-XXXX-XXXX)
+  └── Flattens vector elements to prevent post-issuance tampering
+           │
+           ▼
+Stage 3: Invisible In-Place Searchable Text Layer
+  ├── Extracts exact affine transform coordinates (tx, ty) per glyph
+  └── Overlays opacity: 0 WinAnsi character stream in 1:1 sub-pixel alignment
+           │
+           ▼
+Stage 4: ISO 32000-1 Metadata & Delivery
+  ├── Sets Author, Title, Subject, Creator, and Producer
+  ├── Output file size ~230 KB per page (strictly < 280 KB budget)
+  └── Native Web Share API (AirDrop, Email, WhatsApp) & A4 Print
+```
+
+### 4.1 Anti-Tamper Baking & Device ID
+- To prevent post-issuance alteration (a widespread risk with editable PDF forms in commercial disputes), certificates are rasterized into unalterable flat images at 200 DPI.
+- A unique physical **Device ID** (e.g., `DEV-4A8F-9C12`) is generated from client hardware entropy and permanently stamped at the bottom-left of each certificate.
+
+### 4.2 In-Place OCR Searchable Text Layer
+- Traditional image-based PDFs cannot be searched or copied. QLD CoC Generator solves this by injecting an invisible (`opacity: 0`) text stream directly over the baked image.
+- Because text coordinates precisely match the visual raster layer (`error < 2.0pt`), users can naturally highlight, select, copy, and search (`Ctrl+F`) text across Adobe Acrobat, macOS Spotlight, Windows Search, iOS Files, and Google Drive.
+
+### 4.3 Multi-Page Capacity Matrix
+- **Single-Page Standard** (9.0pt font / 12.0pt leading): Comfortably accommodates **1 to 15 lines** of work description.
+- **Single-Page Compact** (8.0pt font / 10.5pt leading): Dynamically compresses **16 to 18 lines** to remain strictly on Page 1.
+- **Multi-Page Mode** (>18 lines):
+  - Automatically triggers multi-page layout.
+  - Page 1 carries **13 lines** with a bottom continuation notice `--- Continued on Page 2 ---`.
+  - Continuation pages carry **41 to 42 lines**.
+  - **Critical Legal Compliance**: Every single continuation page features a dedicated legal details bar at the bottom (`y = 138`) displaying Customer Name, Site Address, Contractor Licence Number, Testing Dates, and the Tester's digital signature. This guarantees that any single sheet detached from the document remains an independently valid legal record.
+
+---
+
+## 5. Standard Trade Work Presets & Typical Scenarios
+
+The generator includes built-in one-tap presets tailored for high-volume electrical contractor workflows:
+
+1. **Switchboard Upgrade (s229 Installation)**:
+   > *"Installed new surface-mount switchboard enclosure. Fitted 63A main switch and individual RCBO protection to all sub-circuits. Tested to AS/NZS 3000:2018. Earth continuity < 0.5 ohm, insulation resistance > 50 Mohm, RCD trip times verified within statutory limits."*
+2. **Solar PV System Installation (s229 Installation)**:
+   > *"Installed rooftop solar PV array and grid-connected inverter. AC cabling installed in heavy-duty conduit, DC isolators installed adjacent to inverter and array. Tested to AS/NZS 5033 and AS/NZS 4777.2. Polarity, open-circuit voltage, and earth continuity verified."*
+3. **EV Charger Installation (s229 Installation)**:
+   > *"Installed dedicated 32A single-phase EV charging circuit from main switchboard. Fitted Type A/B RCBO protection, heavy-duty 6mm2 copper cabling in conduit. Tested to AS/NZS 3000:2018 Appendix P. Earth fault loop impedance and RCD verification passed."*
+4. **Smoke Alarm Compliance Check (s229 Installation / s208 Equipment)**:
+   > *"Installed interconnected photoelectric smoke alarms to bedrooms and hallways in compliance with Queensland Fire and Emergency Services (QFES) mandate and AS 3786:2014. Radio-frequency interconnection and mains 240V power verified."*
+5. **Safety Switch / RCD Verification (s229 Installation)**:
+   > *"Tested all residual current devices (RCDs) for mechanical operation and trip times under 30mA test current at 0 and 180 degrees. All trip times < 30ms in compliance with AS/NZS 3000:2018 Clause 2.6."*
+
+---
+
+## 6. Frequently Asked Questions (FAQ)
+
+### Q: Who can issue a Queensland Certificate of Testing and Compliance?
+**A**: Only licensed electrical contractors (or qualified persons authorized under a contractor licence) who have tested the electrical work to ensure it is electrically safe and compliant with AS/NZS 3000 can issue this certificate.
+
+### Q: Is this an official government app?
+**A**: No. QLD CoC Generator is an independent, free productivity tool engineered by Kai Electrical Tech Pty Ltd. It precisely formats data into Queensland Electrical Safety Office Form V7.09-2026 specifications.
+
+### Q: Does the app save customer data or job details to a cloud server?
+**A**: Absolutely not. The application is built on a 100% client-side static architecture. All contractor profiles, draft entries, client addresses, and signatures remain strictly inside your browser's local storage (`localStorage`).
+
+### Q: Can I use QLD CoC Generator without an internet connection?
+**A**: Yes. By adding the application to your mobile Home Screen (PWA), the entire engine is cached offline. You can generate, bake, sign, and export compliance certificates on remote job sites without mobile reception.
+
+---
+
+## 7. Developer & Machine Integration Notes
+
+- Static Asset Base: `https://tools.kaielectrical.com.au`
+- Manifest: `/manifest.json` (PWA)
+- Machine Discovery: `/llms.txt` and `/llms-full.txt`
+- Canonical Sitemap: `/sitemap.xml`
+- Robots Directive: Fully allows indexing by standard search bots (`Googlebot`, `Bingbot`) and AI web scrapers (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `Applebot-Extended`).

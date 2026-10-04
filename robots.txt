@@ -1,5 +1,35 @@
-# robots.txt for tools.kaielectrical.com.au (KET CoC Generator)
+# robots.txt for tools.kaielectrical.com.au (QLD CoC Generator)
+
 User-agent: *
 Allow: /
 
+# Dedicated AI Agents & Generative Search Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
 Sitemap: https://tools.kaielectrical.com.au/sitemap.xml
+
+# LLM Agent Knowledge Base
+# https://tools.kaielectrical.com.au/llms.txt
+# https://tools.kaielectrical.com.au/llms-full.txt

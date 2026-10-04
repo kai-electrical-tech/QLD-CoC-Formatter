@@ -1,10 +1,10 @@
-# ⚡ KET CoC Generator `v1.1.0`
+# ⚡ QLD CoC Generator `v1.1.1`
 
-[![Version](https://img.shields.io/badge/version-1.1.0-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.1.1-00dd66.svg)](https://tools.kaielectrical.com.au)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
 
-> Official Queensland *Electrical Safety Regulation 2026* Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator.  
+> Queensland *Electrical Safety Regulation 2026* Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator.  
 > Pure static client-side PWA web application deployed at **[tools.kaielectrical.com.au](https://tools.kaielectrical.com.au)**, built by [Kai Electrical Tech Pty Ltd](https://kaielectrical.com.au).
 
 ---
@@ -16,7 +16,7 @@
    - Formatted in accordance with Queensland *Electrical Safety Regulation 2026* provisions:
      - **s229**: Testing and compliance (Electrical installation)
      - **s208**: Testing and safety (Electrical equipment)
-   - Testing verification and statutory declarations remain solely the responsibility of the qualified person.
+   - Testing verification and statutory compliance remain solely the responsibility of the qualified person.
 
 2. **🏷️ 100% Free & Watermark-Free**
    - Free to use with zero subscriptions, zero account logins, and no paywalls.
@@ -40,9 +40,10 @@
    - Highly optimized file size (~230 KB per page) for rapid sharing over mobile networks (AirDrop, Email, SMS).
    - Every certificate is stamped with a unique physical Device ID (`DEV-XXXX-XXXX`) at the bottom-left to prove the originating device.
 
-7. **📑 Official Standard & Multi-Page Annexure A**
-   - Formatted to official Queensland ESO Form V7.09-2026 specifications.
-   - Automatically generates a standardized **Annexure A** continuation sheet if the work description exceeds Page 1 capacity (17 lines).
+7. **📑 Multi-Page Continuation Engine**
+   - Formatted to Queensland ESO Form V7.09-2026 specifications.
+   - Standard jobs of 1 to 15 lines fit standard Page 1, 16 to 18 lines fit compact Page 1.
+   - For jobs exceeding 18 lines, automatically generates clean continuation sheets with complete customer, address, contractor licence, and signature bars on every single page.
 
 8. **💾 Portable Profile Configuration Backup**
    - One-click `.json` backup and restore to safeguard contractor details, custom logo, and work description presets across devices or browser cache clearing.
