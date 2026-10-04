@@ -40,7 +40,7 @@
   // State
   let currentPresets = [];
   let expandedPresetIds = new Set();
-  let isPresetsExpanded = false;
+  let isPresetsExpanded = true;
   let currentActiveTab = 'form';
   const tabScrollPositions = { form: 0, history: 0, profile: 0 };
   let signaturePadCanvas = null;
@@ -584,6 +584,18 @@
     }
     renderPresetChips();
     renderPresetsManager();
+
+    // Check user preference for presets collapse state (default: expanded)
+    const userCollapsed = localStorage.getItem('qld_coc_presets_collapsed') === 'true';
+    isPresetsExpanded = !userCollapsed;
+    const chipsContainer = document.getElementById('presetChipsContainer');
+    const toggleArrow = document.getElementById('presetToggleArrow');
+    if (chipsContainer) {
+      chipsContainer.style.display = isPresetsExpanded ? 'flex' : 'none';
+    }
+    if (toggleArrow) {
+      toggleArrow.textContent = isPresetsExpanded ? '▴' : '▾';
+    }
   }
 
   function renderPresetChips() {
@@ -614,6 +626,7 @@
     isPresetsExpanded = !isPresetsExpanded;
     container.style.display = isPresetsExpanded ? 'flex' : 'none';
     if (arrow) arrow.textContent = isPresetsExpanded ? '▴' : '▾';
+    localStorage.setItem('qld_coc_presets_collapsed', isPresetsExpanded ? 'false' : 'true');
   };
 
   window.clearWorkPerformedFor = function() {
