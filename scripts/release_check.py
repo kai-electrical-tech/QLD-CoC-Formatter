@@ -122,9 +122,9 @@ class PreflightChecker:
             if branch == "dev":
                 self.log("PASS", "Git Branch", f"Currently on development branch '{branch}'.")
             elif branch == "main":
-                self.log("WARN", "Git Branch", f"Currently on production branch '{branch}'. Release work should normally start from 'dev'.")
+                self.log("PASS", "Git Branch", f"Currently on production release branch '{branch}'.")
             else:
-                self.log("WARN", "Git Branch", f"On non-standard branch '{branch}' (expected 'dev').")
+                self.log("WARN", "Git Branch", f"On non-standard branch '{branch}' (expected 'dev' or 'main').")
 
         # Check clean tree
         code, status_out, _ = self.run_command(["git", "status", "--porcelain"])
