@@ -14,7 +14,7 @@
 Across all architectural layers and user interactions, the system adheres to one non-negotiable tenet:  
 **"On-site operational speed, customer data privacy, and strict statutory compliance take absolute precedence over all other concerns. No architectural complexity, third-party dependency, or UI bloat shall compromise the electrician's workflow."**
 
-This document establishes the six core Architecture Decision Records (ADRs) that govern the codebase.
+This document establishes the seven core Architecture Decision Records (ADRs) that govern the codebase.
 
 ---
 
@@ -117,9 +117,30 @@ This document establishes the six core Architecture Decision Records (ADRs) that
 
 ---
 
+### ADR-07: Automated Multi-Gate Release Preflight Verifier & Quality Gateway (`release_check.py`)
+
+* **Status**: Accepted
+* **Context & Problem Statement**:
+  1. Manual releases of client-side web applications are prone to version drift and cache invalidation failures (e.g., updating CSS/JS query strings in `index.html` but forgetting `sw.js` cache names or `sitemap.xml` timestamps), causing end users to load stale assets or break offline synchronization.
+  2. Statutory compliance requires absolute zero leakage of forbidden terminology (e.g., "official", "Stat Dec", "Statutory Declaration") across code, metadata, and AI search indexing files.
+  3. Public open-source standards demand strict privacy sanitization (zero local filesystem paths, zero personal usernames or private emails) and 100% English code/documentation purity.
+  4. Core PDF layout and rendering accuracy (sub-pixel text alignment, 200 DPI rasterization, byte budgets, multi-page threshold) must be mathematically verified in headless execution before staging.
+* **Decision (Six-Gate Preflight Pipeline)**:
+  - All deployments must pass [`scripts/release_check.py`](scripts/release_check.py) covering six sequential validation gates:
+    1. **Gate 1: Branch Hygiene & Clean Tree**: Ensures active work originates from `dev` and audits working tree cleanliness.
+    2. **Gate 2: Version Consistency Matrix**: Validates exact version parity across `index.html` asset queries (`?v=X.Y.Z`), profile settings card, `sw.js` cache name (`qld-coc-cache-vX.Y.Z`), `README.md` badge/title, and `sitemap.xml` ISO-8601 timestamps.
+    3. **Gate 3: Silent Release vs. Modal Policy**: Enforces ADR-06 so returning user modals are triggered only for major UX evolutions, maintaining silent background updates for minor releases.
+    4. **Gate 4: Regulatory Forbidden Terms Audit**: Scans tracked files for forbidden regulatory terminology.
+    5. **Gate 5: Open-Source Privacy & English Purity**: Enforces corporate committer identity (`Kai Electrical Tech <hello@kaielectrical.com.au>`), 100% English language purity across all files, and scans against local drive paths, Windows usernames, and personal email addresses.
+    6. **Gate 6: Dual-Layer Automated Test Suite**: Executes Playwright and PyMuPDF headless browser verification asserting DOM branding, byte budgets, sub-pixel text alignment, and pagination thresholds.
+  - **Physical Git Pre-Push Hook Integration**:
+    A pre-push hook (`.git/hooks/pre-push`) enforces this gateway locally, physically aborting unverified `git push` attempts.
+
+---
+
 ## 3. Governance & Quality Gateways
 
-All pull requests and code modifications must pass the automated preflight gateway:
+All pull requests, branch merges, and releases must pass the automated preflight gateway:
 ```powershell
 uv run python tools/scripts/release_check.py
 ```
@@ -129,3 +150,5 @@ uv run python tools/scripts/release_check.py
 2. **Version Synchronization**: Strict alignment across `index.html` asset queries (`?v=X.Y.Z`), `sw.js` cache name, and `README.md`.
 3. **Forbidden Terminology Audit**: Zero occurrences of forbidden phrases (`official`, `Stat Dec`, `Statutory Declaration`) across all public files.
 4. **Dual-Layer Test Suite**: 100% pass across Tests 1–5 in `verify_pdf.py` (DOM branding, byte budget, sub-pixel text alignment, single/multi-page capacity thresholds, and Schema.org discoverability).
+5. **Privacy & Sanitization**: Zero local paths or non-corporate identifiers.
+

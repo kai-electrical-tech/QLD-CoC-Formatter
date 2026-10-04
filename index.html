@@ -83,7 +83,8 @@
           "In-place searchable OCR text layer (Ctrl+F enabled)",
           "Smart Queensland street and suburb address autocomplete",
           "Multi-page continuation engine for jobs exceeding 18 lines",
-          "Offline-ready PWA with Service Worker caching and Web Share API"
+          "Offline-ready PWA with Service Worker caching and Web Share API",
+          "Built-in Queensland compliance testing presets for Smoke Alarms (AS 3786), Battery (AS/NZS 5139), Solar PV (AS/NZS 5033), EV Chargers (AS/NZS 3000), and Switchboards"
         ],
         "areaServed": {
           "@type": "AdministrativeArea",
@@ -153,6 +154,14 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "QLD CoC Generator automatically activates its multi-page continuation engine. Standard jobs of 1 to 15 lines fit standard Page 1, 16 to 18 lines fit compact Page 1, and jobs with 19 or more lines flow onto continuation sheets with full customer, address, licence, and signature bars on every single page."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What work description testing presets are included for Queensland electrical contractors?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "QLD CoC Generator includes standard Queensland compliance presets citing AS/NZS 3000:2018 and relevant Australian standards for Smoke Alarms (AS 3786:2014 & QLD legislation), Battery Energy Storage Systems (AS/NZS 5139:2019), Solar PV installations (AS/NZS 5033:2021), EV Charger circuits (AS/NZS 3000 Section 7.9 & QECM), and Switchboard upgrades."
             }
           }
         ]
@@ -540,7 +549,6 @@
               </button>
             </div>
           </div>
-          <div id="presetUpgradeBannerContainer"></div>
           <div id="presetsManagerList"></div>
           <p class="form-hint" id="presetDisclaimer" style="margin-top: 14px; margin-bottom: 0; line-height: 1.5;">Templates are reference examples only. Technical testing accuracy, verification, and statutory compliance remain solely the responsibility of the qualified electrical contractor (ESR 2026 / AS/NZS 3000).</p>
         </div>

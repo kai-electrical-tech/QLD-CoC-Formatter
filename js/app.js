@@ -43,7 +43,6 @@
   let currentPresets = [];
   let expandedPresetIds = new Set();
   let isPresetsExpanded = true;
-  let pendingPresetUpgrade = false;
   let currentActiveTab = 'form';
   const tabScrollPositions = { form: 0, history: 0, profile: 0 };
   let signaturePadCanvas = null;
@@ -1006,30 +1005,6 @@
     const container = document.getElementById('presetsManagerList');
     const badge = document.getElementById('presetsCountBadge') || document.getElementById('presetCountBadge');
     const btnAdd = document.getElementById('btnAddPreset');
-    const bannerContainer = document.getElementById('presetUpgradeBannerContainer');
-
-    if (bannerContainer) {
-      if (pendingPresetUpgrade) {
-        bannerContainer.innerHTML = `
-          <div class="preset-upgrade-banner">
-            <div class="preset-upgrade-banner-header">
-              <span class="preset-upgrade-badge">New in v1.2.0</span>
-              <span class="preset-upgrade-title">Queensland Standard Presets Available</span>
-            </div>
-            <p class="preset-upgrade-desc">
-              We've introduced 5 comprehensive, AS/NZS 3000-compliant templates (Smoke Alarms, Battery, Solar PV, EV Charger, Switchboard). Choose how to update your presets:
-            </p>
-            <div class="preset-upgrade-actions">
-              <button type="button" class="btn-brand-sm" onclick="window.appendStandardPresets()">Append to Mine</button>
-              <button type="button" class="btn-danger-sm" onclick="window.replaceWithStandardPresets()">Replace All</button>
-              <button type="button" class="btn-ghost-sm" onclick="window.dismissPresetUpgrade()">Keep Mine</button>
-            </div>
-          </div>
-        `;
-      } else {
-        bannerContainer.innerHTML = '';
-      }
-    }
 
     if (badge) {
       badge.textContent = `${currentPresets.length}/${MAX_PRESETS}`;
@@ -1193,76 +1168,6 @@
         }
       ]
     });
-  };
-
-  window.appendStandardPresets = function() {
-    const existingTexts = new Set(currentPresets.map(p => p.text.trim()));
-    const existingTitles = new Set(currentPresets.map(p => p.title.trim().toLowerCase()));
-    const toAppend = [];
-
-    STANDARD_PRESETS.forEach(std => {
-      if (existingTexts.has(std.text.trim())) return;
-      let title = std.title;
-      if (existingTitles.has(title.toLowerCase())) {
-        const candidate = `${title} 2`;
-        title = candidate.length <= 15 ? candidate : `${title.substring(0, 13)} 2`;
-      }
-      toAppend.push({
-        id: `std_${std.id}_${Date.now()}_${Math.random().toString(16).substring(2, 6)}`,
-        title: title,
-        text: std.text
-      });
-      existingTitles.add(title.toLowerCase());
-    });
-
-    if (toAppend.length === 0) {
-      showSimpleToast('All standard presets already present in your list');
-    } else {
-      currentPresets = [...currentPresets, ...toAppend].slice(0, MAX_PRESETS);
-      localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
-      showSimpleToast(`Appended ${toAppend.length} standard preset(s)`);
-    }
-
-    localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-    localStorage.removeItem('qld_coc_preset_upgrade_pending');
-    pendingPresetUpgrade = false;
-    renderPresetChips();
-    renderPresetsManager();
-  };
-
-  window.replaceWithStandardPresets = function() {
-    showUnifiedToast({
-      title: 'Replace All Presets?',
-      desc: 'Replace all work description presets with the 5 new Queensland standard presets? Custom modifications will be replaced.',
-      buttons: [
-        { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
-        {
-          text: 'Replace All',
-          isPrimary: true,
-          isDanger: true,
-          onClick: () => {
-            currentPresets = createStandardPresets();
-            expandedPresetIds.clear();
-            localStorage.setItem('qld_coc_presets', JSON.stringify(currentPresets));
-            localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-            localStorage.removeItem('qld_coc_preset_upgrade_pending');
-            pendingPresetUpgrade = false;
-            renderPresetChips();
-            renderPresetsManager();
-            hideUnifiedToast();
-            showSimpleToast('Presets replaced with Queensland standards');
-          }
-        }
-      ]
-    });
-  };
-
-  window.dismissPresetUpgrade = function() {
-    localStorage.setItem('qld_coc_presets_ver', PRESET_SCHEMA_VERSION);
-    localStorage.removeItem('qld_coc_preset_upgrade_pending');
-    pendingPresetUpgrade = false;
-    renderPresetsManager();
-    showSimpleToast('Existing presets retained');
   };
 
   window.resetDefaultPresets = function() {

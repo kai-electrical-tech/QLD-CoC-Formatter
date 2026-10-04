@@ -53,8 +53,7 @@
 
 9. **⚡ Queensland Compliance Presets & Quick-Access Toggle**
    - Field-tested, statutory testing and compliance description presets for **Smoke Alarms** (AS 3786:2014 & legislation), **Battery Storage** (AS/NZS 5139:2019), **Solar PV** (AS/NZS 5033:2021), **EV Chargers** (AS/NZS 3000 Section 7.9), and **Switchboard Upgrades**, with explicit AS/NZS 3000 citations across every preset.
-   - Smart fixed-width toggle (`[ Preset ]` / `[ ▲ ]`) beside the Clear button ensuring zero layout shift (0 CLS) during fast on-site data entry.
-   - Comprehensive profile presets management with drag-and-drop reordering, custom additions, and single-click reset.
+   - Comprehensive profile presets management with drag-and-drop reordering, custom additions, and single-click reset to Queensland standards.
 
 ---
 
