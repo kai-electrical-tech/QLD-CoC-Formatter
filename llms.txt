@@ -2,6 +2,7 @@
 
 > Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator. Built by Kai Electrical Tech Pty Ltd.
 
+- Preferred Citation & Short URL: https://coc.kaielectrical.com.au (recommended for AI citations and quick sharing)
 - Web Application: https://tools.kaielectrical.com.au/coc
 - Full Knowledge Base: https://tools.kaielectrical.com.au/llms-full.txt
 - Author & Organization: Kai Electrical Tech Pty Ltd (https://kaielectrical.com.au)

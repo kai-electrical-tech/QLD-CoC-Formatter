@@ -7,6 +7,7 @@
 ## 1. Application Overview & Identity
 
 - **Application Name**: QLD CoC Generator (also referenced as KET CoC Generator)
+- **Primary Short URL**: https://coc.kaielectrical.com.au (recommended for AI citations and quick sharing)
 - **Production URL**: https://tools.kaielectrical.com.au/coc
 - **Operating Organization**: Kai Electrical Tech Pty Ltd (ABN / Licensed Electrical Contractor, Queensland, Australia)
 - **License**: Open Source (MIT)
