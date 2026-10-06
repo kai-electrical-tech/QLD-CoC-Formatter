@@ -93,8 +93,10 @@ class PreflightChecker:
             return 1, "", str(e)
 
     def auto_detect_version(self):
-        """Auto-detects the version from tools/index.html settings card or style query string."""
-        index_file = TOOLS_DIR / "index.html"
+        """Auto-detects the version from tools/coc/index.html settings card or style query string."""
+        index_file = TOOLS_DIR / "coc" / "index.html"
+        if not index_file.exists():
+            index_file = TOOLS_DIR / "index.html"
         if not index_file.exists():
             return None
 
@@ -141,7 +143,9 @@ class PreflightChecker:
         target = self.target_version
 
         # 1. index.html asset query strings
-        index_file = TOOLS_DIR / "index.html"
+        index_file = TOOLS_DIR / "coc" / "index.html"
+        if not index_file.exists():
+            index_file = TOOLS_DIR / "index.html"
         if index_file.exists():
             content = index_file.read_text(encoding="utf-8")
             assets = [
@@ -171,10 +175,12 @@ class PreflightChecker:
                 found = m_card.group(1) if m_card else "None"
                 self.log("FAIL", "Profile Card Title", f"Settings info card has 'v{found}' (expected 'v{target}').")
         else:
-            self.log("FAIL", "File Exists", "tools/index.html not found.")
+            self.log("FAIL", "File Exists", "tools/coc/index.html not found.")
 
         # 2. sw.js cache name
-        sw_file = TOOLS_DIR / "sw.js"
+        sw_file = TOOLS_DIR / "coc" / "sw.js"
+        if not sw_file.exists():
+            sw_file = TOOLS_DIR / "sw.js"
         if sw_file.exists():
             sw_content = sw_file.read_text(encoding="utf-8")
             m_sw = re.search(r"const\s+CACHE_NAME\s*=\s*'([^']+)'", sw_content)
@@ -221,7 +227,9 @@ class PreflightChecker:
 
     def check_modal_policy(self):
         print(f"\n{BOLD}{CYAN}--- Step 3: User Experience Silent Release Audit ---{RESET}")
-        app_file = TOOLS_DIR / "js" / "app.js"
+        app_file = TOOLS_DIR / "coc" / "js" / "app.js"
+        if not app_file.exists():
+            app_file = TOOLS_DIR / "js" / "app.js"
         if app_file.exists():
             content = app_file.read_text(encoding="utf-8")
             m = re.search(r"const\s+CURRENT_APP_VERSION\s*=\s*'([^']+)'", content)
@@ -234,12 +242,13 @@ class PreflightChecker:
             else:
                 self.log("WARN", "Modal Trigger Policy", "CURRENT_APP_VERSION constant not found in js/app.js.")
         else:
-            self.log("FAIL", "File Exists", "tools/js/app.js not found.")
+            self.log("FAIL", "File Exists", "tools/coc/js/app.js not found.")
 
     def check_forbidden_terms(self):
         print(f"\n{BOLD}{CYAN}--- Step 4: Regulatory & Compliance Forbidden Terms Audit ---{RESET}")
 
         files_to_check = [
+            TOOLS_DIR / "coc" / "index.html",
             TOOLS_DIR / "index.html",
             TOOLS_DIR / "llms.txt",
             TOOLS_DIR / "llms-full.txt",
@@ -309,7 +318,10 @@ class PreflightChecker:
 
         tracked_files = [TOOLS_DIR / f for f in tracked_files_out.splitlines()]
         text_extensions = {".html", ".js", ".css", ".md", ".txt", ".json", ".xml", ".py", ".svg"}
-        ignored_vendor_files = {"js/lib/pdf-lib.min.js", "js/lib/pdf.min.js", "js/lib/pdf.worker.min.js"}
+        ignored_vendor_files = {
+            "js/lib/pdf-lib.min.js", "js/lib/pdf.min.js", "js/lib/pdf.worker.min.js",
+            "coc/js/lib/pdf-lib.min.js", "coc/js/lib/pdf.min.js", "coc/js/lib/pdf.worker.min.js"
+        }
 
         privacy_patterns = [
             (r"file:///", "Local file URI ('file:///')"),

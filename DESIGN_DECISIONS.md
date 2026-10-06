@@ -1,7 +1,7 @@
 # QLD CoC Generator — Architectural Principles & Design Decisions (ADR)
 
 > **Document Status**: Accepted / Authoritative  
-> **Applies To**: `tools/` (`https://tools.kaielectrical.com.au`)  
+> **Applies To**: `tools/coc/` (`https://tools.kaielectrical.com.au/coc`)  
 > **Primary Audience**: Core Engineers, Open Source Contributors, Compliance Auditors, AI Agents  
 > **Repository**: [kai-electrical-tech/QLD-CoC-Formatter](https://github.com/kai-electrical-tech/QLD-CoC-Formatter)
 

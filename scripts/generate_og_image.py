@@ -8,7 +8,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_FILE = ROOT / "assets" / "og-preview.png"
+OUTPUT_FILE = ROOT / "coc" / "assets" / "og-preview.png"
 
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
@@ -366,7 +366,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span class="footer-dot"></span>
       <span>Mandatory 5-Year Retention</span>
     </div>
-    <div class="footer-url">tools.kaielectrical.com.au</div>
+    <div class="footer-url">coc.kaielectrical.com.au</div>
   </div>
 </body>
 </html>

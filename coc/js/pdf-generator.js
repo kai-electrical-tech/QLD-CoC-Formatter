@@ -686,7 +686,7 @@
       }
       bakedDoc.setTitle(filename);
 
-      const toolAttribution = 'KET CoC Generator (https://tools.kaielectrical.com.au)';
+      const toolAttribution = 'KET CoC Generator (https://tools.kaielectrical.com.au/coc)';
       bakedDoc.setCreator(toolAttribution);
       bakedDoc.setProducer(toolAttribution);
       bakedDoc.setSubject(certTypeName);

@@ -1,0 +1,4 @@
+# Cloudflare Pages Redirect Rules
+# Temporary 302 redirect to /coc/ until future multi-tool suite hub is launched
+/                /coc/            302
+/index.html      /coc/            302

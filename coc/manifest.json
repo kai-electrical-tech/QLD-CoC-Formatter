@@ -3,6 +3,7 @@
   "short_name": "CoC Generator",
   "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#00dd66",

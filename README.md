@@ -1,11 +1,11 @@
 # QLD CoC Generator `v1.2.2`
 
-[![Version](https://img.shields.io/badge/version-1.2.2-00dd66.svg)](https://tools.kaielectrical.com.au)
+[![Version](https://img.shields.io/badge/version-1.2.2-00dd66.svg)](https://tools.kaielectrical.com.au/coc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au)
+[![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au/coc)
 
 > Queensland *Electrical Safety Regulation 2026* Certificate of Testing & Compliance (CoC / CoT / CoTC) Generator.  
-> Pure static client-side PWA web application deployed at **[tools.kaielectrical.com.au](https://tools.kaielectrical.com.au)**, built by [Kai Electrical Tech Pty Ltd](https://kaielectrical.com.au).
+> Pure static client-side PWA web application deployed at **[tools.kaielectrical.com.au/coc](https://tools.kaielectrical.com.au/coc)** (redirected from [coc.kaielectrical.com.au](https://coc.kaielectrical.com.au)), built by [Kai Electrical Tech Pty Ltd](https://kaielectrical.com.au).
 
 ---
 

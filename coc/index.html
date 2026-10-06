@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>QLD CoC Generator | Electrical Certificate of Compliance</title>
+  
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#00dd66">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CoC Generator">
+  <meta name="description" content="Free Queensland Electrical Safety Regulation 2026 Certificate of Testing &amp; Compliance (s229/s208) generator. Anti-tamper PDF, zero cloud storage, offline ready.">
+  <meta name="keywords" content="QLD CoC Generator, Certificate of Testing and Compliance, QLD electrical certificate of compliance, ESO Form V7.09-2026, Electrical Safety Regulation 2026 s229 s208, free electrical certificate app, AS NZS 3000 certificate, CoTC generator QLD">
+  <link rel="canonical" href="https://tools.kaielectrical.com.au/coc/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Open Graph & Social Sharing Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="QLD CoC Generator | Electrical Certificate of Compliance">
+  <meta property="og:description" content="Free Queensland Electrical Safety Regulation 2026 Certificate of Testing &amp; Compliance (s229/s208) generator. Anti-tamper PDF, zero cloud storage, offline ready.">
+  <meta property="og:url" content="https://tools.kaielectrical.com.au/coc/">
+  <meta property="og:site_name" content="QLD CoC Generator">
+  <meta property="og:locale" content="en_AU">
+  <meta property="og:image" content="https://tools.kaielectrical.com.au/coc/assets/og-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="QLD CoC Generator - Queensland Electrical Certificate of Testing &amp; Compliance">
+
+  <!-- Twitter Card Metadata -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="QLD CoC Generator | Electrical Certificate of Compliance">
+  <meta name="twitter:description" content="Free Queensland Electrical Safety Regulation 2026 Certificate of Testing &amp; Compliance (s229/s208) generator. Anti-tamper PDF, zero cloud storage, offline ready.">
+  <meta name="twitter:image" content="https://tools.kaielectrical.com.au/coc/assets/og-preview.png">
+
+  <!-- JSON-LD Structured Data for Search Engines & AI Crawlers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["SoftwareApplication", "WebApplication"],
+        "name": "QLD CoC Generator",
+        "alternateName": [
+          "KET CoC Generator",
+          "QLD Electrical CoC Generator",
+          "ESO Form V7.09 Generator",
+          "Queensland Certificate of Testing and Compliance Formatter"
+        ],
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "url": "https://tools.kaielectrical.com.au/coc",
+        "image": "https://tools.kaielectrical.com.au/coc/assets/og-preview.png",
+        "author": {
+          "@type": "Organization",
+          "name": "Kai Electrical Tech Pty Ltd",
+          "url": "https://kaielectrical.com.au"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Kai Electrical Tech Pty Ltd",
+          "url": "https://kaielectrical.com.au"
+        },
+        "description": "Queensland Electrical Safety Regulation 2026 Certificate of Testing & Compliance (s229 Installation / s208 Equipment) generator with anti-tamper rasterization, in-place searchable text, and 100% client-side privacy.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "AUD"
+        },
+        "featureList": [
+          "Queensland Electrical Safety Regulation 2026 (s229 Installation & s208 Equipment) compliant",
+          "Queensland ESO Form V7.09-2026 standard layout",
+          "100% Client-Side Privacy: zero cloud databases, zero server transmission",
+          "200 DPI anti-tamper rasterization with physical Device ID stamping",
+          "In-place searchable OCR text layer (Ctrl+F enabled)",
+          "Smart Queensland street and suburb address autocomplete",
+          "Multi-page continuation engine for jobs exceeding 18 lines",
+          "Offline-ready PWA with Service Worker caching and Web Share API",
+          "Built-in Queensland compliance testing presets for Smoke Alarms (AS 3786), Battery (AS/NZS 5139), Solar PV (AS/NZS 5033), EV Chargers (AS/NZS 3000), and Switchboards"
+        ],
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Queensland, Australia"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "Kai Electrical Tech Pty Ltd",
+        "url": "https://kaielectrical.com.au",
+        "logo": "https://tools.kaielectrical.com.au/coc/assets/logo.png"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a Queensland Electrical Certificate of Testing and Compliance (CoC / CoTC)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Under the Queensland Electrical Safety Regulation 2026 (s229 for electrical installation work and s208 for electrical equipment), licensed electrical contractors must test electrical work and issue a Certificate of Testing and Compliance (for installations) or Certificate of Testing and Safety (for equipment) to the person who requested the work as soon as practicable."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between s229 and s208 under the Electrical Safety Regulation 2026?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Section 229 covers electrical installation work (e.g. switchboard upgrades, new circuits, sub-mains, and solar connections), certifying that the installation is electrically safe and compliant with AS/NZS 3000 Wiring Rules. Section 208 covers work on electrical equipment, certifying that the specific electrical equipment is electrically safe."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is QLD CoC Generator free and compliant with Queensland ESO standards?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, QLD CoC Generator is 100% free with no watermarks, subscriptions, or paywalls. It formats certificates precisely to Queensland Electrical Safety Office (ESO Form V7.09-2026) specifications."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How long must Queensland electrical contractors keep Certificates of Testing and Compliance?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Under Queensland Electrical Safety Regulation 2026 s229(3) and s208(3), licensed electrical contractors are legally obligated to retain a copy of each issued certificate for a mandatory retention period of 5 years."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the anti-tamper security and searchable text layer work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The generator flattens the certificate into a high-resolution, non-editable flat raster image stamped with a unique physical Device ID (DEV-XXXX) to prevent post-issuance alteration. An invisible in-place text layer is overlaid with sub-pixel alignment, allowing full Ctrl+F search, text selection, and copying."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does QLD CoC Generator work offline on remote job sites?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Built as an offline-first Progressive Web App (PWA), the application is fully cached by the browser. It functions seamlessly on remote sites without 4G/5G mobile reception, supporting native sharing (AirDrop, Email, WhatsApp) and A4 printing."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens if an electrical work description exceeds Page 1 (over 18 lines)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "QLD CoC Generator automatically activates its multi-page continuation engine. Standard jobs of 1 to 15 lines fit standard Page 1, 16 to 18 lines fit compact Page 1, and jobs with 19 or more lines flow onto continuation sheets with full customer, address, licence, and signature bars on every single page."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What work description testing presets are included for Queensland electrical contractors?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "QLD CoC Generator includes standard Queensland compliance presets citing AS/NZS 3000:2018 and relevant Australian standards for Smoke Alarms (AS 3786:2014 & QLD legislation), Battery Energy Storage Systems (AS/NZS 5139:2019), Solar PV installations (AS/NZS 5033:2021), EV Charger circuits (AS/NZS 3000 Section 7.9 & QECM), and Switchboard upgrades."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Generate a Queensland Electrical Certificate of Testing and Compliance",
+        "description": "Step-by-step instructions for licensed electrical contractors to generate an ESO Form V7.09-2026 certificate on-site.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Select Certificate Type",
+            "text": "Choose between Testing and Compliance (s229 Installation) or Testing and Safety (s208 Equipment)."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Enter Customer & Installation Details",
+            "text": "Fill in the customer name, installation address (with instant Queensland suburb autocomplete), and optional job reference."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Enter Work Description & Testing Results",
+            "text": "Describe the electrical work, test results (earth continuity, insulation resistance, RCD trip times), or choose from trade presets."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Confirm Contractor Credentials & Sign",
+            "text": "Enter contractor business name, electrical licence number, dates of test and notice, and sign digitally on screen."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Generate & Share Anti-Tamper PDF",
+            "text": "Generate the baked 200 DPI tamper-proof PDF with Device ID stamp, and share directly with the customer via AirDrop, Email, or Print."
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css?v=1.2.2">
+</head>
+<body>
+
+  <!-- Signature Spotlight Dimming Backdrop (Outside clicks do not exit signing mode) -->
+  <div id="signatureDimBackdrop" class="signature-dim-backdrop"></div>
+
+  <!-- ==========================================
+       1. MINIMALIST SWISS HEADER (Frosted Glass from Website Homepage)
+       ========================================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer" class="brand-logo-link" aria-label="Kai Electrical Tech Home">
+        <svg class="brand-logo" viewBox="68 88 1820 658" width="105" height="38" preserveAspectRatio="xMinYMid meet" aria-hidden="true" style="pointer-events:none;">
+          <path fill="#00DD66" fill-rule="evenodd" d="M 739 92 L 739 579 L 1253 579 L 1253 464 L 946 464 L 944 462 L 945 383 L 1194 382 L 1194 275 L 944 274 L 945 203 L 1253 203 L 1253 91 Z M 68 91 L 68 579 L 264 579 L 264 467 L 305 425 L 337 396 L 337 397 L 341 402 L 342 405 L 357 427 L 395 488 L 419 524 L 434 549 L 449 571 L 450 574 L 454 579 L 682 579 L 674 566 L 658 544 L 645 524 L 470 272 L 469 269 L 641 91 L 454 91 L 265 293 L 264 91 Z M 1293 88 L 1293 203 L 1485 204 L 1485 579 L 1693 579 L 1694 203 L 1888 203 L 1888 88 Z"/>
+          <path fill="#646464" fill-rule="evenodd" d="M 1803 643 L 1803 745 L 1835 745 L 1843 744 L 1853 741 L 1863 736 L 1867 733 L 1872 728 L 1877 721 L 1880 715 L 1883 705 L 1884 697 L 1884 688 L 1882 675 L 1878 665 L 1873 658 L 1869 654 L 1865 651 L 1857 647 L 1851 645 L 1839 643 Z M 1818 657 L 1840 657 L 1845 658 L 1851 660 L 1855 662 L 1858 665 L 1859 665 L 1861 667 L 1861 668 L 1864 671 L 1867 677 L 1869 687 L 1869 699 L 1868 705 L 1866 711 L 1864 715 L 1861 719 L 1857 723 L 1853 726 L 1849 728 L 1843 730 L 1838 731 L 1817 730 Z M 1723 643 L 1723 657 L 1751 658 L 1751 745 L 1765 745 L 1766 657 L 1793 657 L 1793 643 Z M 1668 643 L 1669 745 L 1721 745 L 1721 731 L 1683 730 L 1683 643 Z M 1476 643 L 1476 657 L 1503 658 L 1504 745 L 1518 745 L 1519 657 L 1546 656 L 1547 650 L 1549 653 L 1555 666 L 1576 707 L 1576 745 L 1590 745 L 1590 707 L 1598 691 L 1612 666 L 1623 643 L 1607 644 L 1598 663 L 1596 665 L 1585 688 L 1582 688 L 1571 666 L 1571 664 L 1561 644 Z M 1452 645 L 1443 643 L 1409 643 L 1410 745 L 1424 744 L 1425 707 L 1443 707 L 1450 705 L 1459 700 L 1465 694 L 1468 689 L 1471 679 L 1471 668 L 1469 661 L 1466 655 L 1461 650 Z M 1425 657 L 1443 657 L 1450 660 L 1454 664 L 1456 669 L 1456 680 L 1454 685 L 1449 690 L 1443 693 L 1437 694 L 1424 693 Z M 1277 643 L 1277 745 L 1291 745 L 1292 700 L 1338 701 L 1338 745 L 1352 745 L 1352 643 L 1338 643 L 1337 686 L 1291 685 L 1291 643 Z M 1123 643 L 1123 745 L 1177 745 L 1177 731 L 1137 730 L 1138 700 L 1172 700 L 1172 687 L 1137 686 L 1138 657 L 1175 657 L 1175 643 Z M 1042 644 L 1043 657 L 1070 658 L 1070 745 L 1084 745 L 1085 657 L 1112 657 L 1112 643 Z M 949 644 L 950 745 L 1002 745 L 1002 731 L 964 730 L 964 643 Z M 889 644 L 889 646 L 887 649 L 886 654 L 882 662 L 875 683 L 859 725 L 855 733 L 854 738 L 852 741 L 852 743 L 851 745 L 867 744 L 869 740 L 875 721 L 877 717 L 915 717 L 924 743 L 926 745 L 941 745 L 940 743 L 940 741 L 938 738 L 937 733 L 912 667 L 908 659 L 903 644 Z M 896 667 L 898 670 L 899 675 L 907 697 L 909 700 L 908 703 L 883 702 L 883 699 L 894 669 Z M 743 643 L 743 745 L 757 745 L 757 643 Z M 664 643 L 664 745 L 678 745 L 679 703 L 690 703 L 693 704 L 699 710 L 701 713 L 708 728 L 716 743 L 718 745 L 734 745 L 733 742 L 731 740 L 726 729 L 714 707 L 712 704 L 709 701 L 709 697 L 715 694 L 720 689 L 723 684 L 725 678 L 725 665 L 724 661 L 720 654 L 716 650 L 713 648 L 707 645 L 699 643 Z M 679 657 L 699 657 L 704 659 L 709 664 L 710 667 L 710 678 L 708 682 L 704 686 L 698 689 L 678 688 Z M 584 643 L 584 657 L 611 658 L 612 745 L 626 745 L 627 657 L 654 656 L 653 643 Z M 439 643 L 439 745 L 493 745 L 493 731 L 453 730 L 454 700 L 488 700 L 488 687 L 455 687 L 453 685 L 454 657 L 491 657 L 491 643 Z M 375 643 L 375 745 L 428 745 L 428 731 L 389 730 L 389 643 Z M 306 643 L 306 745 L 361 744 L 360 731 L 320 730 L 320 702 L 322 700 L 356 700 L 356 687 L 322 687 L 320 685 L 321 657 L 358 657 L 358 643 Z M 235 643 L 235 745 L 249 745 L 249 643 Z M 71 644 L 72 745 L 86 745 L 87 703 L 116 737 L 124 745 L 152 745 L 154 741 L 160 722 L 162 718 L 164 716 L 199 716 L 201 718 L 204 726 L 204 728 L 208 739 L 210 742 L 211 745 L 226 745 L 226 743 L 225 740 L 221 732 L 216 717 L 210 702 L 197 666 L 190 650 L 189 645 L 188 643 L 175 643 L 174 645 L 174 647 L 172 650 L 171 655 L 167 663 L 140 736 L 138 739 L 135 736 L 127 726 L 118 717 L 97 693 L 97 691 L 106 682 L 133 652 L 140 643 L 122 643 L 115 650 L 101 667 L 87 682 L 86 643 Z M 181 667 L 183 669 L 184 674 L 194 699 L 193 703 L 168 702 L 168 700 L 170 697 L 172 689 L 177 678 L 179 670 Z M 1227 642 L 1222 643 L 1212 647 L 1206 651 L 1196 661 L 1194 664 L 1189 674 L 1186 686 L 1186 705 L 1189 717 L 1193 725 L 1200 734 L 1205 738 L 1214 743 L 1224 746 L 1244 746 L 1256 743 L 1260 741 L 1262 739 L 1262 725 L 1259 726 L 1257 728 L 1255 729 L 1246 732 L 1240 733 L 1229 733 L 1219 730 L 1213 726 L 1209 722 L 1206 718 L 1203 712 L 1201 705 L 1200 695 L 1201 685 L 1203 678 L 1207 670 L 1210 666 L 1217 660 L 1223 657 L 1231 655 L 1243 655 L 1248 656 L 1254 658 L 1262 662 L 1261 646 L 1257 644 L 1248 642 Z M 812 642 L 802 645 L 794 649 L 790 652 L 783 659 L 780 663 L 775 673 L 772 683 L 771 690 L 771 702 L 772 708 L 775 718 L 779 726 L 782 730 L 789 737 L 795 741 L 802 744 L 809 746 L 830 746 L 835 745 L 846 741 L 847 725 L 838 730 L 832 732 L 826 733 L 815 733 L 807 731 L 800 727 L 793 720 L 789 713 L 787 707 L 786 702 L 786 688 L 788 679 L 790 674 L 793 669 L 801 661 L 804 659 L 816 655 L 828 655 L 837 657 L 847 662 L 847 646 L 839 643 L 834 642 Z M 543 642 L 535 644 L 522 651 L 513 660 L 509 666 L 504 678 L 502 688 L 502 703 L 503 709 L 505 716 L 512 729 L 520 737 L 526 741 L 530 743 L 540 746 L 561 746 L 566 745 L 577 741 L 578 725 L 569 730 L 557 733 L 546 733 L 538 731 L 532 728 L 523 719 L 519 711 L 517 703 L 517 687 L 518 682 L 520 676 L 524 669 L 532 661 L 535 659 L 542 656 L 547 655 L 559 655 L 568 657 L 578 662 L 578 646 L 570 643 L 565 642 Z"/>
+        </svg>
+      </a>
+
+      <div class="header-actions">
+        <a href="mailto:hello@kaielectrical.com.au?subject=KET%20Online%20Tools%20Feedback" class="feedback-btn" aria-label="Send Feedback">
+          <span class="feedback-title">FEEDBACK</span>
+          <span class="feedback-sub">click to send email</span>
+        </a>
+        <a href="https://github.com/kai-electrical-tech/QLD-CoC-Formatter" target="_blank" rel="noopener noreferrer" class="github-header-btn" aria-label="GitHub Repository" title="GitHub Repository">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. NAVIGATION TABS (Natural In-Flow, cot-ket emoji style)
+       ========================================== -->
+  <div class="nav-tabs-wrapper">
+    <div class="container">
+      <nav class="nav-tabs" aria-label="Tool Navigation">
+        <button type="button" class="tab-btn active" id="tab-form" onclick="switchTab('form')">
+          FORM
+        </button>
+        <button type="button" class="tab-btn" id="tab-history" onclick="switchTab('history')">
+          HISTORY
+        </button>
+        <button type="button" class="tab-btn" id="tab-profile" onclick="switchTab('profile')">
+          PROFILE
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. MAIN CONTENT
+       ========================================== -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- PWA Update Prompt Banner -->
+      <div id="pwaUpdateBanner" class="pwa-update-banner" style="display: none;">
+        <div class="pwa-update-content">
+          <span class="pwa-update-icon">⚡</span>
+          <span>New version available</span>
+        </div>
+        <button type="button" class="btn-pwa-refresh" onclick="applyPwaUpdate()">Update Now</button>
+      </div>
+
+      <!-- VIEW 1: NEW CERTIFICATE FORM -->
+      <div id="view-form" class="view-tab" style="display: block;">
+        <form id="cot-form" onsubmit="event.preventDefault();" data-dashlane-ignore="true" data-form-type="other" data-lpignore="true" autocomplete="off">
+          
+          <!-- 1. Certificate Type Selection (Compact style matching cot-ket / Image 1) -->
+          <div class="card">
+            <div class="card-title">
+              <span><span>📋</span> Certificate Type</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span id="offlineStatusPill" class="offline-status-pill" style="display:none;" title="Certificates can be generated 100% offline">
+                  <svg class="offline-status-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                  Offline
+                </span>
+                <span class="badge-eso">ESO <span class="hide-xs">TEMPLATE </span>V7.09-2026</span>
+              </div>
+            </div>
+            <div class="radio-group">
+              <label class="radio-card selected" id="label-type-install">
+                <input type="radio" name="certType" value="installation" checked onchange="updateCertType(this.value)">
+                <div>
+                  <div class="radio-title">TESTING AND COMPLIANCE</div>
+                  <div class="radio-sub">Electrical installations (s229)</div>
+                </div>
+              </label>
+              <label class="radio-card" id="label-type-equip">
+                <input type="radio" name="certType" value="equipment" onchange="updateCertType(this.value)">
+                <div>
+                  <div class="radio-title">TESTING AND SAFETY</div>
+                  <div class="radio-sub">Electrical equipment (s208)</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. Customer Details -->
+          <div class="card">
+            <div class="card-title">
+              <span><span>📍</span> Work Performed for</span>
+              <button type="button" class="btn-danger-sm" onclick="clearWorkPerformedFor()">Clear</button>
+            </div>
+            
+            <div class="grid-title-name">
+              <div class="form-group">
+                <label class="form-label" for="customerTitle">Title</label>
+                <select id="customerTitle" class="form-select">
+                  <option value="">n/a</option>
+                  <option value="Mr">Mr</option>
+                  <option value="Mrs">Mrs</option>
+                  <option value="Ms">Ms</option>
+                  <option value="Miss">Miss</option>
+                  <option value="Dr">Dr</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="customerGivenName">Given Name/s <span class="req">*</span></label>
+                <input type="text" id="customerGivenName" name="recipient_client_given" class="form-input" maxlength="35" placeholder="e.g. John" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-dashlane-ignore="true" data-bwignore="true" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="customerSurname">Surname <span class="req">*</span></label>
+                <input type="text" id="customerSurname" name="recipient_client_sur" class="form-input" maxlength="35" placeholder="e.g. Smith" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-dashlane-ignore="true" data-bwignore="true" required>
+              </div>
+            </div>
+
+            <!-- Address + Reference Grid (1 Row) -->
+            <div class="grid-address-ref">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="fullAddress">Installation Address <span class="req">*</span></label>
+                <div class="autocomplete-container">
+                  <input type="text" id="fullAddress" name="recipient_site_address" role="combobox" class="form-input" maxlength="120" placeholder="e.g. 10 Sample St, Brisbane QLD 4000" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-dashlane-ignore="true" data-bwignore="true" required>
+                  <div id="addressDropdown" class="autocomplete-dropdown"></div>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="jobReference">Reference</label>
+                <input type="text" id="jobReference" name="job_order_ref" class="form-input" maxlength="25" placeholder="e.g. INV-1024" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Work Description & Testing Details (Doubled Height Textarea) -->
+          <div class="card">
+            <div class="card-title">
+              <span><span>⚡</span> Work Description <span class="req">*</span></span>
+              <div class="card-title-actions">
+                <button type="button" class="btn-presets-toggle" id="btnPresetToggle" onclick="togglePresetsCollapse()" title="Toggle Presets" aria-label="Toggle Presets">
+                  <span id="presetToggleArrow" class="preset-toggle-arrow">▲</span>
+                  <span id="presetToggleText" class="preset-toggle-text" style="display:none;">Preset</span>
+                </button>
+                <button type="button" class="btn-danger-sm" onclick="clearWorkDescription()">Clear</button>
+              </div>
+            </div>
+
+            <div id="presetChipsContainer" class="preset-bar-collapsible"></div>
+
+            <div class="form-group">
+              <textarea id="workDescription" class="form-textarea" maxlength="50000" placeholder="Detail the electrical installation or equipment tested (please include site address for electrical installation work if different from above), standards verified (AS/NZS 3000), test results, and any relevant notes..." required></textarea>
+              <!-- Dynamic Page Hint & Char Counter -->
+              <div id="descPageHint" class="desc-page-hint">Fits Page 1 (0 lines) | 0/50,000 chars</div>
+            </div>
+          </div>
+
+          <!-- 4. Dates of Testing & Notice -->
+          <div class="card">
+            <div class="card-title">
+              <span><span>📅</span> Dates of Testing &amp; Notice</span>
+            </div>
+
+            <!-- Dates in 1 Row -->
+            <div class="grid-dates">
+              <div class="form-group">
+                <label class="form-label" for="testDate">Date of Test <span class="req">*</span></label>
+                <input type="date" id="testDate" class="form-input date-input-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noticeDate">Date Notice Given <span class="req">*</span></label>
+                <input type="date" id="noticeDate" class="form-input date-input-control" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Tester Digital Signature -->
+          <div class="card card-signature" id="signatureCard">
+            <div class="card-title">
+              <span><span>✍️</span> Tester Signature</span>
+            </div>
+            <div class="form-group">
+              <div class="signature-box" id="signatureBox" onclick="activateSignaturePad()">
+                <canvas id="signaturePad" class="signature-canvas"></canvas>
+                <div id="signatureLockOverlay" class="signature-lock-overlay">
+                  <span class="signature-lock-text">Tap here to sign</span>
+                </div>
+              </div>
+              <div class="signature-actions-row">
+                <!-- Active Signing Mode Buttons (Visible only while signing) -->
+                <div id="sigModeBtnRow" style="display:none; gap:10px; width:100%; justify-content:flex-end;">
+                  <button type="button" id="btnSigClear" class="sig-btn-clear" onclick="clearSignature(true)">Clear</button>
+                  <button type="button" id="btnSigDone" class="sig-btn-done" onclick="finishSignature()">Done</button>
+                </div>
+                <!-- Post-Signing Storage Buttons (Visible when signature exists and not in signing mode) -->
+                <div id="sigStorageBtnRow" style="display:none; gap:8px;">
+                  <button type="button" id="btnSaveSig" class="btn-brand-sm" style="display:none;" onclick="saveCurrentSignatureToProfile()">Save as Default</button>
+                  <button type="button" id="btnLoadDefaultSig" class="btn-secondary" style="display:none;" onclick="loadDefaultSignature()">Load Default</button>
+                </div>
+              </div>
+              <span class="form-hint">Tap canvas to sign. Tap "Save as Default" to reuse across jobs.</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Statutory Certification (s229 vs s208) -->
+          <div id="legalBox" class="legal-box">
+            <strong>Certification (Electrical Safety Regulation 2026 s229):</strong><br>
+            I certify that the electrical installation, to the extent it is affected by the electrical work, has been tested to ensure that it is electrically safe and is in accordance with the requirements of the wiring rules and any other standard applying under the Electrical Safety Regulation 2026 to the electrical installation.
+          </div>
+
+          <!-- Active Contractor Summary Badge -->
+          <div id="contractorActiveCard" class="contractor-active-card" onclick="switchTab('profile')" title="Click to manage contractor details in Profile">
+            <div class="contractor-active-info">
+              <span style="font-size:14px;">👤</span>
+              <span class="contractor-active-name" id="activeContractorName">No Profile Configured</span>
+              <span class="contractor-active-lic" id="activeContractorLic">(Tap to configure)</span>
+            </div>
+            <span class="contractor-active-action">Edit Profile ⚙️</span>
+          </div>
+
+          <div class="form-action-section">
+            <button type="button" id="btn-generate-main" class="btn-download-primary" onclick="handleGenerateAction()">
+              Generate Certificate (PDF)
+            </button>
+          </div>
+        </form>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
+      </div>
+
+      <!-- VIEW 2: HISTORY -->
+      <div id="view-history" class="view-tab" style="display: none;">
+        <div class="card">
+          <div class="card-title">
+            <span><span>📜</span> Certificate History (<span id="historyRecordsCount">0/30</span>)</span>
+          </div>
+          <div id="historyRecordsList"></div>
+          <p class="form-hint" style="margin-top: 14px; margin-bottom: 0; line-height: 1.5;">Recent certificates created on this device (maximum 30 stored locally). Note: History records only save Form contents (client, installation, and dates); signatures and Contractor Profile details are excluded. Tap "Load" to restore Form details without overwriting your profile.</p>
+        </div>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
+      </div>
+
+      <!-- VIEW 3: PROFILE -->
+      <div id="view-profile" class="view-tab" style="display: none;">
+        
+        <!-- Contractor Profile Card -->
+        <div class="card">
+          <div class="card-title">
+            <span><span>👤</span> Contractor &amp; Tester Profile</span>
+          </div>
+          <p class="form-hint" style="margin-bottom: 14px;">Your contractor profile is stored strictly inside your local device browser (zero server storage, 100% private) and automatically pre-fills generated certificates. Changes save automatically as you type.</p>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="settingContractorName">Name on Contractor Licence</label>
+              <input type="text" id="settingContractorName" name="contractor_biz_lic_holder" class="form-input" maxlength="60" placeholder="e.g. ABC ELECTRICAL PTY LTD" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-dashlane-ignore="true" data-bwignore="true">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settingContractorLic">Contractor Licence Number <span class="req">*</span></label>
+              <input type="tel" id="settingContractorLic" class="form-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="e.g. 123456" required>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="settingContractorPhone">Phone Number</label>
+              <input type="tel" id="settingContractorPhone" class="form-input" inputmode="numeric" pattern="[0-9]*" maxlength="12" placeholder="e.g. 0400 000 000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settingContractorWebsite">Website</label>
+              <input type="text" id="settingContractorWebsite" class="form-input" maxlength="50" placeholder="e.g. abcelectrical.com.au" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="url">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="settingTesterName">Tester Name</label>
+              <input type="text" id="settingTesterName" class="form-input" maxlength="30" placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settingTesterLicence">Tester Licence Number</label>
+              <input type="tel" id="settingTesterLicence" class="form-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="e.g. 888999">
+            </div>
+          </div>
+
+          <!-- Custom Logo Upload Section -->
+          <div class="logo-upload-container" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1f5f9;">
+            <div>
+              <label class="form-label">Custom Contractor Logo / Letterhead</label>
+              <div class="form-hint">Scaled automatically for crisp print quality and saved locally in your browser.</div>
+            </div>
+
+            <div id="logoPreviewContainer" class="logo-preview-box">
+              <span class="logo-preview-placeholder">No custom logo uploaded. Default contractor name will be printed.</span>
+            </div>
+
+            <input type="file" id="logoFileInput" accept="image/png,image/jpeg,image/webp" style="display:none;">
+
+            <div class="logo-controls-row">
+              <label for="logoFileInput" class="btn-logo-choose" role="button">
+                Choose Logo
+              </label>
+              <button type="button" id="btnRemoveLogo" class="btn-danger-sm" style="display:none;">
+                Remove Logo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Preset Management (Max 30) -->
+        <div class="card">
+          <div class="card-title">
+            <span><span>📝</span> Work Description Presets (<span id="presetsCountBadge">5/30</span>)</span>
+            <button type="button" class="btn-secondary" id="btnAddPreset" onclick="addNewCustomPreset()">Add Preset</button>
+          </div>
+          <div class="presets-tips-row" id="presetsTipsRow">
+            <span class="presets-tips-text">Tip: Long-press or use handle (⋮⋮) to drag &amp; reorder collapsed presets.</span>
+            <div class="presets-global-actions">
+              <button type="button" class="btn-icon-sm" id="btnExpandAllPresets" onclick="window.expandAllPresets()" title="Expand All Presets" aria-label="Expand All">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
+              <button type="button" class="btn-icon-sm" id="btnCollapseAllPresets" onclick="window.collapseAllPresets()" title="Collapse All Presets" aria-label="Collapse All">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="presetsManagerList"></div>
+          <p class="form-hint" id="presetDisclaimer" style="margin-top: 14px; margin-bottom: 0; line-height: 1.5;">Templates are reference examples only. Technical testing accuracy, verification, and statutory compliance remain solely the responsibility of the qualified electrical contractor (ESR 2026 / AS/NZS 3000).</p>
+        </div>
+
+        <!-- Dedicated Backup & Restore Section -->
+        <div class="card">
+          <div class="card-title">
+            <span><span>💾</span> Profile Configuration Backup</span>
+          </div>
+          <p class="form-hint" style="margin-bottom: 12px; line-height: 1.5;">
+            Backs up your profile setup into a single portable <code>.json</code> file to easily transfer to a new phone or computer. Custom presets and profile settings are stored locally in your browser; use this backup to safeguard your configuration if browser cache or history is cleared.
+          </p>
+
+          <div class="backup-scope-box">
+            <div class="backup-scope-title">Included in backup:</div>
+            <ul class="backup-scope-list">
+              <li><strong>Contractor &amp; Tester Details</strong> (Licence number, phone, website, tester)</li>
+              <li><strong>Custom Logo / Letterhead</strong> (Compressed print-ready copy)</li>
+              <li><strong>Work Description Presets</strong> (All custom presets)</li>
+            </ul>
+            <div class="backup-scope-excluded">
+              <strong>Note:</strong> Signature and certificate history are excluded from backup.
+            </div>
+          </div>
+
+          <div class="backup-actions-row">
+            <button type="button" class="btn-brand-sm" onclick="exportFullConfigurationBackup()">Backup Profile</button>
+            <label class="btn-secondary" style="margin:0; cursor:pointer;">
+              Restore from .json File
+              <input type="file" id="configImportInput" accept=".json" style="display:none;" onchange="importFullConfigurationBackup(this.files[0])">
+            </label>
+          </div>
+        </div>
+
+        <!-- Device ID Card -->
+        <div class="card">
+          <div class="card-title">
+            <span><span>📱</span> Unique Device Identifier (Device ID)</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">This Device's Unique Verification ID</label>
+            <input type="text" id="settingDeviceToken" class="form-input" readonly style="background-color:var(--color-bg); font-family:var(--font-mono); font-size:13px;">
+            <span class="form-hint" style="line-height:1.5; margin-top:6px; display:block;">
+              This unique ID is generated exclusively on this physical phone/computer and stamped at the bottom of every certificate as <code>Device ID: DEV-XXXX</code>. It proves that the certificate was produced on your specific physical device. If you switch to another device or browser, a different unique ID will be generated.
+            </span>
+          </div>
+        </div>
+
+        <!-- Permanent Explanatory Card at Bottom of Profile -->
+        <div class="settings-info-card">
+          <div class="settings-info-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>KET CoC Generator v1.2.2</span>
+            <button type="button" class="btn-text-link" onclick="openUpdateModal()" style="font-size:12px; font-weight:500; color:var(--color-primary); background:none; border:none; cursor:pointer; padding:0;">What's New</button>
+          </div>
+          <ol class="settings-info-list">
+            <li><strong>Compliance Disclaimer</strong>: This tool is an on-site PDF generation formatter and does not verify regulatory compliance. All entered information, testing results, and statutory compliance remain solely the responsibility of the qualified person.</li>
+            <li><strong>100% Free &amp; Watermark-Free</strong>: Free to use with no account registration or subscription required. Generated certificates contain no watermarks.</li>
+            <li><strong>Device-Level Privacy</strong>: Zero cloud servers, zero tracking scripts, and zero third-party cookies. All contractor profiles, draft forms, and client data remain strictly inside your browser's local storage.</li>
+            <li><strong>Statutory 5-Year Record-Keeping</strong>: The server stores zero data; all records reside exclusively in your local browser. Users are responsible for exporting and archiving generated certificates locally to satisfy Queensland Electrical Safety Regulation 2026 mandatory 5-year retention requirements (s229/s208).</li>
+            <li><strong>Smart QLD Address Autocomplete</strong>: Instant street-level suggestions via Photon / OpenStreetMap API with a built-in Queensland suburbs database fallback, automatically parsing street, suburb, and postcode into standard ESO fields.</li>
+            <li><strong>Tamper-Proof Baking &amp; In-Place Text Copying</strong>: Certificates are baked into crisp, non-editable flat documents to prevent post-issuance alteration, with an invisible in-place text overlay allowing exact visual selection, copying, and search highlighting. Each document is stamped with a unique Device ID at the bottom-left to verify the originating device.</li>
+            <li><strong>Multi-Page Continuation Engine</strong>: Formatted to Queensland ESO Form V7.09-2026 specifications. Automatically appends continuation sheets with complete contractor, customer, and signature compliance bars whenever work descriptions exceed Page 1 limits.</li>
+            <li><strong>Profile Safeguard</strong>: Regularly export a configuration backup (<kbd>.json</kbd>) to safeguard your contractor details and custom presets if browser cache is cleared.</li>
+            <li><strong>Mobile &amp; Offline Use</strong>: On mobile devices, tap "Add to Home Screen" to install as a web app for fast, reliable offline access on remote sites. Works seamlessly with native sharing (AirDrop, Mail, Save to Files) and A4 printing.</li>
+            <li><strong>Open Source</strong>: The complete source code is publicly accessible on <a href="https://github.com/kai-electrical-tech/QLD-CoC-Formatter" target="_blank" rel="noopener noreferrer">GitHub</a>.</li>
+            <li><strong>Feedback &amp; Support</strong>: If you encounter any issues or have feature requests, please use the <strong>Feedback</strong> button in the top navigation or open an issue on GitHub.</li>
+          </ol>
+        </div>
+
+        <div class="footer-attribution">
+          Built by <a href="https://kaielectrical.com.au" target="_blank" rel="noopener noreferrer">Kai Electrical Tech Pty Ltd</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==========================================
+       4. UNIFIED PERSISTENT MODAL/TOAST
+       ========================================== -->
+  <div id="persistentAlertToast" class="toast-persistent-alert">
+    <div class="toast-header">
+      <div id="toastIcon" class="toast-icon">⚠️</div>
+      <div class="toast-body">
+        <div id="toastTitle" class="toast-title">Notice</div>
+        <div id="toastDesc" class="toast-desc"></div>
+        <div id="toastMissingList" class="toast-missing-list"></div>
+      </div>
+    </div>
+    <div id="toastBtnRow" class="toast-btn-row"></div>
+  </div>
+
+  <!-- Simple Toast for instant action confirmations -->
+  <div id="simpleToast" class="simple-toast"></div>
+
+  <!-- First-Time Welcome Modal -->
+  <div id="welcomeModal" class="welcome-modal-overlay" style="display:none;">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
+        Welcome to KET CoC Generator
+      </div>
+      <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
+        On-site electrical testing &amp; compliance certificate generator for Queensland licensed electrical contractors.
+      </p>
+      <ul class="welcome-feature-list">
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🏷️</span>
+          <div>
+            <strong>100% Free &amp; Watermark-Free</strong><br>
+            No account registration or subscription required. Generated certificates are completely clean with zero watermarks.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🔐</span>
+          <div>
+            <strong>Device-Level Privacy</strong><br>
+            Zero cloud servers and zero tracking. Your contractor details, logo, and client data stay securely in your device.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🔒</span>
+          <div>
+            <strong>Anti-Tamper Baking &amp; Text Layer</strong><br>
+            Bakes certificates into crisp, non-editable images with an in-place searchable text layer and stamped Device ID.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">📱</span>
+          <div>
+            <strong>Mobile &amp; Offline-Ready</strong><br>
+            Add to your Home Screen for fast offline access on remote job sites, with native share sheet and A4 print support.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">💻</span>
+          <div>
+            <strong>Open Source Transparency</strong><br>
+            Complete source code is publicly accessible on GitHub for full transparency and community trust.
+          </div>
+        </li>
+      </ul>
+      <button type="button" id="btnDismissWelcome" class="btn-download-primary" style="margin-top:16px;" onclick="closeWelcomeModal()">
+        Got It, Get Started
+      </button>
+    </div>
+  </div>
+
+  <!-- Returning User Update Modal (Changelog v1.2.2) -->
+  <div id="updateModal" class="welcome-modal-overlay" style="display:none;">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-title" style="justify-content:center; text-align:center;">
+        What's New in v1.2.2
+      </div>
+      <p style="font-size:13px; color:#475569; line-height:1.5; text-align:center; margin-bottom:16px;">
+        Key improvements and feature updates since v1.0.1:
+      </p>
+      <ul class="welcome-feature-list">
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">⚡</span>
+          <div>
+            <strong>Queensland Compliance Presets</strong><br>
+            Standard statutory testing templates for Smoke Alarms, Battery (BESS), Solar PV, EV Charger, and Switchboards with explicit AS/NZS 3000 citation.
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">📄</span>
+          <div>
+            <strong>Multi-Page &amp; Statutory Audit Trail</strong><br>
+            Seamless multi-page continuation for extensive jobs, statutory verification bar on every page, and device-level privacy (zero cloud storage).
+          </div>
+        </li>
+        <li class="welcome-feature-item">
+          <span class="welcome-feature-icon">🛠️</span>
+          <div>
+            <strong>Bug Fixes &amp; System Stability</strong><br>
+            Resolved preset synchronization and ID collisions, streamlined direct standard preset updates, and enhanced offline Service Worker caching.
+          </div>
+        </li>
+      </ul>
+      <button type="button" id="btnDismissUpdate" class="btn-download-primary" style="margin-top:16px;" onclick="closeUpdateModal()">
+        Got It, Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- Script Libraries -->
+  <script src="js/lib/pdf-lib.min.js"></script>
+  <script src="js/lib/pdf.min.js"></script>
+  <script src="js/suburbs.js?v=1.2.2"></script>
+  <script src="js/pdf-generator.js?v=1.2.2"></script>
+  <script src="js/app.js?v=1.2.2"></script>
+</body>
+</html>
