@@ -210,7 +210,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="css/style.css?v=2.0.0">
+  <link rel="stylesheet" href="css/style.css?v=2.0.1">
 </head>
 <body>
 
@@ -378,7 +378,7 @@
             <div id="presetChipsContainer" class="preset-bar-collapsible"></div>
 
             <div class="form-group" style="margin-bottom:0;">
-              <textarea id="workDescription" class="form-textarea" maxlength="50000" placeholder="Detail the electrical installation or equipment tested (please include site address for electrical installation work if different from above), standards verified (AS/NZS 3000), test results, and any relevant notes..." required></textarea>
+              <textarea id="workDescription" name="work_description" class="form-textarea" maxlength="50000" placeholder="Detail the electrical installation or equipment tested (please include site location for electrical installation work if different from above), standards verified, test results, and any relevant notes..." autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" data-form-type="other" data-lpignore="true" required></textarea>
               <!-- Dynamic Page Hint & Char Counter + Add Photos Action -->
               <div class="desc-footer-bar">
                 <div id="descPageHint" class="desc-page-hint">Fits Page 1 (0 lines) | 0/50,000 chars</div>
@@ -623,7 +623,7 @@
         <!-- Permanent Explanatory Card at Bottom of Profile -->
         <div class="settings-info-card">
           <div class="settings-info-title" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>KET CoC Generator v2.0.0</span>
+            <span>KET CoC Generator v2.0.1</span>
             <button type="button" class="btn-text-link" onclick="openUpdateModal()" style="font-size:12px; font-weight:500; color:var(--color-primary); background:none; border:none; cursor:pointer; padding:0;">What's New</button>
           </div>
           <ol class="settings-info-list">
@@ -789,10 +789,10 @@
   <!-- Script Libraries -->
   <script src="js/lib/pdf-lib.min.js"></script>
   <script src="js/lib/pdf.min.js"></script>
-  <script src="js/storage-vault.js?v=2.0.0"></script>
-  <script src="js/image-preprocessor.js?v=2.0.0"></script>
-  <script src="js/suburbs.js?v=2.0.0"></script>
-  <script src="js/pdf-generator.js?v=2.0.0"></script>
-  <script src="js/app.js?v=2.0.0"></script>
+  <script src="js/storage-vault.js?v=2.0.1"></script>
+  <script src="js/image-preprocessor.js?v=2.0.1"></script>
+  <script src="js/suburbs.js?v=2.0.1"></script>
+  <script src="js/pdf-generator.js?v=2.0.1"></script>
+  <script src="js/app.js?v=2.0.1"></script>
 </body>
 </html>
