@@ -11,21 +11,39 @@
   const TARGET_RATIO = TARGET_WIDTH / TARGET_HEIGHT; // 0.75 (3:4)
   const JPEG_QUALITY = 0.82;
 
-  function readFileAsDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
+  async function loadSourceImage(file) {
+    if (typeof window.createImageBitmap === 'function') {
+      try {
+        const bitmap = await window.createImageBitmap(file);
+        return {
+          source: bitmap,
+          width: bitmap.width,
+          height: bitmap.height,
+          cleanup: () => {
+            if (typeof bitmap.close === 'function') bitmap.close();
+          }
+        };
+      } catch (_) {
+        // Fallback to Image element if createImageBitmap is unsupported for the image format
+      }
+    }
 
-  function loadImage(dataUrl) {
     return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
       const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = (err) => reject(err);
-      img.src = dataUrl;
+      img.onload = () => {
+        resolve({
+          source: img,
+          width: img.naturalWidth || img.width,
+          height: img.naturalHeight || img.height,
+          cleanup: () => URL.revokeObjectURL(url)
+        });
+      };
+      img.onerror = (err) => {
+        URL.revokeObjectURL(url);
+        reject(err);
+      };
+      img.src = url;
     });
   }
 
@@ -40,11 +58,9 @@
         throw new Error('Selected file is not an image');
       }
 
-      const rawDataUrl = await readFileAsDataUrl(file);
-      const img = await loadImage(rawDataUrl);
-
-      const srcW = img.naturalWidth || img.width;
-      const srcH = img.naturalHeight || img.height;
+      const imageSource = await loadSourceImage(file);
+      const srcW = imageSource.width;
+      const srcH = imageSource.height;
 
       // Detect if image is 4:3 landscape (width > height, ratio ~1.33)
       const srcRatio = srcW / srcH;
@@ -74,7 +90,7 @@
         const drawW = srcW * scale;
         const drawH = srcH * scale;
 
-        ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+        ctx.drawImage(imageSource.source, -drawW / 2, -drawH / 2, drawW, drawH);
         ctx.restore();
       } else {
         // Standard portrait or non-standard aspect ratio: perform aspect-fit containment
@@ -93,8 +109,11 @@
         const offsetX = (TARGET_WIDTH - drawW) / 2;
         const offsetY = (TARGET_HEIGHT - drawH) / 2;
 
-        ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+        ctx.drawImage(imageSource.source, offsetX, offsetY, drawW, drawH);
       }
+
+      // Immediately free the decoded source bitmap/object URL from heap
+      imageSource.cleanup();
 
       const compressedDataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
 

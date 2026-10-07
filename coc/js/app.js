@@ -697,10 +697,10 @@
     }
 
     let promptTitle = 'Clear Description?';
-    let promptDesc = 'Do you want to clear the work description text?';
+    let promptDesc = 'Do you want to clear the work description?';
     if (hasText && hasPhotos) {
       promptTitle = 'Clear Description & Photos?';
-      promptDesc = 'Do you want to clear the work description and all attached photos?';
+      promptDesc = 'Do you want to clear the work description? This will also remove all attached site photos.';
     } else if (hasPhotos && !hasText) {
       promptTitle = 'Clear Attached Photos?';
       promptDesc = 'Do you want to clear all attached site photos?';
@@ -1810,9 +1810,7 @@
     const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
     if (isExceeding) {
-      const noticeDesc = currentPhotos.length === 0
-        ? `You selected ${totalSelected} photos. Only the first ${MAX_PHOTOS} photos were added to fit Queensland ESO 4-page appendix limits.`
-        : `You selected ${totalSelected} photos, but only ${remainingSlots} slot${remainingSlots > 1 ? 's were' : ' was'} available. Only the first ${remainingSlots} photo${remainingSlots > 1 ? 's were' : ''} added (maximum ${MAX_PHOTOS} photos allowed).`;
+      const noticeDesc = `You selected ${totalSelected} photos, but only ${remainingSlots} slot${remainingSlots > 1 ? 's were' : ' was'} available. Only the first ${remainingSlots} photo${remainingSlots > 1 ? 's were' : ''} added (maximum ${MAX_PHOTOS} photos allowed).`;
 
       showUnifiedToast({
         title: 'Photo Limit Notice',
@@ -1829,24 +1827,40 @@
       btnAddPhotos.textContent = 'Optimizing...';
     }
 
-    let addedCount = 0;
-    for (let i = 0; i < filesToProcess.length; i++) {
-      const file = filesToProcess[i];
-      if (btnAddPhotos) {
-        btnAddPhotos.textContent = `Optimizing (${i + 1}/${filesToProcess.length})...`;
-      }
-      // Micro-yield to browser event loop to let Safari repaint DOM and progress indicator
-      await new Promise(r => setTimeout(r, 20));
+    const progressPill = document.getElementById('photoProgressPill');
+    const progressText = document.getElementById('photoProgressText');
+    if (progressPill && progressText) {
+      progressText.textContent = `Optimizing photo 1 of ${filesToProcess.length}...`;
+      progressPill.style.display = 'inline-flex';
+    }
 
-      try {
-        if (!window.ImagePreprocessor) break;
-        const processed = await window.ImagePreprocessor.processPhotoFile(file);
-        if (processed && processed.dataUrl) {
-          currentPhotos.push(processed);
-          addedCount++;
+    let addedCount = 0;
+    try {
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+        if (btnAddPhotos) {
+          btnAddPhotos.textContent = `Optimizing (${i + 1}/${filesToProcess.length})...`;
         }
-      } catch (err) {
-        console.warn('Failed to process photo:', file.name, err);
+        if (progressText) {
+          progressText.textContent = `Optimizing photo ${i + 1} of ${filesToProcess.length}...`;
+        }
+        // Micro-yield to browser event loop to let Safari repaint DOM and progress indicator
+        await new Promise(r => setTimeout(r, 20));
+
+        try {
+          if (!window.ImagePreprocessor) break;
+          const processed = await window.ImagePreprocessor.processPhotoFile(file);
+          if (processed && processed.dataUrl) {
+            currentPhotos.push(processed);
+            addedCount++;
+          }
+        } catch (err) {
+          console.warn('Failed to process photo:', file.name, err);
+        }
+      }
+    } finally {
+      if (progressPill) {
+        progressPill.style.display = 'none';
       }
     }
 
@@ -1890,16 +1904,28 @@
 
   function renderPhotoThumbnails() {
     const container = document.getElementById('photoThumbnailsContainer');
+    const hint = document.getElementById('photoReorderHint');
     if (!container) return;
 
     if (currentPhotos.length === 0) {
       container.style.display = 'none';
       container.innerHTML = '';
+      if (hint) hint.style.display = 'none';
       return;
     }
 
     container.style.display = 'flex';
     container.innerHTML = '';
+
+    if (hint) {
+      if (currentPhotos.length >= 2) {
+        hint.textContent = 'Hold & drag to reorder • Tap to preview';
+        hint.style.display = 'block';
+      } else {
+        hint.textContent = 'Tap photo to preview';
+        hint.style.display = 'block';
+      }
+    }
 
     currentPhotos.forEach((photo, idx) => {
       const card = document.createElement('div');
@@ -1930,26 +1956,36 @@
     let isDragging = false;
     let startX = 0;
     let startY = 0;
-    let hasMovedSignificantly = false;
     let currentOverIdx = idx;
+    let pointerId = null;
 
     const container = document.getElementById('photoThumbnailsContainer');
 
+    const preventTouchScroll = (e) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    };
+
     const onPointerDown = (e) => {
       if (e.button !== undefined && e.button !== 0) return;
-      startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-      startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
-      hasMovedSignificantly = false;
+      startX = e.clientX || 0;
+      startY = e.clientY || 0;
       isDragging = false;
       currentOverIdx = idx;
+      pointerId = e.pointerId;
 
       pressTimer = setTimeout(() => {
         isDragging = true;
         card.classList.add('is-dragging');
         if (navigator.vibrate) {
-          try { navigator.vibrate(40); } catch (_) {}
+          try { navigator.vibrate(35); } catch (_) {}
         }
-      }, 300);
+        window.addEventListener('touchmove', preventTouchScroll, { passive: false });
+        try {
+          if (pointerId !== null) card.setPointerCapture(pointerId);
+        } catch (_) {}
+      }, 280);
 
       window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
@@ -1957,14 +1993,14 @@
     };
 
     const onPointerMove = (e) => {
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      const clientX = e.clientX || 0;
+      const clientY = e.clientY || 0;
       const deltaX = Math.abs(clientX - startX);
       const deltaY = Math.abs(clientY - startY);
 
       if (!isDragging) {
+        // If finger moves > 8px before 280ms, cancel hold timer so native scroll proceeds smoothly
         if (deltaX > 8 || deltaY > 8) {
-          hasMovedSignificantly = true;
           if (pressTimer) {
             clearTimeout(pressTimer);
             pressTimer = null;
@@ -1977,13 +2013,33 @@
 
       if (!container) return;
       const allCards = Array.from(container.querySelectorAll('.photo-thumb-card'));
+      let hoveredIdx = idx;
       for (let i = 0; i < allCards.length; i++) {
         const targetCard = allCards[i];
         const rect = targetCard.getBoundingClientRect();
         if (clientX >= rect.left && clientX <= rect.right) {
-          currentOverIdx = i;
+          hoveredIdx = i;
           break;
         }
+      }
+
+      if (hoveredIdx !== currentOverIdx) {
+        allCards.forEach((c, i) => {
+          if (i === hoveredIdx && i !== idx) {
+            c.classList.add('is-drag-over');
+          } else {
+            c.classList.remove('is-drag-over');
+          }
+        });
+        currentOverIdx = hoveredIdx;
+      }
+
+      // Smooth auto-scroll when dragging near container left/right edges
+      const cRect = container.getBoundingClientRect();
+      if (clientX < cRect.left + 35) {
+        container.scrollLeft -= 8;
+      } else if (clientX > cRect.right - 35) {
+        container.scrollLeft += 8;
       }
     };
 
@@ -1996,6 +2052,20 @@
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('pointercancel', onPointerUp);
+      window.removeEventListener('touchmove', preventTouchScroll);
+
+      if (pointerId !== null) {
+        try {
+          card.releasePointerCapture(pointerId);
+        } catch (_) {}
+        pointerId = null;
+      }
+
+      if (container) {
+        container.querySelectorAll('.photo-thumb-card').forEach(c => {
+          c.classList.remove('is-drag-over');
+        });
+      }
 
       if (isDragging) {
         isDragging = false;
@@ -2013,12 +2083,30 @@
         } else {
           renderPhotoThumbnails();
         }
-      } else if (!hasMovedSignificantly) {
+      } else if (Math.hypot((e.clientX || 0) - startX, (e.clientY || 0) - startY) < 10) {
         openPhotoLightbox(idx);
       }
     };
 
     card.addEventListener('pointerdown', onPointerDown);
+  }
+
+  // Dynamic Safari & System Theme Color synchronizer
+  function updateSafariThemeColor() {
+    const isLightboxOpen = document.body.classList.contains('lightbox-open') || 
+      (document.getElementById('photoLightboxModal') && document.getElementById('photoLightboxModal').style.display === 'flex');
+    const isToastOpen = document.getElementById('persistentAlertToast') && 
+      document.getElementById('persistentAlertToast').classList.contains('visible');
+
+    const shouldBeDark = Boolean(isLightboxOpen || isToastOpen);
+    let themeMeta = document.getElementById('themeColorMeta') || document.querySelector('meta[name="theme-color"]');
+    if (!themeMeta) {
+      themeMeta = document.createElement('meta');
+      themeMeta.name = 'theme-color';
+      themeMeta.id = 'themeColorMeta';
+      document.head.appendChild(themeMeta);
+    }
+    themeMeta.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
   }
 
   function openPhotoLightbox(index) {
@@ -2031,6 +2119,7 @@
 
     modal.style.display = 'flex';
     document.body.classList.add('lightbox-open');
+    updateSafariThemeColor();
   }
 
   let isLightboxTransitioning = false;
@@ -2042,6 +2131,7 @@
     modal.style.display = 'none';
     document.body.classList.remove('lightbox-open');
     isLightboxTransitioning = false;
+    updateSafariThemeColor();
     const img = document.getElementById('lightboxImage');
     if (img) {
       img.src = '';
@@ -2378,12 +2468,17 @@
     }
 
     toast.classList.add('visible');
+    updateSafariThemeColor();
   }
 
   function hideUnifiedToast() {
     const toast = document.getElementById('persistentAlertToast');
     if (toast) toast.classList.remove('visible');
+    updateSafariThemeColor();
   }
+
+  window.showUnifiedToast = showUnifiedToast;
+  window.hideUnifiedToast = hideUnifiedToast;
 
   // 12. Soft Validation & Check Contractor Profile
   function checkMissingMandatoryFields(data) {

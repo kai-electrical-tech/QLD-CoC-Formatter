@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
 
-  <meta name="theme-color" content="#00dd66">
+  <meta name="theme-color" id="themeColorMeta" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="CoC Generator">
@@ -215,6 +215,12 @@
 </head>
 <body>
 
+  <!-- Floating Photo Optimization Progress Indicator -->
+  <div id="photoProgressPill" class="photo-progress-pill" style="display:none;" aria-live="polite">
+    <div class="photo-progress-spinner"></div>
+    <span id="photoProgressText" class="photo-progress-text">Optimizing photos...</span>
+  </div>
+
   <!-- Signature Spotlight Dimming Backdrop (Outside clicks do not exit signing mode) -->
   <div id="signatureDimBackdrop" class="signature-dim-backdrop"></div>
 
@@ -386,6 +392,10 @@
               </div>
               <!-- Photo Thumbnails Tray -->
               <div id="photoThumbnailsContainer" class="photo-thumbnails-container" style="display:none;"></div>
+              <!-- Photo Reorder & Preview Hint -->
+              <div id="photoReorderHint" class="photo-reorder-hint" style="display:none;">
+                Hold &amp; drag to reorder • Tap to preview
+              </div>
             </div>
           </div>
 

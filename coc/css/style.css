@@ -628,10 +628,11 @@ input[type="date"]::-webkit-date-and-time-value {
 .desc-page-hint {
   font-size: 12px;
   color: var(--color-muted);
-  margin-top: 6px;
+  margin: 0;
   font-weight: 500;
-  display: inline-block;
-  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
   transition: color 0.2s ease;
 }
 
@@ -768,7 +769,9 @@ input[type="date"]::-webkit-date-and-time-value {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 8px 0 4px 0;
+  margin-top: -2px;
+  margin-bottom: 14px;
+  padding: 0;
   max-height: 180px;
   overflow-y: auto;
 }
@@ -2203,7 +2206,7 @@ body.is-signing-mode .signature-box.is-active {
   justify-content: space-between;
   gap: 8px;
   margin-top: 6px;
-  flex-wrap: wrap;
+  min-height: 32px;
 }
 
 .desc-photo-actions {
@@ -2290,7 +2293,8 @@ body.is-signing-mode .signature-box.is-active {
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: pan-x;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 
 .photo-thumb-card:hover {
@@ -2324,9 +2328,63 @@ body.is-signing-mode .signature-box.is-active {
 }
 
 .photo-thumb-card.is-dragging {
-  opacity: 0.45;
-  transform: scale(1.05);
+  opacity: 0.88;
+  transform: scale(1.08) translateY(-3px);
   border-color: #2563eb;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+  z-index: 10;
+}
+
+.photo-thumb-card.is-drag-over {
+  border-color: #2563eb;
+  transform: scale(0.96);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.45);
+}
+
+/* Photo Reorder & Tap-to-Preview Hint */
+.photo-reorder-hint {
+  font-size: 11.5px;
+  color: var(--color-muted);
+  margin-top: 5px;
+  padding-left: 2px;
+  line-height: 1.3;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Floating Photo Optimization Progress Indicator */
+.photo-progress-pill {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10050;
+  pointer-events: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.photo-progress-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #00dd66;
+  border-radius: 50%;
+  animation: photo-spin 0.75s linear infinite;
+}
+
+@keyframes photo-spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Full-Screen Photo Lightbox Modal */
