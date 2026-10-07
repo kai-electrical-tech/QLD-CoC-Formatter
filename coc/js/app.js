@@ -6,7 +6,7 @@
   const MAX_PRESETS = 30;
   const MAX_DESC_CHARS = 50000;
   const MAX_DESC_LINES = 10000;
-  const CURRENT_APP_VERSION = '2.0.0';
+  const CURRENT_APP_VERSION = '2.0.1';
   const PRESET_SCHEMA_VERSION = 'v4_2026_standards';
   const MAX_PHOTOS = 16;
 
