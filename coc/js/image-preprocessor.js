@@ -3,9 +3,9 @@
 (function(window) {
   'use strict';
 
-  // Target A4 3:4 portrait photo box at 200 DPI
-  // Box in PDF: 150pt x 200pt (ratio 3:4).
-  // Target raster canvas: 900px x 1200px (provides >2.5x oversampling for ultra-crisp 200 DPI rendering)
+  // Target A4 portrait photo box at 200 DPI
+  // Box in PDF: 230pt x 297pt (2x2 grid, ratio ~0.774, ~3:4).
+  // Target raster canvas: 900px x 1200px (provides >2.8x oversampling for ultra-crisp 200 DPI rendering)
   const TARGET_WIDTH = 900;
   const TARGET_HEIGHT = 1200;
   const TARGET_RATIO = TARGET_WIDTH / TARGET_HEIGHT; // 0.75 (3:4)

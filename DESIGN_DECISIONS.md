@@ -14,7 +14,7 @@
 Across all architectural layers and user interactions, the system adheres to one non-negotiable tenet:  
 **"On-site operational speed, customer data privacy, and strict statutory compliance take absolute precedence over all other concerns. No architectural complexity, third-party dependency, or UI bloat shall compromise the electrician's workflow."**
 
-This document establishes the seven core Architecture Decision Records (ADRs) that govern the codebase.
+This document establishes the eight core Architecture Decision Records (ADRs) that govern the codebase.
 
 ---
 
@@ -135,6 +135,22 @@ This document establishes the seven core Architecture Decision Records (ADRs) th
     6. **Gate 6: Dual-Layer Automated Test Suite**: Executes Playwright and PyMuPDF headless browser verification asserting DOM branding, byte budgets, sub-pixel text alignment, and pagination thresholds.
   - **Physical Git Pre-Push Hook Integration**:
     A pre-push hook (`.git/hooks/pre-push`) enforces this gateway locally, physically aborting unverified `git push` attempts.
+
+---
+
+### ADR-08: Site Photo Attachments & Zero-Cloud Local Storage Vault (IndexedDB)
+
+* **Status**: Accepted
+* **Context & Problem Statement**:
+  1. **Statutory & Practical Photographic Evidence**: Licensed electricians frequently require on-site photographic evidence (e.g., main switchboard before/after, MEN connection, earth electrode, test instrument readings, EV charger installations) attached directly to certificates to prevent dispute liability with builders, supply authorities, or property managers.
+  2. **Storage Quota Bottleneck**: Browsers strictly limit `localStorage` to approximately 5 MB per origin. Storing multi-megabyte photo attachments as base64 strings in `localStorage` rapidly causes quota exhaustion exceptions (`QuotaExceededError`), breaking profile and draft persistence.
+  3. **Visual Document Structure & Statutory Integrity**: Naive photo attachments without structured grids waste page space or create uneven white margins. Furthermore, standalone appendix pages lacking statutory sign-off bars become legally severed if printed or archived as individual pages.
+* **Decision (2x2 Grid Geometry & IndexedDB Vault)**:
+  1. **High-Impact 2x2 Grid Layout**: Photo attachments are formatted in a 2 columns $\times$ 2 rows grid (up to 4 photos per page, maximum 16 photos across 4 appendix pages). Photo boxes are geometrically sized at $W = 230.00\,\text{pt} \times H = 297.00\,\text{pt}$, aligning flush with the statutory divider line bounds ($x = 59.52$ to $534.00$, $\Delta = 0.00\,\text{pt}$).
+  2. **Statutory Details Bar on Every Page**: Every photo appendix page features a complete statutory verification bar (Customer, Site Address, Contractor Licence, Test Dates, Tester Name, and Signature) at $y = 138.00$, ensuring every individual page has autonomous legal validity.
+  3. **High-Capacity Client-Side Storage Vault (`storage-vault.js`)**: All active draft photos and historical record photo attachments are persisted exclusively in a dedicated client-side IndexedDB database (`qld_tradie_vault_v1`). `localStorage` retains only lightweight metadata (`photoCount`, `photoFingerprint`), leaving the 5 MB quota completely unencumbered.
+  4. **Client-Side Pre-Processing & Orientation Normalization (`image-preprocessor.js`)**: Photos are pre-processed entirely in-memory using `createImageBitmap` and off-screen canvas rendering at $900 \times 1200\,\text{px}$ (providing $>2.8\times$ oversampling for razor-sharp 200 DPI baking). Landscape 4:3 photos are automatically oriented into 3:4 portrait boxes.
+  5. **Interactive Reordering & Lightbox**: Tradespeople can dynamically reorder photos via fluid long-press drag-and-drop interactions with live-slot placeholders, and inspect high-resolution images in a swipeable lightbox preview.
 
 ---
 

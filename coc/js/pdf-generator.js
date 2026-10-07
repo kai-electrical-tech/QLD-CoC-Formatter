@@ -1,4 +1,4 @@
-// Queensland ESO CoC / CoT A4 200 DPI Baked PDF Generator (Official V7.09-2026)
+// Queensland ESO CoC / CoT A4 200 DPI Baked PDF Generator (Standard V7.09-2026)
 // Features Vector Overlay + Neutral Device ID + Dynamic Annexure A + 200 DPI Anti-Tamper Image Baking + In-Place Searchable Text Overlay
 (function(window) {
   'use strict';
@@ -121,7 +121,7 @@
     },
 
     /**
-     * Generate QLD Certificate of Testing & Compliance PDF (Official V7.09-2026 standard)
+     * Generate QLD Certificate of Testing & Compliance PDF (Standard V7.09-2026)
      * Baked at 200 DPI for complete anti-tamper security and fast mobile sharing (~230KB/page)
      * @param {Object} data 
      * @returns {Promise<{blob: Blob, url: string, filename: string, totalPages: number}>}

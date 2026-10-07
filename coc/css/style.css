@@ -1,7 +1,7 @@
 /* ==========================================================================
    QUEENSLAND ESO CoC / CoT GENERATOR (tools.kaielectrical.com.au/coc)
    Design System: Swiss International Style / Editorial Layout
-   Brand Accent: #00dd66 (Official Logo Electric Green)
+   Brand Accent: #00dd66 (Primary Brand Electric Green)
    ========================================================================== */
 
 :root {
@@ -1114,7 +1114,7 @@ body.is-signing-mode .signature-box.is-active {
 }
 
 /* ==========================================================================
-   4. IN-FLOW SHARE BUTTON & STATUTORY DECLARATION (cot-ket style)
+   4. IN-FLOW SHARE BUTTON & ESR 2026 CERTIFICATION (cot-ket style)
    ========================================================================== */
 .mandatory-footnote {
   display: none !important;

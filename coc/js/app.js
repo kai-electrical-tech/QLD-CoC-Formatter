@@ -1810,7 +1810,7 @@
     const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
     if (isExceeding) {
-      const noticeDesc = `You selected ${totalSelected} photos, but only ${remainingSlots} slot${remainingSlots > 1 ? 's were' : ' was'} available. Only the first ${remainingSlots} photo${remainingSlots > 1 ? 's were' : ''} added (maximum ${MAX_PHOTOS} photos allowed).`;
+      const noticeDesc = `You selected ${totalSelected} photos, but only ${remainingSlots} slot${remainingSlots > 1 ? 's were' : ' was'} available. Only the first ${remainingSlots} photo${remainingSlots > 1 ? 's were' : ' was'} added (maximum ${MAX_PHOTOS} photos allowed).`;
 
       showUnifiedToast({
         title: 'Photo Limit Notice',
@@ -2590,7 +2590,7 @@
     if (checkNonEnglishInputs(data)) {
       showUnifiedToast({
         title: 'English Required for ESO Compliance',
-        desc: 'Queensland Electrical Safety Regulation 2026 certificates are official statutory legal documents and must be completed in English. Non-English characters were detected.',
+        desc: 'Queensland Electrical Safety Regulation 2026 certificates are statutory compliance documents and must be completed in English. Non-English characters were detected.',
         listText: 'Please review client name, address, or work description fields.',
         buttons: [
           { text: 'Review Form', isPrimary: false, onClick: hideUnifiedToast },
