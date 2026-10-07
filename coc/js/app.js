@@ -1956,8 +1956,11 @@
     let isDragging = false;
     let startX = 0;
     let startY = 0;
+    let grabOffsetX = 0;
+    let grabOffsetY = 0;
     let currentOverIdx = idx;
     let pointerId = null;
+    let placeholderEl = null;
 
     const container = document.getElementById('photoThumbnailsContainer');
 
@@ -1966,6 +1969,19 @@
         e.preventDefault();
       }
     };
+
+    function createSlotPlaceholder() {
+      if (placeholderEl && placeholderEl.parentNode) return;
+      placeholderEl = document.createElement('div');
+      placeholderEl.className = 'photo-thumb-placeholder';
+    }
+
+    function removeSlotPlaceholder() {
+      if (placeholderEl && placeholderEl.parentNode) {
+        placeholderEl.parentNode.removeChild(placeholderEl);
+      }
+      placeholderEl = null;
+    }
 
     const onPointerDown = (e) => {
       if (e.button !== undefined && e.button !== 0) return;
@@ -1977,7 +1993,26 @@
 
       pressTimer = setTimeout(() => {
         isDragging = true;
+        const rect = card.getBoundingClientRect();
+        grabOffsetX = startX - rect.left;
+        grabOffsetY = startY - rect.top;
+
+        createSlotPlaceholder();
+        if (card.parentNode) {
+          card.parentNode.insertBefore(placeholderEl, card);
+        }
+
         card.classList.add('is-dragging');
+        card.style.position = 'fixed';
+        card.style.width = `${rect.width}px`;
+        card.style.height = `${rect.height}px`;
+        card.style.left = `${rect.left}px`;
+        card.style.top = `${rect.top}px`;
+        card.style.zIndex = '10005';
+        card.style.pointerEvents = 'none';
+        card.style.transform = 'scale(1.08)';
+        card.style.boxShadow = '0 14px 28px rgba(0, 0, 0, 0.28)';
+
         if (navigator.vibrate) {
           try { navigator.vibrate(35); } catch (_) {}
         }
@@ -2011,27 +2046,35 @@
 
       e.preventDefault();
 
+      // Update floating card position to follow finger directly
+      card.style.left = `${clientX - grabOffsetX}px`;
+      card.style.top = `${clientY - grabOffsetY}px`;
+
       if (!container) return;
-      const allCards = Array.from(container.querySelectorAll('.photo-thumb-card'));
-      let hoveredIdx = idx;
-      for (let i = 0; i < allCards.length; i++) {
-        const targetCard = allCards[i];
-        const rect = targetCard.getBoundingClientRect();
-        if (clientX >= rect.left && clientX <= rect.right) {
-          hoveredIdx = i;
+
+      const otherCards = Array.from(container.querySelectorAll('.photo-thumb-card')).filter(c => c !== card);
+      let targetIdx = otherCards.length;
+      for (let i = 0; i < otherCards.length; i++) {
+        const rect = otherCards[i].getBoundingClientRect();
+        const midX = rect.left + rect.width / 2;
+        if (clientX < midX) {
+          targetIdx = i;
           break;
         }
       }
 
-      if (hoveredIdx !== currentOverIdx) {
-        allCards.forEach((c, i) => {
-          if (i === hoveredIdx && i !== idx) {
-            c.classList.add('is-drag-over');
-          } else {
-            c.classList.remove('is-drag-over');
+      currentOverIdx = targetIdx;
+
+      // Position the dynamic slot placeholder in real time so other cards slide smoothly
+      if (placeholderEl) {
+        if (targetIdx < otherCards.length) {
+          const targetNode = otherCards[targetIdx];
+          if (targetNode && targetNode !== placeholderEl) {
+            container.insertBefore(placeholderEl, targetNode);
           }
-        });
-        currentOverIdx = hoveredIdx;
+        } else {
+          container.appendChild(placeholderEl);
+        }
       }
 
       // Smooth auto-scroll when dragging near container left/right edges
@@ -2061,25 +2104,31 @@
         pointerId = null;
       }
 
-      if (container) {
-        container.querySelectorAll('.photo-thumb-card').forEach(c => {
-          c.classList.remove('is-drag-over');
-        });
-      }
-
       if (isDragging) {
         isDragging = false;
-        card.classList.remove('is-dragging');
+        removeSlotPlaceholder();
 
-        if (currentOverIdx !== idx && currentOverIdx >= 0 && currentOverIdx < currentPhotos.length) {
-          const item = currentPhotos.splice(idx, 1)[0];
-          currentPhotos.splice(currentOverIdx, 0, item);
+        // Reset all fixed floating styles
+        card.classList.remove('is-dragging');
+        card.style.position = '';
+        card.style.width = '';
+        card.style.height = '';
+        card.style.left = '';
+        card.style.top = '';
+        card.style.zIndex = '';
+        card.style.pointerEvents = '';
+        card.style.transform = '';
+        card.style.boxShadow = '';
+
+        if (currentOverIdx !== idx && currentOverIdx >= 0 && currentOverIdx <= currentPhotos.length) {
+          const [movedItem] = currentPhotos.splice(idx, 1);
+          currentPhotos.splice(currentOverIdx, 0, movedItem);
 
           if (window.TradieVault) {
             window.TradieVault.saveDraftPhotos(currentPhotos);
           }
           renderPhotoThumbnails();
-          showSimpleToast('Photos reordered');
+          showSimpleToast(`Photo moved to #${currentOverIdx + 1}`);
         } else {
           renderPhotoThumbnails();
         }
@@ -2107,6 +2156,28 @@
       document.head.appendChild(themeMeta);
     }
     themeMeta.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
+
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark-overlay-active');
+      document.body.classList.add('dark-overlay-active');
+    } else {
+      document.documentElement.classList.remove('dark-overlay-active');
+      document.body.classList.remove('dark-overlay-active');
+    }
+
+    const alertBackdrop = document.getElementById('persistentAlertBackdrop');
+    if (alertBackdrop) {
+      if (isToastOpen) {
+        alertBackdrop.classList.add('visible');
+      } else {
+        alertBackdrop.classList.remove('visible');
+      }
+    }
+
+    const bottomTintAnchor = document.getElementById('safariBottomTintAnchor');
+    if (bottomTintAnchor) {
+      bottomTintAnchor.style.backgroundColor = shouldBeDark ? '#0f172a' : 'transparent';
+    }
   }
 
   function openPhotoLightbox(index) {
@@ -2119,6 +2190,7 @@
 
     modal.style.display = 'flex';
     document.body.classList.add('lightbox-open');
+    document.documentElement.classList.add('lightbox-open');
     updateSafariThemeColor();
   }
 
@@ -2130,6 +2202,7 @@
 
     modal.style.display = 'none';
     document.body.classList.remove('lightbox-open');
+    document.documentElement.classList.remove('lightbox-open');
     isLightboxTransitioning = false;
     updateSafariThemeColor();
     const img = document.getElementById('lightboxImage');

@@ -604,16 +604,16 @@
       // ----------------------------------------------------
       // 12C. Photo Appendix Pages (Dedicated Appendix at End of Document: 2x2 Grid)
       // ----------------------------------------------------
-      const photoBoxW = 220.00;
-      const photoBoxH = 293.33; // Exact iPhone 3:4 portrait ratio (220.00 * 4 / 3)
-      const photoGapX = 20.00;
-      const photoCol0X = 66.76;
-      const photoCol1X = photoCol0X + photoBoxW + photoGapX; // 306.76
+      const photoBoxW = 230.00;
+      const photoBoxH = 297.00; // Expanded to align flush with statutory divider line (x=59.52 to 534.00)
+      const photoGapX = 14.48;
+      const photoCol0X = 59.52; // Flush with left start of statutory line
+      const photoCol1X = 304.00; // 304.00 + 230.00 = 534.00 (flush with right end of statutory line)
       // Row 0 top aligns exactly with Page 1 full-ratio banner top (y = 776.00)
-      const photoRow0BottomY = 482.67; // 776.00 - 293.33
-      const photoRow0LabelY = 468.67;
-      const photoRow1BottomY = 158.67; // Top at 452.00, bottom at 158.67
-      const photoRow1LabelY = 145.50; // Clean 7.5pt clearance above statutory divider at 138.00
+      const photoRow0BottomY = 479.00; // 776.00 - 297.00
+      const photoRow0LabelY = 469.00; // 10.0pt gap below photo box
+      const photoRow1BottomY = 157.00; // Top at 454.00 (15.0pt gap below Row 0 label), bottom at 157.00
+      const photoRow1LabelY = 147.00; // 10.0pt gap below photo box, 9.0pt clearance above statutory divider at 138.00
 
       for (let pIdx = 0; pIdx < numPhotoPages; pIdx++) {
         const photoPageNum = 1 + annexurePagesData.length + pIdx + 1;
