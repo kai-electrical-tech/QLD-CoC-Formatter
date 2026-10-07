@@ -8,7 +8,7 @@
   const MAX_DESC_LINES = 10000;
   const CURRENT_APP_VERSION = '2.0.0';
   const PRESET_SCHEMA_VERSION = 'v4_2026_standards';
-  const MAX_PHOTOS = 18;
+  const MAX_PHOTOS = 16;
 
   // Standard Queensland Compliance Presets (Single-string titles, AS/NZS 3000 cited, public-safe)
   const STANDARD_PRESETS = [
@@ -683,35 +683,59 @@
 
   window.clearWorkDescription = function() {
     const descField = document.getElementById('workDescription');
-    if (!descField) return;
-    if (descField.value.trim().length > 0) {
-      showUnifiedToast({
-        title: 'Clear Description?',
-        desc: 'Do you want to clear the work description text?',
-        buttons: [
-          { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
-          {
-            text: 'Clear',
-            isPrimary: true,
-            isDanger: true,
-            onClick: () => {
+    const hasText = descField && descField.value.trim().length > 0;
+    const hasPhotos = currentPhotos && currentPhotos.length > 0;
+
+    if (!hasText && !hasPhotos) {
+      if (descField) {
+        descField.value = '';
+        updateDescriptionCounter();
+        autoResizeTextarea(descField);
+      }
+      showSimpleToast('Description cleared');
+      return;
+    }
+
+    let promptTitle = 'Clear Description?';
+    let promptDesc = 'Do you want to clear the work description text?';
+    if (hasText && hasPhotos) {
+      promptTitle = 'Clear Description & Photos?';
+      promptDesc = 'Do you want to clear the work description and all attached photos?';
+    } else if (hasPhotos && !hasText) {
+      promptTitle = 'Clear Attached Photos?';
+      promptDesc = 'Do you want to clear all attached site photos?';
+    }
+
+    showUnifiedToast({
+      title: promptTitle,
+      desc: promptDesc,
+      buttons: [
+        { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
+        {
+          text: 'Clear',
+          isPrimary: true,
+          isDanger: true,
+          onClick: async () => {
+            if (descField) {
               descField.value = '';
               updateDescriptionCounter();
               autoResizeTextarea(descField);
-              saveDraft();
-              hideUnifiedToast();
-              showSimpleToast('Description cleared');
             }
+            if (currentPhotos.length > 0) {
+              currentPhotos = [];
+              if (window.TradieVault) {
+                await window.TradieVault.clearDraftPhotos();
+              }
+              renderPhotoThumbnails();
+              updatePhotoBadgeCount();
+            }
+            saveDraft();
+            hideUnifiedToast();
+            showSimpleToast(hasPhotos ? 'Description and photos cleared' : 'Description cleared');
           }
-        ]
-      });
-    } else {
-      descField.value = '';
-      updateDescriptionCounter();
-      autoResizeTextarea(descField);
-      saveDraft();
-      showSimpleToast('Description cleared');
-    }
+        }
+      ]
+    });
   };
 
   function handlePresetClick(preset) {
@@ -1768,26 +1792,52 @@
   async function handlePhotoFilesSelected(files) {
     if (!files || files.length === 0) return;
     if (currentPhotos.length >= MAX_PHOTOS) {
-      showSimpleToast(`Maximum ${MAX_PHOTOS} photos reached`);
+      showUnifiedToast({
+        title: 'Maximum Photo Limit Reached',
+        desc: `This certificate already contains the maximum of ${MAX_PHOTOS} attached site photos (4 appendix pages). Delete existing photos to attach new ones.`,
+        buttons: [
+          { text: 'Got It', isPrimary: true, onClick: hideUnifiedToast }
+        ]
+      });
       return;
     }
 
     const remainingSlots = MAX_PHOTOS - currentPhotos.length;
-    let filesToProcess = Array.from(files);
+    const totalSelected = files.length;
+    const isExceeding = totalSelected > remainingSlots;
 
-    if (filesToProcess.length > remainingSlots) {
-      showSimpleToast(`Adding first ${remainingSlots} photo(s). Maximum ${MAX_PHOTOS} photos allowed.`, 3500);
-      filesToProcess = filesToProcess.slice(0, remainingSlots);
+    // Truncate to available remaining slots BEFORE starting processing
+    const filesToProcess = Array.from(files).slice(0, remainingSlots);
+
+    if (isExceeding) {
+      const noticeDesc = currentPhotos.length === 0
+        ? `You selected ${totalSelected} photos. Only the first ${MAX_PHOTOS} photos were added to fit Queensland ESO 4-page appendix limits.`
+        : `You selected ${totalSelected} photos, but only ${remainingSlots} slot${remainingSlots > 1 ? 's were' : ' was'} available. Only the first ${remainingSlots} photo${remainingSlots > 1 ? 's were' : ''} added (maximum ${MAX_PHOTOS} photos allowed).`;
+
+      showUnifiedToast({
+        title: 'Photo Limit Notice',
+        desc: noticeDesc,
+        buttons: [
+          { text: 'Got It', isPrimary: true, onClick: hideUnifiedToast }
+        ]
+      });
     }
 
     const btnAddPhotos = document.getElementById('btnAddPhotos');
     if (btnAddPhotos) {
       btnAddPhotos.disabled = true;
-      btnAddPhotos.textContent = 'Compressing...';
+      btnAddPhotos.textContent = 'Optimizing...';
     }
 
     let addedCount = 0;
-    for (const file of filesToProcess) {
+    for (let i = 0; i < filesToProcess.length; i++) {
+      const file = filesToProcess[i];
+      if (btnAddPhotos) {
+        btnAddPhotos.textContent = `Optimizing (${i + 1}/${filesToProcess.length})...`;
+      }
+      // Micro-yield to browser event loop to let Safari repaint DOM and progress indicator
+      await new Promise(r => setTimeout(r, 20));
+
       try {
         if (!window.ImagePreprocessor) break;
         const processed = await window.ImagePreprocessor.processPhotoFile(file);
@@ -1813,7 +1863,6 @@
     if (input) input.value = '';
 
     if (btnAddPhotos) {
-      btnAddPhotos.disabled = false;
       updatePhotoBadgeCount();
     }
   }
@@ -1824,11 +1873,15 @@
 
     const count = currentPhotos.length;
     if (count >= MAX_PHOTOS) {
+      btnAdd.disabled = true;
+      btnAdd.classList.add('is-disabled');
       btnAdd.classList.add('is-full');
       btnAdd.title = `Maximum ${MAX_PHOTOS} photos reached`;
     } else {
+      btnAdd.disabled = false;
+      btnAdd.classList.remove('is-disabled');
       btnAdd.classList.remove('is-full');
-      btnAdd.title = count > 0 ? `Add Site Photos (${count}/${MAX_PHOTOS})` : 'Add Site Photos (Up to 18)';
+      btnAdd.title = count > 0 ? `Add Site Photos (${count}/${MAX_PHOTOS})` : `Add Site Photos (Up to ${MAX_PHOTOS})`;
     }
 
     // Keep Add Photos label strictly clean without emojis
@@ -1980,14 +2033,20 @@
     document.body.classList.add('lightbox-open');
   }
 
+  let isLightboxTransitioning = false;
+
   function closePhotoLightbox() {
     const modal = document.getElementById('photoLightboxModal');
     if (!modal) return;
 
     modal.style.display = 'none';
     document.body.classList.remove('lightbox-open');
+    isLightboxTransitioning = false;
     const img = document.getElementById('lightboxImage');
-    if (img) img.src = '';
+    if (img) {
+      img.src = '';
+      img.classList.remove('slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right');
+    }
   }
 
   function renderLightboxPhoto() {
@@ -2013,8 +2072,34 @@
 
   function navigateLightbox(direction) {
     if (!currentPhotos || currentPhotos.length === 0) return;
-    activeLightboxIndex = (activeLightboxIndex + direction + currentPhotos.length) % currentPhotos.length;
-    renderLightboxPhoto();
+    if (currentPhotos.length === 1) return;
+    if (isLightboxTransitioning) return;
+
+    const img = document.getElementById('lightboxImage');
+    if (!img) return;
+
+    isLightboxTransitioning = true;
+    const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+    const inClass = direction > 0 ? 'slide-in-right' : 'slide-in-left';
+
+    img.classList.remove('slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right');
+    img.classList.add(outClass);
+
+    setTimeout(() => {
+      activeLightboxIndex = (activeLightboxIndex + direction + currentPhotos.length) % currentPhotos.length;
+      renderLightboxPhoto();
+      img.classList.remove(outClass);
+      img.classList.add(inClass);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          img.classList.remove(inClass);
+          setTimeout(() => {
+            isLightboxTransitioning = false;
+          }, 220);
+        });
+      });
+    }, 120);
   }
 
   function initLightboxListeners() {
@@ -2589,11 +2674,16 @@
     const suburb = addr ? getAddressSuburb(addr) : '';
     const nowTimestamp = new Date().toLocaleString();
 
-    // Check if an existing record has exact matching form contents
+    // Compute lightweight photo fingerprint for exact duplicate detection
+    const currentPhotoFingerprint = currentPhotos.length === 0
+      ? '0'
+      : `${currentPhotos.length}_` + currentPhotos.map(p => (p.id || '') + ':' + (p.dataUrl ? p.dataUrl.length : 0)).join(';');
+
+    // Check if an existing record has exact matching form contents AND identical photo set
     const dupIndex = historyRecords.findIndex(r => {
       const d = r.data;
       if (!d) return false;
-      return (
+      const isTextMatch = (
         (d.certType || '') === (data.certType || '') &&
         (d.customerTitle || '') === (data.customerTitle || '') &&
         (d.customerGivenName || '') === (data.customerGivenName || '') &&
@@ -2604,6 +2694,11 @@
         (d.testDate || '') === (data.testDate || '') &&
         (d.noticeDate || '') === (data.noticeDate || '')
       );
+      if (!isTextMatch) return false;
+
+      // Check photo fingerprint match
+      const recFingerprint = r.photoFingerprint || (r.photoCount ? String(r.photoCount) : '0');
+      return recFingerprint === currentPhotoFingerprint;
     });
 
     let recordId;
@@ -2623,6 +2718,7 @@
       certType: data.certType,
       hasPhotos: currentPhotos.length > 0,
       photoCount: currentPhotos.length,
+      photoFingerprint: currentPhotoFingerprint,
       data: {
         certType: data.certType,
         customerTitle: data.customerTitle || '',

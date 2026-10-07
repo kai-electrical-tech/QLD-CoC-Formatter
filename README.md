@@ -43,8 +43,8 @@
    - For jobs exceeding 18 lines, automatically generates clean continuation sheets with complete customer, address, contractor licence, and signature bars on every single page.
 
 7. **📸 Site Photo Attachments & Appendix Engine**
-   - Attach up to 18 on-site photographic evidence images (switchboard, meter readings, earth stake, test results).
-   - Arranged in a clean 3 columns $\times$ 2 rows grid (6 photos per page, up to 3 photo pages).
+   - Attach up to 16 on-site photographic evidence images (switchboard, meter readings, earth stake, test results).
+   - Arranged in a high-impact 2 columns $\times$ 2 rows grid (4 photos per page, up to 4 photo pages).
    - Automatic client-side compression and intelligent orientation rotation for standard portrait photos.
    - Every photo page features a complete statutory verification bar (customer, site address, contractor licence, test dates, tester name, and signature) matching document standards.
    - High-capacity local IndexedDB vault ensures zero cloud transmission while completely preventing browser LocalStorage quota exhaustion.

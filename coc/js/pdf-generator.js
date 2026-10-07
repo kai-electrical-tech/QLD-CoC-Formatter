@@ -522,10 +522,11 @@
       };
 
       // ----------------------------------------------------
-      // 12B. Photo Appendix Engine Calculation (Up to 18 Photos, 6 Per Page, 3x2 Grid)
+      // ----------------------------------------------------
+      // 12B. Photo Appendix Engine Calculation (Up to 16 Photos, 4 Per Page, 2x2 Grid)
       // ----------------------------------------------------
       const photos = (data.photos && Array.isArray(data.photos)) ? data.photos : [];
-      const PHOTOS_PER_PAGE = 6;
+      const PHOTOS_PER_PAGE = 4;
       const numPhotoPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
 
       const totalPages = 1 + annexurePagesData.length + numPhotoPages;
@@ -601,8 +602,19 @@
       }
 
       // ----------------------------------------------------
-      // 12C. Photo Appendix Pages (Dedicated Appendix at End of Document)
+      // 12C. Photo Appendix Pages (Dedicated Appendix at End of Document: 2x2 Grid)
       // ----------------------------------------------------
+      const photoBoxW = 220.00;
+      const photoBoxH = 293.33; // Exact iPhone 3:4 portrait ratio (220.00 * 4 / 3)
+      const photoGapX = 20.00;
+      const photoCol0X = 66.76;
+      const photoCol1X = photoCol0X + photoBoxW + photoGapX; // 306.76
+      // Row 0 top aligns exactly with Page 1 full-ratio banner top (y = 776.00)
+      const photoRow0BottomY = 482.67; // 776.00 - 293.33
+      const photoRow0LabelY = 468.67;
+      const photoRow1BottomY = 158.67; // Top at 452.00, bottom at 158.67
+      const photoRow1LabelY = 145.50; // Clean 7.5pt clearance above statutory divider at 138.00
+
       for (let pIdx = 0; pIdx < numPhotoPages; pIdx++) {
         const photoPageNum = 1 + annexurePagesData.length + pIdx + 1;
         const pPage = pdfDoc.addPage([595.56, 842.04]);
@@ -619,42 +631,23 @@
           color: undefined
         });
 
-        // Top Header Branding matching Page 1
-        drawHeaderBranding(pPage, true);
-
-        // Dividing horizontal rule matching Page 1 Title Block bounds (59.52 to 534.00, thickness 0.48)
-        pPage.drawLine({
-          start: { x: 59.52, y: 698.22 },
-          end: { x: 534.00, y: 698.22 },
-          thickness: 0.48,
-          color: rgb(0.2, 0.2, 0.2)
-        });
-
-        // Subtitle: Appendix header
+        // Photos Grid: 2 columns x 2 rows (Max 4 photos per page)
         const startPhotoIdx = pIdx * PHOTOS_PER_PAGE;
         const endPhotoIdx = Math.min(startPhotoIdx + PHOTOS_PER_PAGE, photos.length);
-        const subtitleText = `APPENDIX - PHOTOGRAPHIC EVIDENCE (PHOTOS ${String(startPhotoIdx + 1).padStart(2, '0')} - ${String(endPhotoIdx).padStart(2, '0')})`;
-        pPage.drawText(subtitleText, {
-          x: 59.52,
-          y: 682.0,
-          size: 8.5,
-          font: helveticaBold,
-          color: blackColor
-        });
-
-        // Photos Grid: 3 columns x 2 rows
         const pagePhotos = photos.slice(startPhotoIdx, endPhotoIdx);
+
         for (let slotIdx = 0; slotIdx < pagePhotos.length; slotIdx++) {
           const photoItem = pagePhotos[slotIdx];
           const photoDataUrl = (typeof photoItem === 'string') ? photoItem : (photoItem.dataUrl || '');
           const photoNum = startPhotoIdx + slotIdx + 1;
           const photoLabel = (typeof photoItem === 'object' && photoItem.label) ? photoItem.label : `Photo ${String(photoNum).padStart(2, '0')}`;
 
-          const col = slotIdx % 3;
-          const row = Math.floor(slotIdx / 3);
+          const col = slotIdx % 2;
+          const row = Math.floor(slotIdx / 2);
 
-          const boxX = 59.52 + col * (150.00 + 12.24);
-          const boxY = (row === 0) ? 468.0 : 238.0;
+          const boxX = (col === 0) ? photoCol0X : photoCol1X;
+          const boxY = (row === 0) ? photoRow0BottomY : photoRow1BottomY;
+          const labelY = (row === 0) ? photoRow0LabelY : photoRow1LabelY;
 
           if (photoDataUrl) {
             try {
@@ -665,8 +658,8 @@
               pPage.drawImage(embeddedImg, {
                 x: boxX,
                 y: boxY,
-                width: 150.00,
-                height: 200.00
+                width: photoBoxW,
+                height: photoBoxH
               });
             } catch (imgErr) {
               console.warn('Failed to embed photo into PDF:', imgErr);
@@ -677,19 +670,19 @@
           pPage.drawRectangle({
             x: boxX,
             y: boxY,
-            width: 150.00,
-            height: 200.00,
+            width: photoBoxW,
+            height: photoBoxH,
             borderWidth: 0.5,
             borderColor: rgb(0.8, 0.835, 0.88),
             color: undefined
           });
 
           // Label centered under photo box
-          const labelW = helveticaBold.widthOfTextAtSize(photoLabel, 8.0);
+          const labelW = helveticaBold.widthOfTextAtSize(photoLabel, 8.5);
           pPage.drawText(photoLabel, {
-            x: boxX + (150.00 - labelW) / 2,
-            y: (row === 0) ? 454.0 : 224.0,
-            size: 8.0,
+            x: boxX + (photoBoxW - labelW) / 2,
+            y: labelY,
+            size: 8.5,
             font: helveticaBold,
             color: blackColor
           });
