@@ -150,6 +150,8 @@ class PreflightChecker:
             content = index_file.read_text(encoding="utf-8")
             assets = [
                 ("css/style.css", r'href="css/style\.css\?v=([^"]+)"'),
+                ("js/storage-vault.js", r'src="js/storage-vault\.js\?v=([^"]+)"'),
+                ("js/image-preprocessor.js", r'src="js/image-preprocessor\.js\?v=([^"]+)"'),
                 ("js/suburbs.js", r'src="js/suburbs\.js\?v=([^"]+)"'),
                 ("js/pdf-generator.js", r'src="js/pdf-generator\.js\?v=([^"]+)"'),
                 ("js/app.js", r'src="js/app\.js\?v=([^"]+)"'),
@@ -165,7 +167,7 @@ class PreflightChecker:
                     all_assets_match = False
 
             if all_assets_match:
-                self.log("PASS", "Asset Query Strings", f"All 4 static assets correctly versioned '?v={target}'.")
+                self.log("PASS", "Asset Query Strings", f"All {len(assets)} static assets correctly versioned '?v={target}'.")
 
             # Settings card title
             m_card = re.search(r"KET CoC Generator v([0-9]+\.[0-9]+\.[0-9]+)", content)

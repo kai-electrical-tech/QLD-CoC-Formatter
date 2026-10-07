@@ -6,8 +6,9 @@
   const MAX_PRESETS = 30;
   const MAX_DESC_CHARS = 50000;
   const MAX_DESC_LINES = 10000;
-  const CURRENT_APP_VERSION = '1.2.2';
+  const CURRENT_APP_VERSION = '2.0.0';
   const PRESET_SCHEMA_VERSION = 'v4_2026_standards';
+  const MAX_PHOTOS = 18;
 
   // Standard Queensland Compliance Presets (Single-string titles, AS/NZS 3000 cited, public-safe)
   const STANDARD_PRESETS = [
@@ -53,6 +54,8 @@
   let lastX = 0;
   let lastY = 0;
   let historyRecords = [];
+  let currentPhotos = [];
+  let activeLightboxIndex = 0;
 
   // Helper: HTML Escaping
   function escapeHtml(str) {
@@ -118,6 +121,7 @@
     initSignaturePad();
     initAddressAutocomplete();
     initNumericInputs();
+    initPhotoAttachments();
     initDraft();
     initHistory();
     initWelcomeOrUpdateModal();
@@ -1755,6 +1759,348 @@
     });
   }
 
+  // 9B. Site Photo Attachments & Appendix Engine
+  window.triggerPhotoUpload = function() {
+    const input = document.getElementById('photoFileInput');
+    if (input) input.click();
+  };
+
+  async function handlePhotoFilesSelected(files) {
+    if (!files || files.length === 0) return;
+    if (currentPhotos.length >= MAX_PHOTOS) {
+      showSimpleToast(`Maximum ${MAX_PHOTOS} photos reached`);
+      return;
+    }
+
+    const remainingSlots = MAX_PHOTOS - currentPhotos.length;
+    let filesToProcess = Array.from(files);
+
+    if (filesToProcess.length > remainingSlots) {
+      showSimpleToast(`Adding first ${remainingSlots} photo(s). Maximum ${MAX_PHOTOS} photos allowed.`, 3500);
+      filesToProcess = filesToProcess.slice(0, remainingSlots);
+    }
+
+    const btnAddPhotos = document.getElementById('btnAddPhotos');
+    if (btnAddPhotos) {
+      btnAddPhotos.disabled = true;
+      btnAddPhotos.textContent = 'Compressing...';
+    }
+
+    let addedCount = 0;
+    for (const file of filesToProcess) {
+      try {
+        if (!window.ImagePreprocessor) break;
+        const processed = await window.ImagePreprocessor.processPhotoFile(file);
+        if (processed && processed.dataUrl) {
+          currentPhotos.push(processed);
+          addedCount++;
+        }
+      } catch (err) {
+        console.warn('Failed to process photo:', file.name, err);
+      }
+    }
+
+    if (addedCount > 0) {
+      if (window.TradieVault) {
+        await window.TradieVault.saveDraftPhotos(currentPhotos);
+      }
+      renderPhotoThumbnails();
+      updatePhotoBadgeCount();
+      showSimpleToast(`${addedCount} photo${addedCount > 1 ? 's' : ''} added`);
+    }
+
+    const input = document.getElementById('photoFileInput');
+    if (input) input.value = '';
+
+    if (btnAddPhotos) {
+      btnAddPhotos.disabled = false;
+      updatePhotoBadgeCount();
+    }
+  }
+
+  function updatePhotoBadgeCount() {
+    const btnAdd = document.getElementById('btnAddPhotos');
+    if (!btnAdd) return;
+
+    const count = currentPhotos.length;
+    if (count >= MAX_PHOTOS) {
+      btnAdd.classList.add('is-full');
+      btnAdd.title = `Maximum ${MAX_PHOTOS} photos reached`;
+    } else {
+      btnAdd.classList.remove('is-full');
+      btnAdd.title = count > 0 ? `Add Site Photos (${count}/${MAX_PHOTOS})` : 'Add Site Photos (Up to 18)';
+    }
+
+    // Keep Add Photos label strictly clean without emojis
+    btnAdd.innerHTML = `Add Photos <span id="photoBadgeCount" class="photo-badge-count" style="display:${count > 0 ? 'inline' : 'none'};">(${count}/${MAX_PHOTOS})</span>`;
+  }
+
+  function renderPhotoThumbnails() {
+    const container = document.getElementById('photoThumbnailsContainer');
+    if (!container) return;
+
+    if (currentPhotos.length === 0) {
+      container.style.display = 'none';
+      container.innerHTML = '';
+      return;
+    }
+
+    container.style.display = 'flex';
+    container.innerHTML = '';
+
+    currentPhotos.forEach((photo, idx) => {
+      const card = document.createElement('div');
+      card.className = 'photo-thumb-card';
+      card.dataset.idx = idx;
+      card.title = `Hold to reorder, tap to preview (Photo ${idx + 1})`;
+
+      const badge = document.createElement('span');
+      badge.className = 'photo-thumb-badge';
+      badge.textContent = String(idx + 1).padStart(2, '0');
+
+      const img = document.createElement('img');
+      img.className = 'photo-thumb-img';
+      img.src = photo.dataUrl;
+      img.alt = `Site Photo ${idx + 1}`;
+      img.loading = 'lazy';
+
+      card.appendChild(badge);
+      card.appendChild(img);
+
+      attachThumbnailInteractions(card, idx);
+      container.appendChild(card);
+    });
+  }
+
+  function attachThumbnailInteractions(card, idx) {
+    let pressTimer = null;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let hasMovedSignificantly = false;
+    let currentOverIdx = idx;
+
+    const container = document.getElementById('photoThumbnailsContainer');
+
+    const onPointerDown = (e) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      hasMovedSignificantly = false;
+      isDragging = false;
+      currentOverIdx = idx;
+
+      pressTimer = setTimeout(() => {
+        isDragging = true;
+        card.classList.add('is-dragging');
+        if (navigator.vibrate) {
+          try { navigator.vibrate(40); } catch (_) {}
+        }
+      }, 300);
+
+      window.addEventListener('pointermove', onPointerMove, { passive: false });
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    };
+
+    const onPointerMove = (e) => {
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      const deltaX = Math.abs(clientX - startX);
+      const deltaY = Math.abs(clientY - startY);
+
+      if (!isDragging) {
+        if (deltaX > 8 || deltaY > 8) {
+          hasMovedSignificantly = true;
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        }
+        return;
+      }
+
+      e.preventDefault();
+
+      if (!container) return;
+      const allCards = Array.from(container.querySelectorAll('.photo-thumb-card'));
+      for (let i = 0; i < allCards.length; i++) {
+        const targetCard = allCards[i];
+        const rect = targetCard.getBoundingClientRect();
+        if (clientX >= rect.left && clientX <= rect.right) {
+          currentOverIdx = i;
+          break;
+        }
+      }
+    };
+
+    const onPointerUp = (e) => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
+
+      if (isDragging) {
+        isDragging = false;
+        card.classList.remove('is-dragging');
+
+        if (currentOverIdx !== idx && currentOverIdx >= 0 && currentOverIdx < currentPhotos.length) {
+          const item = currentPhotos.splice(idx, 1)[0];
+          currentPhotos.splice(currentOverIdx, 0, item);
+
+          if (window.TradieVault) {
+            window.TradieVault.saveDraftPhotos(currentPhotos);
+          }
+          renderPhotoThumbnails();
+          showSimpleToast('Photos reordered');
+        } else {
+          renderPhotoThumbnails();
+        }
+      } else if (!hasMovedSignificantly) {
+        openPhotoLightbox(idx);
+      }
+    };
+
+    card.addEventListener('pointerdown', onPointerDown);
+  }
+
+  function openPhotoLightbox(index) {
+    if (!currentPhotos || currentPhotos.length === 0) return;
+    const modal = document.getElementById('photoLightboxModal');
+    if (!modal) return;
+
+    activeLightboxIndex = Math.max(0, Math.min(index, currentPhotos.length - 1));
+    renderLightboxPhoto();
+
+    modal.style.display = 'flex';
+    document.body.classList.add('lightbox-open');
+  }
+
+  function closePhotoLightbox() {
+    const modal = document.getElementById('photoLightboxModal');
+    if (!modal) return;
+
+    modal.style.display = 'none';
+    document.body.classList.remove('lightbox-open');
+    const img = document.getElementById('lightboxImage');
+    if (img) img.src = '';
+  }
+
+  function renderLightboxPhoto() {
+    if (!currentPhotos || currentPhotos.length === 0) {
+      closePhotoLightbox();
+      return;
+    }
+
+    const current = currentPhotos[activeLightboxIndex];
+    if (!current) return;
+
+    const img = document.getElementById('lightboxImage');
+    const counter = document.getElementById('lightboxCounter');
+
+    if (img) {
+      img.src = current.dataUrl;
+      img.alt = `Site Photo ${activeLightboxIndex + 1}`;
+    }
+    if (counter) {
+      counter.textContent = `Photo ${activeLightboxIndex + 1} of ${currentPhotos.length}`;
+    }
+  }
+
+  function navigateLightbox(direction) {
+    if (!currentPhotos || currentPhotos.length === 0) return;
+    activeLightboxIndex = (activeLightboxIndex + direction + currentPhotos.length) % currentPhotos.length;
+    renderLightboxPhoto();
+  }
+
+  function initLightboxListeners() {
+    const modal = document.getElementById('photoLightboxModal');
+    const btnDelete = document.getElementById('btnDeletePhoto');
+    if (!modal) return;
+
+    if (btnDelete) {
+      btnDelete.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (currentPhotos.length === 0) return;
+
+        const deletedIdx = activeLightboxIndex;
+        currentPhotos.splice(deletedIdx, 1);
+
+        if (window.TradieVault) {
+          await window.TradieVault.saveDraftPhotos(currentPhotos);
+        }
+
+        renderPhotoThumbnails();
+        updatePhotoBadgeCount();
+        showSimpleToast('Photo deleted');
+
+        if (currentPhotos.length === 0) {
+          closePhotoLightbox();
+        } else {
+          if (activeLightboxIndex >= currentPhotos.length) {
+            activeLightboxIndex = currentPhotos.length - 1;
+          }
+          renderLightboxPhoto();
+        }
+      });
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target.closest('#btnDeletePhoto')) return;
+      closePhotoLightbox();
+    });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    modal.addEventListener('touchstart', (e) => {
+      if (!e.changedTouches || e.changedTouches.length === 0) return;
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    modal.addEventListener('touchend', (e) => {
+      if (!e.changedTouches || e.changedTouches.length === 0) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (absX > 45 && absX > absY) {
+        if (deltaX < 0) {
+          navigateLightbox(1);
+        } else {
+          navigateLightbox(-1);
+        }
+      }
+    }, { passive: true });
+
+    document.addEventListener('keydown', (e) => {
+      if (modal.style.display !== 'flex') return;
+      if (e.key === 'Escape') closePhotoLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+    });
+  }
+
+  function initPhotoAttachments() {
+    const input = document.getElementById('photoFileInput');
+    if (input) {
+      input.addEventListener('change', (e) => {
+        handlePhotoFilesSelected(e.target.files);
+      });
+    }
+    initLightboxListeners();
+    updatePhotoBadgeCount();
+  }
+
   // 10. Form Data Extraction & Draft Saving
   function getFormData() {
     const certTypeEl = document.querySelector('input[name="certType"]:checked');
@@ -1796,6 +2142,10 @@
       testerLicence: profile.testerLicence || '',
       signatureDataUrl: sigDataUrl,
       contractorLogoDataUrl: customLogo,
+      photos: currentPhotos.map((p, idx) => ({
+        dataUrl: p.dataUrl,
+        label: 'Photo ' + String(idx + 1).padStart(2, '0')
+      })),
       deviceToken: getOrCreateDeviceToken()
     };
   }
@@ -1838,6 +2188,17 @@
           loadSignatureImage(savedSig);
         }
       }
+
+      // Restore saved draft photos from IndexedDB
+      if (window.TradieVault) {
+        window.TradieVault.getDraftPhotos().then((draftPhotos) => {
+          if (draftPhotos && draftPhotos.length > 0) {
+            currentPhotos = draftPhotos;
+            renderPhotoThumbnails();
+            updatePhotoBadgeCount();
+          }
+        }).catch(() => {});
+      }
     } catch (e) {
       updateCertType('installation');
     }
@@ -1855,6 +2216,7 @@
       const data = getFormData();
       delete data.signatureDataUrl;
       delete data.contractorLogoDataUrl;
+      delete data.photos; // Photos are saved in high-capacity IndexedDB, never in localStorage
       localStorage.setItem('qld_coc_current_draft', JSON.stringify(data));
       if (hasSigned && signaturePadCanvas) {
         sessionStorage.setItem('qld_coc_draft_sig', signaturePadCanvas.toDataURL('image/png'));
@@ -1865,7 +2227,7 @@
   window.resetForm = function() {
     showUnifiedToast({
       title: 'Clear Form?',
-      desc: 'Start a new blank certificate? This will clear customer and testing details while preserving your contractor profile.',
+      desc: 'Start a new blank certificate? This will clear customer, testing details, and attached photos while preserving your contractor profile.',
       buttons: [
         { text: 'Cancel', isPrimary: false, onClick: hideUnifiedToast },
         {
@@ -1875,6 +2237,13 @@
           onClick: () => {
             localStorage.removeItem('qld_coc_current_draft');
             sessionStorage.removeItem('qld_coc_draft_sig');
+            if (window.TradieVault) {
+              window.TradieVault.clearDraftPhotos();
+            }
+            currentPhotos = [];
+            renderPhotoThumbnails();
+            updatePhotoBadgeCount();
+
             const form = document.getElementById('cot-form');
             if (form) form.reset();
             setVal('jobReference', '');
@@ -2252,6 +2621,8 @@
       address: addr,
       suburb: suburb,
       certType: data.certType,
+      hasPhotos: currentPhotos.length > 0,
+      photoCount: currentPhotos.length,
       data: {
         certType: data.certType,
         customerTitle: data.customerTitle || '',
@@ -2267,9 +2638,18 @@
       savedAt: nowTimestamp
     };
 
+    if (window.TradieVault && currentPhotos.length > 0) {
+      window.TradieVault.saveRecordPhotos(recordId, currentPhotos);
+    }
+
     historyRecords.unshift(record);
     // Limit to recent 30 records (FIFO auto-retention)
-    if (historyRecords.length > 30) historyRecords.pop();
+    if (historyRecords.length > 30) {
+      const evicted = historyRecords.pop();
+      if (evicted && evicted.id && window.TradieVault) {
+        window.TradieVault.deleteRecordPhotos(evicted.id);
+      }
+    }
     localStorage.setItem('qld_coc_history', JSON.stringify(historyRecords));
     updateHistoryCount();
   }
@@ -2318,12 +2698,17 @@
         displayTitle = `${custName} — ${suburb || 'Queensland'}`;
       }
 
+      const photoBadge = rec.photoCount > 0
+        ? `<div class="history-meta-photos" style="font-size:11px;color:#2563eb;font-weight:600;margin-top:2px;">${rec.photoCount} photo${rec.photoCount > 1 ? 's' : ''} attached</div>`
+        : '';
+
       item.innerHTML = `
         <div>
           <div class="history-info-title">${escapeHtml(displayTitle)}</div>
           <div class="history-info-meta">
             <div class="history-meta-filename">${escapeHtml(rec.filename)}</div>
             <div class="history-meta-time">${escapeHtml(rec.savedAt || rec.date)}</div>
+            ${photoBadge}
           </div>
         </div>
         <div class="history-actions">
@@ -2369,6 +2754,16 @@
     if (descEl) autoResizeTextarea(descEl);
     updateDescriptionCounter();
 
+    // Restore photos associated with this record from IndexedDB
+    if (window.TradieVault) {
+      window.TradieVault.getRecordPhotos(id).then(async (recPhotos) => {
+        currentPhotos = recPhotos || [];
+        await window.TradieVault.saveDraftPhotos(currentPhotos);
+        renderPhotoThumbnails();
+        updatePhotoBadgeCount();
+      }).catch(() => {});
+    }
+
     window.switchTab('form');
     saveDraft();
     showSimpleToast('Loaded certificate details');
@@ -2385,6 +2780,10 @@
           isPrimary: true,
           isDanger: true,
           onClick: () => {
+            const recToDelete = historyRecords[index];
+            if (recToDelete && recToDelete.id && window.TradieVault) {
+              window.TradieVault.deleteRecordPhotos(recToDelete.id);
+            }
             historyRecords.splice(index, 1);
             localStorage.setItem('qld_coc_history', JSON.stringify(historyRecords));
             updateHistoryCount();
@@ -2408,6 +2807,9 @@
           isPrimary: true,
           isDanger: true,
           onClick: () => {
+            if (window.TradieVault) {
+              window.TradieVault.clearAllRecordPhotos();
+            }
             historyRecords = [];
             localStorage.removeItem('qld_coc_history');
             updateHistoryCount();

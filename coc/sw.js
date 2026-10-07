@@ -1,9 +1,11 @@
 // Service Worker for QLD CoC Generator (tools.kaielectrical.com.au/coc)
-const CACHE_NAME = 'qld-coc-cache-v1.2.2';
+const CACHE_NAME = 'qld-coc-cache-v2.0.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './css/style.css',
+  './js/storage-vault.js',
+  './js/image-preprocessor.js',
   './js/app.js',
   './js/pdf-generator.js',
   './js/suburbs.js',

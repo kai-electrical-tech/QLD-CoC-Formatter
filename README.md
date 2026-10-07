@@ -1,6 +1,6 @@
-# QLD CoC Generator `v1.2.2`
+# QLD CoC Generator `v2.0.0`
 
-[![Version](https://img.shields.io/badge/version-1.2.2-00dd66.svg)](https://tools.kaielectrical.com.au/coc)
+[![Version](https://img.shields.io/badge/version-2.0.0-00dd66.svg)](https://tools.kaielectrical.com.au/coc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/PWA-Offline%20Ready-green.svg)](https://tools.kaielectrical.com.au/coc)
 
@@ -24,7 +24,7 @@
 
 3. **🔐 100% Device-Level Privacy & Zero Cloud Storage**
    - Zero server transmission, zero cloud databases, and zero third-party tracking scripts.
-   - All contractor profiles, worker credentials, letterhead logos, and client job data remain strictly on your physical device (`localStorage`).
+   - All contractor profiles, worker credentials, letterhead logos, and client job data remain strictly on your physical device (`localStorage` and native `IndexedDB`).
    - Because our servers store zero user data and browser storage technologies may lose cache or local data due to browser clearing, updates, or OS storage management, users are solely responsible for downloading, exporting, and retaining generated PDF certificates for the mandatory 5-year statutory record-keeping period required under the Queensland *Electrical Safety Regulation 2026* (s229(3) / s208(3)).
 
 4. **📍 Smart Australian Street Address Autocomplete**
@@ -42,18 +42,25 @@
    - Standard jobs of 1 to 15 lines fit standard Page 1, 16 to 18 lines fit compact Page 1.
    - For jobs exceeding 18 lines, automatically generates clean continuation sheets with complete customer, address, contractor licence, and signature bars on every single page.
 
-7. **💾 Portable Profile Configuration Backup**
+7. **📸 Site Photo Attachments & Appendix Engine**
+   - Attach up to 18 on-site photographic evidence images (switchboard, meter readings, earth stake, test results).
+   - Arranged in a clean 3 columns $\times$ 2 rows grid (6 photos per page, up to 3 photo pages).
+   - Automatic client-side compression and intelligent orientation rotation for standard portrait photos.
+   - Every photo page features a complete statutory verification bar (customer, site address, contractor licence, test dates, tester name, and signature) matching document standards.
+   - High-capacity local IndexedDB vault ensures zero cloud transmission while completely preventing browser LocalStorage quota exhaustion.
+
+8. **💾 Portable Profile Configuration Backup**
    - One-click `.json` backup and restore to safeguard contractor details, custom logo, and work description presets across devices or browser cache clearing.
    - Excludes digital signatures and client certificate history for maximum security.
 
-8. **📱 Mobile-Optimized One-Tap Share & Offline PWA**
+9. **📱 Mobile-Optimized One-Tap Share & Offline PWA**
    - Web Share API (`navigator.share`) for instant AirDrop, Mail, WhatsApp, or Save to Files.
    - Full Service Worker (`sw.js`) caching for 100% offline job site usability without mobile reception.
    - Formatted for standard Australian A4 printing (1:1 scale).
 
-9. **⚡ Queensland Compliance Presets & Quick-Access Toggle**
-   - Field-tested, statutory testing and compliance description presets for **Smoke Alarms** (AS 3786:2014 & legislation), **Battery Storage** (AS/NZS 5139:2019), **Solar PV** (AS/NZS 5033:2021), **EV Chargers** (AS/NZS 3000 Section 7.9), and **Switchboard Upgrades**, with explicit AS/NZS 3000 citations across every preset.
-   - Comprehensive profile presets management with drag-and-drop reordering, custom additions, and single-click reset to Queensland standards.
+10. **⚡ Queensland Compliance Presets & Quick-Access Toggle**
+    - Field-tested, statutory testing and compliance description presets for **Smoke Alarms** (AS 3786:2014 & legislation), **Battery Storage** (AS/NZS 5139:2019), **Solar PV** (AS/NZS 5033:2021), **EV Chargers** (AS/NZS 3000 Section 7.9), and **Switchboard Upgrades**, with explicit AS/NZS 3000 citations across every preset.
+    - Comprehensive profile presets management with drag-and-drop reordering, custom additions, and single-click reset to Queensland standards.
 
 ---
 

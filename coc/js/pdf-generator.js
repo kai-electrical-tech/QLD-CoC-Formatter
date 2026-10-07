@@ -486,8 +486,51 @@
         }
       }
 
-      const totalPages = 1 + annexurePagesData.length;
+      // Helper: Draw Bottom Statutory Details Bar on Every Page from Page 2 onwards
+      const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
+      const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
+
+      const drawStatutoryDetails = (targetPage) => {
+        const dividerY = 138;
+        targetPage.drawLine({
+          start: { x: 59.52, y: dividerY },
+          end: { x: 534.00, y: dividerY },
+          thickness: 0.48,
+          color: rgb(0.2, 0.2, 0.2)
+        });
+
+        // Left Side: Customer, Address, Lic, Dates (flush left at x: 59.52)
+        targetPage.drawText(`Customer: ${custFullName}`, { x: 59.52, y: dividerY - 14, size: 8.5, font: helveticaBold, color: blackColor });
+        targetPage.drawText(`Address: ${fullAddrStr}`, { x: 59.52, y: dividerY - 27, size: 8.5, font: helvetica, color: blackColor });
+        targetPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 59.52, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
+        targetPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 59.52, y: dividerY - 53, size: 8.5, font: helvetica, color: blackColor });
+        targetPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 59.52, y: dividerY - 66, size: 8.5, font: helvetica, color: blackColor });
+
+        // Right Side: Tester and Signature (flush right to 534.00)
+        if (testerDisplayStr) {
+          const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
+          targetPage.drawText(testerDisplayStr, { x: 534.00 - tAWidth, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
+        }
+        if (sigImage) {
+          targetPage.drawImage(sigImage, {
+            x: 534.00 - 115,
+            y: dividerY - 76,
+            width: 115,
+            height: 32
+          });
+        }
+      };
+
+      // ----------------------------------------------------
+      // 12B. Photo Appendix Engine Calculation (Up to 18 Photos, 6 Per Page, 3x2 Grid)
+      // ----------------------------------------------------
+      const photos = (data.photos && Array.isArray(data.photos)) ? data.photos : [];
+      const PHOTOS_PER_PAGE = 6;
+      const numPhotoPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
+
+      const totalPages = 1 + annexurePagesData.length + numPhotoPages;
       const createdAnnexurePages = [];
+      const createdPhotoPages = [];
 
       for (let idx = 0; idx < annexurePagesData.length; idx++) {
         const pageInfo = annexurePagesData[idx];
@@ -545,41 +588,9 @@
         }
 
         // 12.6 Bottom Details & Sign-off Section: Drawn on EVERY page from Page 2 onwards!
-        const dividerY = 138;
-        aPage.drawLine({
-          start: { x: 59.52, y: dividerY },
-          end: { x: 534.00, y: dividerY },
-          thickness: 0.48,
-          color: rgb(0.2, 0.2, 0.2)
-        });
+        drawStatutoryDetails(aPage);
 
-        const custFullName = [customerTitle, customerGivenName, customerSurname].filter(Boolean).join(' ') || 'Customer';
-        const fullAddrStr = [street, suburb, postcode ? `QLD ${postcode}` : 'QLD'].filter(Boolean).join(', ');
-
-        // Left Side: Customer, Address, Lic, Dates (flush left at x: 59.52)
-        aPage.drawText(`Customer: ${custFullName}`, { x: 59.52, y: dividerY - 14, size: 8.5, font: helveticaBold, color: blackColor });
-        aPage.drawText(`Address: ${fullAddrStr}`, { x: 59.52, y: dividerY - 27, size: 8.5, font: helvetica, color: blackColor });
-        aPage.drawText(`Contractor Lic: ${contractorLic || 'N/A'}`, { x: 59.52, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
-        aPage.drawText(`Date of test: ${tDay} / ${tMonth} / ${tYear}`, { x: 59.52, y: dividerY - 53, size: 8.5, font: helvetica, color: blackColor });
-        aPage.drawText(`Date notice given: ${nDay} / ${nMonth} / ${nYear}`, { x: 59.52, y: dividerY - 66, size: 8.5, font: helvetica, color: blackColor });
-
-        // Right Side: Tester and Signature (flush right to 534.00)
-        if (testerDisplayStr) {
-          const tAWidth = helvetica.widthOfTextAtSize(testerDisplayStr, 8.5);
-          aPage.drawText(testerDisplayStr, { x: 534.00 - tAWidth, y: dividerY - 40, size: 8.5, font: helvetica, color: blackColor });
-        }
-        if (sigImage) {
-          aPage.drawImage(sigImage, {
-            x: 534.00 - 115,
-            y: dividerY - 76,
-            width: 115,
-            height: 32
-          });
-        }
-
-        // 12.7 Footer stamps on this Annexure page
-
-        // Page X/N in center
+        // 12.7 Footer stamps on this Annexure page (Page X/N in center)
         aPage.drawText(`Page ${pageNum}/${totalPages}`, {
           x: 275,
           y: 36.1,
@@ -587,8 +598,117 @@
           font: helvetica,
           color: grayColor
         });
-        // Note: V7.09-2026 is intentionally omitted from Page 2 onwards for a clean layout
       }
+
+      // ----------------------------------------------------
+      // 12C. Photo Appendix Pages (Dedicated Appendix at End of Document)
+      // ----------------------------------------------------
+      for (let pIdx = 0; pIdx < numPhotoPages; pIdx++) {
+        const photoPageNum = 1 + annexurePagesData.length + pIdx + 1;
+        const pPage = pdfDoc.addPage([595.56, 842.04]);
+        createdPhotoPages.push(pPage);
+
+        // Outer fine border matching Page 1
+        pPage.drawRectangle({
+          x: 24.0,
+          y: 24.0,
+          width: 547.56,
+          height: 794.04,
+          borderWidth: 0.48,
+          borderColor: rgb(0.2, 0.2, 0.2),
+          color: undefined
+        });
+
+        // Top Header Branding matching Page 1
+        drawHeaderBranding(pPage, true);
+
+        // Dividing horizontal rule matching Page 1 Title Block bounds (59.52 to 534.00, thickness 0.48)
+        pPage.drawLine({
+          start: { x: 59.52, y: 698.22 },
+          end: { x: 534.00, y: 698.22 },
+          thickness: 0.48,
+          color: rgb(0.2, 0.2, 0.2)
+        });
+
+        // Subtitle: Appendix header
+        const startPhotoIdx = pIdx * PHOTOS_PER_PAGE;
+        const endPhotoIdx = Math.min(startPhotoIdx + PHOTOS_PER_PAGE, photos.length);
+        const subtitleText = `APPENDIX - PHOTOGRAPHIC EVIDENCE (PHOTOS ${String(startPhotoIdx + 1).padStart(2, '0')} - ${String(endPhotoIdx).padStart(2, '0')})`;
+        pPage.drawText(subtitleText, {
+          x: 59.52,
+          y: 682.0,
+          size: 8.5,
+          font: helveticaBold,
+          color: blackColor
+        });
+
+        // Photos Grid: 3 columns x 2 rows
+        const pagePhotos = photos.slice(startPhotoIdx, endPhotoIdx);
+        for (let slotIdx = 0; slotIdx < pagePhotos.length; slotIdx++) {
+          const photoItem = pagePhotos[slotIdx];
+          const photoDataUrl = (typeof photoItem === 'string') ? photoItem : (photoItem.dataUrl || '');
+          const photoNum = startPhotoIdx + slotIdx + 1;
+          const photoLabel = (typeof photoItem === 'object' && photoItem.label) ? photoItem.label : `Photo ${String(photoNum).padStart(2, '0')}`;
+
+          const col = slotIdx % 3;
+          const row = Math.floor(slotIdx / 3);
+
+          const boxX = 59.52 + col * (150.00 + 12.24);
+          const boxY = (row === 0) ? 468.0 : 238.0;
+
+          if (photoDataUrl) {
+            try {
+              const isPng = photoDataUrl.startsWith('data:image/png');
+              const imgBytes = dataUrlToUint8Array(photoDataUrl);
+              const embeddedImg = isPng ? await pdfDoc.embedPng(imgBytes) : await pdfDoc.embedJpg(imgBytes);
+
+              pPage.drawImage(embeddedImg, {
+                x: boxX,
+                y: boxY,
+                width: 150.00,
+                height: 200.00
+              });
+            } catch (imgErr) {
+              console.warn('Failed to embed photo into PDF:', imgErr);
+            }
+          }
+
+          // Light gray border framing each photo box (0.5pt #cbd5e1)
+          pPage.drawRectangle({
+            x: boxX,
+            y: boxY,
+            width: 150.00,
+            height: 200.00,
+            borderWidth: 0.5,
+            borderColor: rgb(0.8, 0.835, 0.88),
+            color: undefined
+          });
+
+          // Label centered under photo box
+          const labelW = helveticaBold.widthOfTextAtSize(photoLabel, 8.0);
+          pPage.drawText(photoLabel, {
+            x: boxX + (150.00 - labelW) / 2,
+            y: (row === 0) ? 454.0 : 224.0,
+            size: 8.0,
+            font: helveticaBold,
+            color: blackColor
+          });
+        }
+
+        // Bottom Details & Sign-off Section on EVERY photo page
+        drawStatutoryDetails(pPage);
+
+        // Page X/N in center
+        pPage.drawText(`Page ${photoPageNum}/${totalPages}`, {
+          x: 275,
+          y: 36.1,
+          size: 8.5,
+          font: helvetica,
+          color: grayColor
+        });
+      }
+
+      const allSubsequentPages = [...createdAnnexurePages, ...createdPhotoPages];
 
       // ----------------------------------------------------
       // 13. Page 1 Footer Stamps & Neutral Device ID
@@ -614,7 +734,7 @@
         color: grayColor
       });
 
-      for (const aPage of createdAnnexurePages) {
+      for (const aPage of allSubsequentPages) {
         aPage.drawText(footerLeftText, {
           x: 59.52,
           y: 13,
@@ -624,7 +744,7 @@
         });
       }
 
-      // Bottom Right Website URL (Page 1 and all Annexure pages: x = 534.00 - websiteWidth)
+      // Bottom Right Website URL (Page 1 and all Subsequent pages: x = 534.00 - websiteWidth)
       if (data.contractorWebsite) {
         const cleanUrl = data.contractorWebsite.trim().replace(/^https?:\/\//i, '');
         const websiteText = `Website: ${cleanUrl}`;
@@ -636,7 +756,7 @@
           font: helvetica,
           color: grayColor
         });
-        for (const aPage of createdAnnexurePages) {
+        for (const aPage of allSubsequentPages) {
           aPage.drawText(websiteText, {
             x: 534.00 - websiteWidth,
             y: 13,
