@@ -2140,46 +2140,6 @@
     card.addEventListener('pointerdown', onPointerDown);
   }
 
-  // Dynamic Safari & System Theme Color synchronizer
-  function updateSafariThemeColor() {
-    const isLightboxOpen = document.body.classList.contains('lightbox-open') || 
-      (document.getElementById('photoLightboxModal') && document.getElementById('photoLightboxModal').style.display === 'flex');
-    const isToastOpen = document.getElementById('persistentAlertToast') && 
-      document.getElementById('persistentAlertToast').classList.contains('visible');
-
-    const shouldBeDark = Boolean(isLightboxOpen || isToastOpen);
-    let themeMeta = document.getElementById('themeColorMeta') || document.querySelector('meta[name="theme-color"]');
-    if (!themeMeta) {
-      themeMeta = document.createElement('meta');
-      themeMeta.name = 'theme-color';
-      themeMeta.id = 'themeColorMeta';
-      document.head.appendChild(themeMeta);
-    }
-    themeMeta.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
-
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark-overlay-active');
-      document.body.classList.add('dark-overlay-active');
-    } else {
-      document.documentElement.classList.remove('dark-overlay-active');
-      document.body.classList.remove('dark-overlay-active');
-    }
-
-    const alertBackdrop = document.getElementById('persistentAlertBackdrop');
-    if (alertBackdrop) {
-      if (isToastOpen) {
-        alertBackdrop.classList.add('visible');
-      } else {
-        alertBackdrop.classList.remove('visible');
-      }
-    }
-
-    const bottomTintAnchor = document.getElementById('safariBottomTintAnchor');
-    if (bottomTintAnchor) {
-      bottomTintAnchor.style.backgroundColor = shouldBeDark ? '#0f172a' : 'transparent';
-    }
-  }
-
   function openPhotoLightbox(index) {
     if (!currentPhotos || currentPhotos.length === 0) return;
     const modal = document.getElementById('photoLightboxModal');
@@ -2190,8 +2150,6 @@
 
     modal.style.display = 'flex';
     document.body.classList.add('lightbox-open');
-    document.documentElement.classList.add('lightbox-open');
-    updateSafariThemeColor();
   }
 
   let isLightboxTransitioning = false;
@@ -2202,9 +2160,7 @@
 
     modal.style.display = 'none';
     document.body.classList.remove('lightbox-open');
-    document.documentElement.classList.remove('lightbox-open');
     isLightboxTransitioning = false;
-    updateSafariThemeColor();
     const img = document.getElementById('lightboxImage');
     if (img) {
       img.src = '';
@@ -2541,13 +2497,11 @@
     }
 
     toast.classList.add('visible');
-    updateSafariThemeColor();
   }
 
   function hideUnifiedToast() {
     const toast = document.getElementById('persistentAlertToast');
     if (toast) toast.classList.remove('visible');
-    updateSafariThemeColor();
   }
 
   window.showUnifiedToast = showUnifiedToast;
